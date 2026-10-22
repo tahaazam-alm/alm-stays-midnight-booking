@@ -1,0 +1,22 @@
+{
+  "name": "midnight-booking",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:handoff": "node scripts/build-handoff.mjs",
+    "update-ds": "npm install git+https://github.com/tajawal/design-system.git"
+  },
+  "dependencies": {
+    "design-system": "git+https://github.com/tajawal/design-system.git",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.0",
+    "vite-plugin-singlefile": "2.3.3"
+  }
+}

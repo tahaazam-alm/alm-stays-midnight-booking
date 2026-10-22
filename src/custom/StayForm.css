@@ -1,0 +1,13 @@
+.stay-form {
+  display: flex; flex-direction: column;
+  border-radius: var(--rounded-lg);
+  background: var(--background-base-default);
+  box-shadow: inset 0 0 0 1px var(--border-base-default);
+  overflow: hidden;
+}
+.stay-form__sep { width: auto; margin-inline: 57px 0; }
+.stay-form__dates { display: flex; align-items: center; }
+.stay-form__dates > .widget-field { flex: 1; min-width: 0; }
+.stay-form__arrow { display: flex; color: var(--icon-base-subtle); flex-shrink: 0; }
+.stay-form__foot { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-sm) var(--space) var(--space-lg); }
+.stay-form__foot .legacy-btn { width: 100%; }

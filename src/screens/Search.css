@@ -1,0 +1,19 @@
+.stay-search { background: var(--background-base-default); }
+.stay-search__body { display: flex; flex-direction: column; gap: var(--space-xl); padding: var(--space-md) var(--space-container) var(--space-xl); }
+.stay-search__nearby { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm); border: 0; background: none; cursor: pointer; }
+.stay-search__recents { display: flex; gap: var(--space-sm); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--space-container)); padding-inline: var(--space-container); }
+.stay-search__recents::-webkit-scrollbar { display: none; }
+.sheet-pad { padding: 0 var(--space-container); }
+.sheet-list > .cell { padding-inline: var(--space-container); }
+.sheet-eyebrow { display: flex; justify-content: space-between; align-items: baseline; padding: var(--space-lg) var(--space-container) var(--space-xs); }
+.dates-sheet__foot {
+  position: sticky; bottom: 0; display: flex; flex-direction: column; align-items: center; gap: var(--space-sm);
+  padding: var(--space-md) var(--space-container) var(--space-lg); background: var(--background-base-default);
+  border-block-start: 1px solid var(--border-base-default);
+}
+.dates-sheet__foot .btn, .guests-sheet__foot .btn { width: 100%; }
+.guests-sheet { display: flex; flex-direction: column; gap: var(--space-md); padding: 0 var(--space-container) var(--space-lg); min-height: 100%; }
+.guests-sheet__note { text-align: center; }
+.guests-sheet__ages { display: flex; flex-wrap: wrap; gap: var(--space-sm); padding-inline: var(--space); margin-block-start: calc(-1 * var(--space-sm)); }
+.guests-sheet__add { align-self: center; }
+.guests-sheet__foot { margin-block-start: auto; position: sticky; bottom: 0; padding-block: var(--space-md); background: var(--background-base-default); }

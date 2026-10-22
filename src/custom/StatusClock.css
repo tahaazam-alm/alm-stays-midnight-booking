@@ -1,0 +1,4 @@
+/* CUSTOM: not in the design system — Navbar's iOS status bar hard-codes "9:41"; the prototype needs
+   the scenario clock (e.g. 1:30 AM) visible, so swap the text for --proto-clock set by StayProvider. */
+.navbar__status--ios .navbar__status-time { font-size: 0; }
+.navbar__status--ios .navbar__status-time::after { content: var(--proto-clock, '9:41'); font-size: var(--type-subtitle-size); }

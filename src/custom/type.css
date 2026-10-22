@@ -1,0 +1,16 @@
+/* Text styles mapped 1:1 to design-system type tokens, for custom parts and screen copy. */
+.t-headline { font: var(--type-headline-weight) var(--type-headline-size)/var(--type-headline-lh) var(--type-headline-family); letter-spacing: var(--type-headline-ls); }
+.t-title { font: var(--type-title-weight) var(--type-title-size)/var(--type-title-lh) var(--type-title-family); letter-spacing: var(--type-title-ls); }
+.t-subtitle { font: var(--type-subtitle-weight) var(--type-subtitle-size)/var(--type-subtitle-lh) var(--type-subtitle-family); }
+.t-body { font: var(--type-body-regular-weight) var(--type-body-size)/var(--type-body-lh) var(--type-body-regular-family); }
+.t-body-semi { font: var(--type-body-semibold-weight) var(--type-body-size)/var(--type-body-lh) var(--type-body-semibold-family); }
+.t-caption { font: var(--type-caption-regular-weight) var(--type-caption-size)/var(--type-caption-lh) var(--type-caption-regular-family); }
+.t-caption-semi { font: var(--type-caption-semibold-weight) var(--type-caption-size)/var(--type-caption-lh) var(--type-caption-semibold-family); }
+.t-meta-semi { font: var(--type-meta-semibold-weight) var(--type-meta-size)/var(--type-meta-lh) var(--type-meta-semibold-family); }
+.t-subtext { color: var(--text-base-subtext); }
+.t-link { color: var(--text-link-default); }
+.t-reset { margin: 0; }
+
+/* Section heading row: title + optional "View all" link */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-sm); margin: 0 0 var(--space-md); }
+.section-head__link { border: 0; background: none; padding: 0; cursor: pointer; }

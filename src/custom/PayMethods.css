@@ -1,0 +1,9 @@
+.pay-methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-sm); padding-block-start: var(--space-sm); }
+.pay-method {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; height: 72px;
+  border: 0; border-radius: var(--rounded); background: var(--background-base-default); cursor: pointer; color: var(--text-base-default);
+  box-shadow: inset 0 0 0 1px var(--border-base-default);
+}
+.pay-method.is-on { background: var(--background-primary-subtle); box-shadow: inset 0 0 0 1px var(--border-base-selected); color: var(--text-link-default); }
+.pay-method__logo { width: 28px; height: 28px; border-radius: var(--rounded-sm); }
+.pay-method__badge { position: absolute; inset-block-start: -9px; padding: 1px 8px; border-radius: var(--rounded-full); background: var(--background-primary-default); color: var(--text-base-inverted-static); white-space: nowrap; }

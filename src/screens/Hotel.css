@@ -1,0 +1,12 @@
+.hotel { background: var(--background-base-default); }
+.hotel__hero { position: relative; height: 300px; flex-shrink: 0; }
+.hotel__hero > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hotel__nav { position: absolute; inset-block-start: 0; inset-inline: 0; }
+.hotel__nav .navbar { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+.hotel__count { position: absolute; inset-block-end: var(--space-sm); inset-inline-end: var(--space-sm); display: inline-flex; gap: 4px; align-items: center; padding: 2px 8px; border-radius: var(--rounded-sm); background: var(--overlay-default); color: var(--text-base-inverted-static); }
+.hotel__body { display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space) var(--space-container) var(--space-xl); }
+.hotel__section { display: flex; flex-direction: column; gap: var(--space-sm); }
+.hotel__h { display: flex; align-items: center; gap: var(--space-sm); }
+.hotel__h .ds-icon { color: var(--icon-secondary-default); }
+.hotel__note { text-align: center; }
+.hotel__pills { display: flex; gap: var(--space-sm); flex-wrap: wrap; }

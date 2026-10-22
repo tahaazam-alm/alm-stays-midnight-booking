@@ -1,0 +1,14 @@
+/* Shared layout for Guest Details + Confirm and Pay */
+.funnel { background: var(--background-base-default); }
+.funnel__body { display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-md) var(--space-container) var(--space-xl); }
+.funnel__section { display: flex; flex-direction: column; gap: var(--space-sm); }
+.funnel__card { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); border-radius: var(--rounded-lg); background: var(--background-base-default); box-shadow: inset 0 0 0 1px var(--border-base-default); }
+.funnel__card--row { padding: 0; overflow: hidden; }
+.funnel__card--row > .cell, .funnel__card--row > .list-item { padding: var(--space-md) var(--space); }
+.funnel__titles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); }
+.funnel__phone { display: grid; grid-template-columns: 104px 1fr; gap: var(--space-sm); }
+.funnel__center { text-align: center; }
+.funnel__safe { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.funnel__safe .ds-icon { color: var(--icon-success-default); }
+.funnel__bar { position: sticky; bottom: 0; z-index: 4; }
+.funnel__bar--float { display: flex; justify-content: center; padding-block-end: var(--space-md); }

@@ -1,0 +1,22 @@
+.range-cal__wd {
+  position: sticky; top: 0; z-index: 1;
+  display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+  padding-block: var(--space-sm); background: var(--background-base-default);
+  border-block-end: 1px solid var(--border-base-default);
+  color: var(--text-base-default);
+}
+.range-cal__month { padding: var(--space-lg) var(--space-container) 0; }
+.range-cal__title { margin-block-end: var(--space-md); }
+.range-cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: var(--space-sm); }
+.range-cal__day {
+  height: 48px; border: 0; padding: 0; background: none; cursor: pointer;
+  color: var(--text-base-default); font-weight: var(--type-body-semibold-weight);
+}
+.range-cal__day span { display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.range-cal__day:disabled { color: var(--text-base-subtext); font-weight: var(--type-body-regular-weight); cursor: default; }
+.range-cal__day.is-in { background: var(--background-primary-subtle); }
+.range-cal__day.is-edge { background: var(--background-primary-default); color: var(--text-base-inverted-static); }
+.range-cal__day.is-start { border-start-start-radius: var(--rounded); border-end-start-radius: var(--rounded); }
+.range-cal__day.is-start:not(.has-end) { border-radius: var(--rounded); }
+.range-cal__day.is-end { border-start-end-radius: var(--rounded); border-end-end-radius: var(--rounded); }
+.range-cal__day.is-today:not(.is-edge) span { text-decoration: underline; text-underline-offset: 4px; }

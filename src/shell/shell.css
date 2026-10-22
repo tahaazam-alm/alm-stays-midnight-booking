@@ -1,0 +1,115 @@
+/* Prototype chrome only (control bar + device frames). Not product UI. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+:root {
+  --proto-page: #eef0f2; --proto-text: #1c1c1c; --proto-muted: #66797f; --proto-faint: #a1aaad;
+  --proto-chip: #fff; --proto-line: #d8dcde; --proto-line-hover: #a1aaad;
+  --proto-sel-bg: #E6F6F8; --proto-sel-line: #0BA0B7; --proto-sel-text: #08798B; --proto-bezel: #1c1c1c;
+}
+:root[data-theme='dark'] {
+  --proto-page: #101314; --proto-text: #eef0f2; --proto-muted: #8a979b; --proto-faint: #5b676b;
+  --proto-chip: #1b2022; --proto-line: #2f3739; --proto-line-hover: #4b5659;
+  --proto-sel-bg: #0b3a42; --proto-sel-line: #2bbad0; --proto-sel-text: #7fdcea; --proto-bezel: #3a4144;
+}
+body {
+  background: var(--proto-page);
+  font-family: var(--font-body);
+  color: var(--proto-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.proto { display: flex; flex-direction: column; height: 100%; }
+
+/* ── Control bar: chip switches, no bar background ───── */
+.proto-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 24px;
+  padding: 14px 16px 0;
+  font: 12px/16px var(--font-body);
+  flex-shrink: 0;
+}
+.proto-bar__name { font-size: 13px; }
+.proto-toggle { display: flex; align-items: center; gap: 10px; }
+.proto-toggle__label { color: var(--proto-muted); white-space: nowrap; }
+.proto-toggle__group { display: flex; gap: 6px; }
+/* Chips, styled after the design system's Chip (shell sits outside the DS provider). */
+.proto-toggle__opt {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 28px; padding: 0 12px; border-radius: 999px;
+  border: 1px solid var(--proto-line); background: var(--proto-chip);
+  font: inherit; color: var(--proto-text); cursor: pointer; white-space: nowrap;
+}
+.proto-toggle__opt:hover:not(:disabled):not([aria-checked='true']) { border-color: var(--proto-line-hover); }
+.proto-toggle__opt[aria-checked='true'] { background: var(--proto-sel-bg); border-color: var(--proto-sel-line); color: var(--proto-sel-text); font-weight: 600; }
+.proto-toggle__opt:disabled { background: transparent; border-style: dashed; color: var(--proto-faint); cursor: not-allowed; }
+.proto-toggle__soon { font-size: 9px; letter-spacing: .4px; text-transform: uppercase; color: var(--proto-faint); }
+.proto-bar__restart {
+  border: 0; background: none; padding: 0 4px; height: 28px;
+  font: inherit; color: var(--proto-sel-line); font-weight: 600; cursor: pointer;
+}
+
+/* ── Stage: device centred in the space below the bar ─────── */
+.proto-stage {
+  flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px;
+  overflow: hidden;
+}
+.proto-fit { flex-shrink: 0; }
+
+/* Phone/browser frames keep the true iPhone 17 Pro size (402×874, set inline) and are
+   scaled as a whole to fit, so the bar never squashes the screen height.
+   transform also makes the frame the containing block for position:fixed children (Snackbar). */
+.proto-device { position: relative; background: var(--background-base-default); overflow: hidden; flex-shrink: 0; transform: translateZ(0); transform-origin: 0 0; }
+.proto-device--phone {
+  border-radius: 55px;
+  box-shadow: 0 0 0 11px var(--proto-bezel), 0 24px 60px rgba(0,0,0,.25);
+}
+.proto-device--browser {
+  border-radius: 20px; padding-top: 44px;
+  box-shadow: 0 0 0 1px #d8dcde, 0 24px 60px rgba(0,0,0,.18);
+}
+.proto-device--browser::before {
+  content: 'almosafer.com'; position: absolute; inset: 0 0 auto; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font: 12px var(--font-body); color: #66797f; background: #f7f9fa; border-bottom: 1px solid #edf1f3;
+}
+.proto--desktop .proto-fit { width: min(1280px, 100%); height: 100%; }
+.proto-device--desktop {
+  width: 100%; height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px #d8dcde, 0 16px 40px rgba(0,0,0,.12);
+}
+
+.proto-viewport { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+/* On an actual phone: no frame, no bar — the prototype fills the screen */
+@media (max-width: 500px) {
+  .proto--phone .proto-bar, .proto--browser .proto-bar { display: none; }
+  .proto--phone .proto-stage, .proto--browser .proto-stage { padding: 0; }
+  .proto--phone .proto-fit, .proto--browser .proto-fit { width: 100% !important; height: 100% !important; }
+  .proto-device--phone, .proto-device--browser {
+    width: 100% !important; height: 100% !important; transform: none !important;
+    border-radius: 0; box-shadow: none;
+  }
+}
+
+/* ── Screens + transitions ───────────────────────────────── */
+.proto-screen {
+  position: absolute; inset: 0;
+  overflow-y: auto; overflow-x: hidden;
+  background: var(--background-base-default);
+}
+.proto-screen--forward { animation: proto-in-fwd .32s cubic-bezier(.2,.8,.2,1); }
+.proto-screen--back { animation: proto-in-back .32s cubic-bezier(.2,.8,.2,1); }
+@keyframes proto-in-fwd { from { transform: translateX(var(--proto-slide, 100%)); } }
+@keyframes proto-in-back { from { transform: translateX(calc(var(--proto-slide, 100%) * -0.3)); opacity: .6; } }
+[dir='rtl'] .proto-screen { --proto-slide: -100%; }
+@media (prefers-reduced-motion: reduce) { .proto-screen { animation: none !important; } }
+
+/* Helpers screens can use */
+.screen { min-height: 100%; display: flex; flex-direction: column; }
+.screen__body { flex: 1; }
+.screen__nav { position: sticky; top: 0; z-index: 5; } /* wrap Navbar to keep it pinned while scrolling */
+.ds-icon { display: inline-flex; flex-shrink: 0; }
+.ds-icon > svg { width: 100%; height: 100%; }

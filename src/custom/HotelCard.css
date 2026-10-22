@@ -1,0 +1,27 @@
+.hotel-card {
+  border-radius: var(--rounded-lg); overflow: hidden; cursor: pointer;
+  background: var(--background-base-default);
+  box-shadow: inset 0 0 0 1px var(--border-base-default);
+}
+.hotel-card__media { position: relative; aspect-ratio: 16 / 7.5; background: var(--background-base-subtle); }
+.hotel-card__media img, .recent-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hotel-card__fav { position: absolute; inset-block-start: var(--space-sm); inset-inline-end: var(--space-sm); display: flex; color: var(--icon-base-inverted-static); filter: drop-shadow(0 1px 2px rgb(0 0 0 / .35)); }
+.hotel-card__body { display: flex; flex-direction: column; gap: var(--space-xs); padding: var(--space) var(--space) var(--space); }
+.hotel-card__body > .score { margin-block-start: var(--space-xs); }
+.hotel-card__price { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-block-start: var(--space-md); }
+.hotel-card__drop { color: var(--text-success-default); }
+
+.score { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; color: var(--text-base-default); }
+.score__chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--rounded-sm); background: var(--background-primary-subtle); }
+.score__chip .ds-icon { color: var(--icon-secondary-default); }
+
+.recent-card {
+  display: flex; flex: 0 0 86%; scroll-snap-align: start; cursor: pointer;
+  border-radius: var(--rounded-lg); overflow: hidden; min-height: 124px;
+  background: var(--background-base-default); box-shadow: inset 0 0 0 1px var(--border-base-default);
+}
+.recent-card__media { position: relative; flex: 0 0 90px; }
+.recent-card__body > * { flex-shrink: 0; }
+.recent-card__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: var(--space-sm) var(--space-md); }
+.recent-card__name, .recent-card__meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-card__when { margin-block-start: auto; }
