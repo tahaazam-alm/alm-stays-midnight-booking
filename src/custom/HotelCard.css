@@ -10,6 +10,11 @@
 .hotel-card__body > .score { margin-block-start: var(--space-xs); }
 .hotel-card__price { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-block-start: var(--space-md); }
 .hotel-card__drop { color: var(--text-success-default); }
+/* Price as in the live app: teal amount, green when the price dropped, grey struck price */
+.hotel-card__amount { flex-direction: row-reverse; gap: var(--space-xs); } /* struck price reads first, as in the live app */
+.hotel-card__amount .price__current { color: var(--color-aqua-100); }
+.hotel-card__amount--drop .price__current { color: var(--text-success-default); }
+.hotel-card__amount .price__slash { color: var(--text-base-subtext); }
 
 .score { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; color: var(--text-base-default); }
 .score__chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--rounded-sm); background: var(--background-primary-subtle); }

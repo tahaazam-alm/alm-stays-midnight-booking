@@ -35,8 +35,8 @@ export function HotelCard({ hotel, nightsLabel, instant, instantLabel, onSelect 
         <Score hotel={hotel} />
         <div className="hotel-card__price">
           {drop > 0 && <span className="t-body-semi hotel-card__drop">{t('priceDropped', drop)}</span>}
-          <Price price={money(hotel.price)} slashPrice={hotel.was ? hotel.was.toLocaleString('en-US') : undefined} size="default" />
-          <span className="t-caption">{nightsLabel}</span>
+          <Price className={drop > 0 ? 'hotel-card__amount hotel-card__amount--drop' : 'hotel-card__amount'} price={money(hotel.price)} slashPrice={hotel.was ? money(hotel.was) : undefined} size="default" />
+          <span className="t-body">{nightsLabel}</span>
         </div>
       </div>
     </article>
