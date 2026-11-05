@@ -1,0 +1,671 @@
+<title>Midnight Booking Directions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working wall — problem strip on top, then one row per funnel touchpoint, each holding 4 phone sketches with notes. */
+:root {
+  --bg: #F2F3F7;
+  --surface: #FFFFFF;
+  --ink: #151A2D;
+  --muted: #5A6280;
+  --line: #DADEE9;
+  --night: #2D3B8F;
+  --night-soft: #E6E9F7;
+  --lamp: #D9871E;
+  --lamp-soft: #FCEFD9;
+  --sk-bg: #F7F8FB;
+  --sk-line: #D3D8E4;
+  --sk-fill: #E4E7EF;
+  --ok: #2E7D5B;
+  --f-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1120; --surface: #161A2D; --ink: #E7E9F3; --muted: #9AA1BE; --line: #2A3150;
+    --night: #9AA6FF; --night-soft: #222A4D; --lamp: #F0B054; --lamp-soft: #3A2C17;
+    --sk-bg: #1C2137; --sk-line: #353D5E; --sk-fill: #2A3150; --ok: #6FCB9F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1120; --surface: #161A2D; --ink: #E7E9F3; --muted: #9AA1BE; --line: #2A3150;
+  --night: #9AA6FF; --night-soft: #222A4D; --lamp: #F0B054; --lamp-soft: #3A2C17;
+  --sk-bg: #1C2137; --sk-line: #353D5E; --sk-fill: #2A3150; --ok: #6FCB9F;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 120px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 4.6vw, 48px); line-height: 1.05; font-weight: 700; }
+h2 { font-size: 26px; font-weight: 700; }
+h3 { font-size: 18px; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--f-mono); }
+
+/* Intro */
+.intro { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+.intro .lede { max-width: 60ch; color: var(--muted); font-size: 16px; margin-top: 14px; }
+.intro .lede strong { color: var(--ink); font-weight: 600; }
+@media (max-width: 860px) { .intro { grid-template-columns: 1fr; gap: 24px; } }
+
+/* Night clock strip */
+.clock { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 12px; }
+.clock-bar { position: relative; height: 34px; border-radius: 8px; background: var(--sk-fill); overflow: hidden; display: grid; grid-template-columns: 6fr 6fr 6fr; }
+.clock-bar span { font-family: var(--f-mono); font-size: 11px; display: flex; align-items: center; padding-inline: 8px; color: var(--muted); }
+.clock-bar .win { background: var(--night); color: var(--surface); justify-content: space-between; }
+.clock-bar .win b { font-weight: 500; }
+.clock-now { position: absolute; inset-block: 0; inset-inline-start: calc(100% / 18 * 7.5); width: 2px; background: var(--lamp); }
+.clock-ticks { display: grid; grid-template-columns: repeat(3, 1fr); font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.clock-ticks span:nth-child(2) { color: var(--night); font-weight: 500; }
+.clock-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
+.clock-legend div { display: flex; flex-direction: column; gap: 2px; }
+.clock-legend .k { font-family: var(--f-mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.clock-legend .bad { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--lamp); }
+.clock-legend .good { color: var(--ink); font-weight: 600; }
+
+/* Principles + legend row */
+.rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.rule { border-top: 2px solid var(--ink); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.rule .eyebrow { color: var(--ink); }
+.rule p { color: var(--muted); }
+@media (max-width: 860px) { .rules { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .rules { grid-template-columns: 1fr; } }
+
+/* Touchpoint sections */
+.tp { display: flex; flex-direction: column; gap: 20px; }
+.tp-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 18px; align-items: baseline; }
+.tp-num { font-family: var(--f-mono); font-size: 13px; color: var(--surface); background: var(--ink); border-radius: 6px; padding: 2px 8px; }
+.tp-q { grid-column: 2; color: var(--muted); max-width: 70ch; }
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1080px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+.dir { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: border-color .15s, box-shadow .15s; }
+.dir.picked { border-color: var(--night); box-shadow: 0 0 0 2px var(--night) inset; }
+.dir-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dir-id { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.size { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; color: var(--muted); }
+.dir h3 { margin-top: -4px; }
+.dir .what { font-size: 14px; }
+.notes { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.notes div { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 8px; }
+.notes .k { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-top: 2px; }
+.deps { display: flex; flex-wrap: wrap; gap: 6px; }
+.dep { font-family: var(--f-mono); font-size: 11px; background: var(--night-soft); color: var(--night); border-radius: 4px; padding: 1px 6px; }
+.pick { margin-top: auto; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border-top: 1px solid var(--line); padding-top: 10px; }
+.pick input { width: 18px; height: 18px; accent-color: var(--night); margin: 0; }
+.pick input:focus-visible { outline: 2px solid var(--night); outline-offset: 2px; }
+
+/* Phone sketches: a low-fi vocabulary; amber marks what changes vs production */
+.ph { background: var(--sk-bg); border: 1px solid var(--sk-line); border-radius: 18px; padding: 8px 9px 10px; height: 300px; overflow: hidden; display: flex; flex-direction: column; gap: 6px; font-size: 10px; line-height: 1.3; color: var(--muted); }
+.sb { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 9px; color: var(--ink); padding-inline: 4px; }
+.nv { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; font-size: 10.5px; padding-block: 2px; }
+.nv::before { content: "‹"; font-size: 14px; line-height: 1; color: var(--muted); }
+.fld { background: var(--surface); border: 1px solid var(--sk-line); border-radius: 8px; padding: 5px 7px; display: flex; flex-direction: column; gap: 1px; }
+.fld small { font-size: 8.5px; }
+.fld b { color: var(--ink); font-weight: 500; }
+.ln { height: 6px; border-radius: 3px; background: var(--sk-fill); }
+.w30 { width: 30%; } .w45 { width: 45%; } .w60 { width: 60%; } .w80 { width: 80%; }
+.btn { background: var(--ink); color: var(--surface); border-radius: 8px; text-align: center; padding: 6px; font-weight: 600; }
+.btn.alt { background: transparent; color: var(--ink); border: 1px solid var(--sk-line); }
+.img { background: var(--sk-fill); border-radius: 6px; }
+.hc { background: var(--surface); border: 1px solid var(--sk-line); border-radius: 8px; padding: 5px; display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 6px; }
+.hc .img { height: 38px; }
+.hc > div:last-child { display: flex; flex-direction: column; gap: 3px; justify-content: center; }
+.hc b { color: var(--ink); font-weight: 500; }
+.hc.dim { opacity: .5; }
+.row { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.chip { border: 1px solid var(--sk-line); border-radius: 99px; padding: 1px 7px; background: var(--surface); color: var(--ink); }
+.sec { color: var(--ink); font-weight: 600; font-size: 10px; margin-top: 2px; }
+.hl { background: var(--lamp-soft); border: 1.5px solid var(--lamp); color: var(--ink); }
+.hl.fld, .hl.chip { background: var(--lamp-soft); }
+div.hl:not(.fld):not(.chip):not(.cell) { border-radius: 8px; padding: 6px 7px; }
+.tag { display: inline-block; background: var(--lamp); color: #1B1406; border-radius: 4px; padding: 0 5px; font-size: 8.5px; font-weight: 600; }
+.lnk { color: var(--night); font-weight: 500; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; text-align: center; font-family: var(--f-mono); font-size: 8.5px; }
+.cal span { padding-block: 4px; border-radius: 4px; color: var(--ink); }
+.cal .x { color: var(--sk-line); text-decoration: line-through; }
+.cal .h { color: var(--muted); }
+.cal .cell.hl { border-radius: 4px; padding-block: 2px; font-weight: 600; }
+.cal .e { background: var(--ink); color: var(--surface); }
+.cal .in { background: var(--sk-fill); }
+.tl { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 5px; font-family: var(--f-mono); font-size: 8.5px; color: var(--ink); }
+.tl i { height: 2px; background: var(--lamp); position: relative; }
+.tl i::before, .tl i::after { content: ""; position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--lamp); }
+.tl i::before { inset-inline-start: -2px; } .tl i::after { inset-inline-end: -2px; }
+.spacer { flex: 1; }
+.bar { border-top: 1px solid var(--sk-line); padding-top: 6px; display: flex; justify-content: space-between; align-items: center; color: var(--ink); }
+.bar .btn { padding-inline: 12px; }
+.sheet { margin-inline: -9px; margin-bottom: -10px; background: var(--surface); border-top: 1px solid var(--sk-line); border-radius: 14px 14px 0 0; padding: 8px 9px 10px; display: flex; flex-direction: column; gap: 6px; }
+.scrim { flex: 1; background: var(--sk-fill); opacity: .6; border-radius: 6px; }
+.big { font-family: var(--f-display); font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+
+/* Instant check-in explorations: one card per idea, three phones across search, dates and results */
+.xp-grid { display: flex; flex-direction: column; gap: 16px; }
+.xdir .phs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.xdir figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.xdir figcaption { font-family: var(--f-mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.xdir .body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
+.status { font-family: var(--f-mono); font-size: 11px; border-radius: 99px; padding: 1px 8px; }
+.status.live { background: var(--night); color: var(--surface); }
+.status.new { border: 1px dashed var(--muted); color: var(--muted); }
+.status.team { background: var(--lamp-soft); color: var(--ink); border: 1px solid var(--lamp); }
+.xdir .body.wide { grid-template-columns: 1fr; }
+.xdir .body.wide .phs { grid-template-columns: repeat(var(--n), minmax(170px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+.d2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.hcv { background: var(--surface); border: 1px solid var(--sk-line); border-radius: 8px; padding: 5px; display: flex; flex-direction: column; gap: 3px; }
+.hcv .img { height: 44px; position: relative; }
+.hcv .img .tag { position: absolute; inset-block-start: 4px; inset-inline-start: 4px; }
+.hcv b { color: var(--ink); font-weight: 500; }
+.hlt { color: var(--ink); background: var(--lamp-soft); border-radius: 4px; padding: 0 4px; align-self: flex-start; font-weight: 500; }
+.tip { position: relative; background: var(--ink); color: var(--surface); border-radius: 6px; padding: 4px 6px; font-size: 9px; }
+.tip::after { content: ""; position: absolute; inset-block-start: -4px; inset-inline-start: var(--tip-x, 50%); border: 4px solid transparent; border-top: 0; border-bottom-color: var(--ink); }
+.tip.down::after { inset-block-start: auto; inset-block-end: -4px; border: 4px solid transparent; border-bottom: 0; border-top-color: var(--ink); }
+@media (max-width: 860px) {
+  .xdir .body { grid-template-columns: 1fr; }
+  .xdir .phs { grid-template-columns: repeat(3, minmax(190px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+}
+
+/* Starter set */
+.starter { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 28px; }
+.starter ol { margin: 0; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 8px; }
+.starter li b { font-family: var(--f-mono); font-weight: 500; color: var(--night); margin-inline-end: 4px; }
+.starter .lede { color: var(--muted); margin-top: 8px; }
+.qs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 4px; }
+.qs div { font-size: 13px; color: var(--muted); }
+.qs .dep { display: inline-block; margin-bottom: 2px; }
+@media (max-width: 860px) { .starter { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .qs { grid-template-columns: 1fr; } }
+
+/* Shortlist bar */
+.tray { position: fixed; inset: auto 0 0 0; background: var(--ink); color: var(--bg); padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); z-index: 5; }
+.tray-in { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.tray .lbl { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; opacity: .7; }
+.tray .list { font-family: var(--f-mono); font-size: 14px; flex: 1; min-width: 0; }
+.tray button { font: 600 14px var(--f-body); border: 0; border-radius: 8px; padding: 8px 14px; background: var(--lamp); color: #1B1406; cursor: pointer; }
+.tray button.ghost { background: transparent; color: var(--bg); border: 1px solid currentColor; opacity: .8; }
+.tray button:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .dir { transition: none; } }
+</style>
+
+<div class="wrap">
+
+  <header class="intro">
+    <div>
+      <p class="eyebrow">Almosafer stays · Midnight booking · Concept board v2</p>
+      <h1 style="margin-top:10px">After midnight, “tonight” still means Thursday.</h1>
+      <p class="lede">At <strong>1:30 AM on Fri 23 Oct</strong> the app greys out Thu 22 and offers Fri 23 → Sat 24. The guest wants a bed <strong>now</strong>, checking out Friday at noon. We’re now exploring small additions that say “instant check-in, even for longer stays”. Amber in the sketches marks what changes from production. Tick the ones worth prototyping.</p>
+    </div>
+    <div class="clock" aria-label="Booking window timeline">
+      <p class="eyebrow">Thu 22 → Fri 23 Oct, guest's local time</p>
+      <div class="clock-bar">
+        <span>Evening</span>
+        <span class="win" style="justify-content:flex-end"><b>Window 00–06</b></span>
+        <span>Morning</span>
+        <i class="clock-now" title="01:30"></i>
+      </div>
+      <div class="clock-ticks"><span>18:00 Thu</span><span>00:00 Fri · calendar flips</span><span style="text-align:end">12:00 Fri</span></div>
+      <div class="clock-legend">
+        <div><span class="k">App offers</span><span class="bad">Fri 23 → Sat 24</span></div>
+        <div><span class="k">Guest means</span><span class="good">Thu 22 → Fri 23, in at 01:30</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="rules" aria-label="Constraints from the brief">
+    <div class="rule"><span class="eyebrow">Local time</span><p>Dates and wording follow the guest's timezone, so nobody books the wrong night.</p></div>
+    <div class="rule"><span class="eyebrow">Smart nudge</span><p>Offer tonight when it matters, not as a hidden setting.</p></div>
+    <div class="rule"><span class="eyebrow">Eligible only</span><p>Only properties with a clean relocation history take same-night check-in.</p></div>
+    <div class="rule"><span class="eyebrow">Open questions</span><p><span class="dep">window</span> <span class="dep">eligibility</span> <span class="dep">stay wording</span> <span class="dep">ops</span> tags show what each direction depends on.</p></div>
+  </section>
+
+  <section class="tp" id="tp-instant">
+    <div class="tp-head"><span class="tp-num">Now</span><h2>Instant check-in, small additions <span class="eyebrow" style="font-family:var(--f-mono);font-size:12px;font-weight:400;letter-spacing:.06em">Search · Dates · Results</span></h2><p class="tp-q">How do we tell people they can check in tonight, even for a longer stay, without changing the flow? A–C are built in the prototype (Exploration switch, Local time Fri 1:30 AM). D–F are new ideas on the same base, mostly shown with a 3-night stay (Thu 22 → Sun 25). G is the team’s full-funnel version, from search to payment.</p></div>
+    <div class="xp-grid" id="xp"></div>
+  </section>
+
+  <div class="rules" style="grid-template-columns:1fr"><div class="rule"><span class="eyebrow">Earlier directions · Concept board v1</span><p>The wider directions per touchpoint, for reference.</p></div></div>
+
+  <div id="board"></div>
+
+  <section class="starter" aria-label="Suggested starting set">
+    <div>
+      <p class="eyebrow">Suggested starting set</p>
+      <h2 style="margin-top:6px">Five directions that fit together</h2>
+      <p class="lede">These five cover the whole funnel without depending on location access or new hotel processes. We can test them as one flow against production using the Local time switch.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <ol>
+        <li><b>1B + 1C</b>The nudge catches people on the search screen. The Tonight cell removes the dead end in the calendar.</li>
+        <li><b>2C</b>All results stay visible, with a filter people already understand. It still works if few hotels are eligible.</li>
+        <li><b>3A</b>The timeline answers the “10 hours for one night” question visually.</li>
+        <li><b>4B</b>The recap and guarantee reassure the guest right before they pay.</li>
+      </ol>
+      <div class="qs">
+        <div><span class="dep">window</span><br>Is the window based on the phone's time or the hotel's? This changes the wording in 1A–1C.</div>
+        <div><span class="dep">eligibility</span><br>Do results know which hotels are eligible? 2A–2C need that; 3B needs it for each rate.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="tray" role="region" aria-label="Shortlist">
+  <div class="tray-in">
+    <span class="lbl">Shortlist</span>
+    <span class="list" id="list">Nothing ticked yet</span>
+    <button type="button" class="ghost" id="clear">Clear</button>
+    <button type="button" id="copy">Copy shortlist</button>
+  </div>
+</div>
+
+<script>
+const SB = '<div class="sb"><span>1:30</span><span>●●● ▮</span></div>';
+const TP = [
+  {
+    n: '1', title: 'Search and dates', ref: 'Screens 1, 1.2',
+    q: 'How does someone learn that tonight is still bookable, and what should the dates default to?',
+    dirs: [
+      { id: '1A', name: 'Tonight by default', size: 'S',
+        what: 'Between 00:00 and 06:00, the dates start on Thu 22 → Fri 23 and say so in words.',
+        pro: 'No extra step. Most people searching at this hour want tonight.',
+        risk: 'Someone planning ahead for Friday night gets the wrong dates unless they notice.',
+        deps: ['window'],
+        sk: `${SB}<div class="nv">Property search</div>
+          <div class="fld"><small>Destination</small><b>FIVE Palm Jumeirah Dubai</b></div>
+          <div class="fld hl"><small>Dates</small><b>Tonight, Thu 22 → Fri 23 · 1 night</b><span class="lnk">Change to Fri 23</span></div>
+          <div class="fld"><small>Guests</small><b>1 room, 2 adults, 1 child</b></div>
+          <div class="btn">Search stays</div>
+          <div class="sec">Your recent searches</div><div class="hc"><div class="img"></div><div><div class="ln w80"></div><div class="ln w45"></div></div></div>` },
+      { id: '1B', name: 'Still-up nudge', size: 'S',
+        what: 'The dates stay as they are in production. A card under the form offers Thursday night in one tap.',
+        pro: 'Opt-in, so it doesn’t hurt anyone. It is the “smart nudge” from the brief.',
+        risk: 'Easy to scroll past. The search button still runs the wrong dates.',
+        deps: ['window'],
+        sk: `${SB}<div class="nv">Property search</div>
+          <div class="fld"><small>Destination</small><b>FIVE Palm Jumeirah Dubai</b></div>
+          <div class="fld"><small>Dates</small><b>Fri 23 → Sat 24 Oct</b></div>
+          <div class="fld"><small>Guests</small><b>1 room, 2 adults, 1 child</b></div>
+          <div class="btn">Search stays</div>
+          <div class="hl"><div class="big">Still up? Thursday night is still bookable.</div><div style="margin-top:4px">Check in now, out Fri 12:00</div><div class="btn" style="margin-top:6px">Use tonight, Thu 22</div></div>` },
+      { id: '1C', name: 'Tonight in the calendar', size: 'S',
+        what: 'Thu 22 can be picked again and is labelled “Tonight”, with a one-line explanation above the month.',
+        pro: 'Fixes the dead end people hit today. Close to Trip.com’s pattern.',
+        risk: 'Only helps people who open the date picker.',
+        deps: ['window'],
+        sk: `${SB}<div class="nv">Select dates</div>
+          <div class="hl">It’s 1:30 AM. Tonight still counts as <b>Thu 22</b>.</div>
+          <div class="sec">October 2026</div>
+          <div class="cal">
+            <span class="h">S</span><span class="h">M</span><span class="h">T</span><span class="h">W</span><span class="h">T</span><span class="h">F</span><span class="h">S</span>
+            <span class="x">11</span><span class="x">12</span><span class="x">13</span><span class="x">14</span><span class="x">15</span><span class="x">16</span><span class="x">17</span>
+            <span class="x">18</span><span class="x">19</span><span class="x">20</span><span class="x">21</span><span class="cell hl">22<br><span class="tag">Tonight</span></span><span class="e">23</span><span>24</span>
+            <span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="bar"><span>Thu 22 → Fri 23 · 1 night</span><span class="btn">Confirm</span></div>` },
+      { id: '1D', name: 'Nearby tonight first', size: 'M',
+        what: 'In the window, the search screen leads with hotels near the guest that can take them now. The form moves below.',
+        pro: 'Fastest route for someone who is already in the city, such as a late arrival or a long drive.',
+        risk: 'Needs location access. Doesn’t help someone booking for another city.',
+        deps: ['location', 'eligibility'],
+        sk: `${SB}<div class="nv">Property search</div>
+          <div class="hl"><span class="tag">Tonight</span><div class="big" style="margin-top:4px">Rooms near you you can check in to now</div><div style="margin-top:2px">24 stays within 5 km · from AED 420</div><div class="btn" style="margin-top:6px">Show nearby stays</div></div>
+          <div class="sec">Or search somewhere else</div>
+          <div class="fld"><small>Destination</small><div class="ln w60"></div></div>
+          <div class="fld"><small>Dates</small><div class="ln w45"></div></div>
+          <div class="btn alt">Search stays</div>` },
+    ]
+  },
+  {
+    n: '2', title: 'Results', ref: 'Screen 2',
+    q: 'Once someone searches for tonight, how do eligible properties show up, and what happens to the rest?',
+    dirs: [
+      { id: '2A', name: 'Eligible only', size: 'S',
+        what: 'A tonight search returns only eligible properties, with a banner explaining why the list is shorter.',
+        pro: 'The simplest rule, and the closest match to the brief. Everything shown can be booked.',
+        risk: 'With few eligible hotels the list looks thin, and people may leave.',
+        deps: ['eligibility'],
+        sk: `${SB}<div class="nv">Dubai · Tonight, Thu 22</div>
+          <div class="row"><span class="chip">Sort</span><span class="chip">Filters</span><span class="chip">Map</span></div>
+          <div class="hl">38 stays can take you <b>tonight</b>. Others start from Fri 23.</div>
+          <div class="hc"><div class="img"></div><div><b>FIVE Palm Jumeirah</b><div class="ln w45"></div></div></div>
+          <div class="hc"><div class="img"></div><div><b>Sofitel The Palm</b><div class="ln w45"></div></div></div>
+          <div class="hc"><div class="img"></div><div><b>Rove Downtown</b><div class="ln w45"></div></div></div>` },
+      { id: '2B', name: 'Two shelves', size: 'M',
+        what: '“Ready for tonight” comes first. Below it, “From Fri 23” shows the rest with a one-tap date switch.',
+        pro: 'Keeps all inventory without mixing up which night each hotel is for.',
+        risk: 'A longer page, and two different dates shown in one list.',
+        deps: ['eligibility'],
+        sk: `${SB}<div class="nv">Dubai · Tonight, Thu 22</div>
+          <div class="sec hl" style="border-radius:6px;padding:3px 6px">Ready for tonight · 38</div>
+          <div class="hc"><div class="img"></div><div><b>FIVE Palm Jumeirah</b><div class="ln w45"></div></div></div>
+          <div class="hc"><div class="img"></div><div><b>Sofitel The Palm</b><div class="ln w45"></div></div></div>
+          <div class="sec">From Fri 23 (tomorrow) · 1,124</div>
+          <div class="hc dim"><div class="img"></div><div><b>Atlantis The Royal</b><div class="ln w45"></div></div></div>
+          <span class="lnk">Switch to Fri 23 → Sat 24</span>` },
+      { id: '2C', name: 'Badge and filter', size: 'S',
+        what: 'All results show. Eligible ones carry a “Tonight” tag, and a “Check-in tonight” filter is switched on by default and can be removed.',
+        pro: 'Uses the filter pattern people already know. Removing the filter shows everything.',
+        risk: 'With the filter off, people may tap a hotel that can’t take them tonight.',
+        deps: ['eligibility'],
+        sk: `${SB}<div class="nv">Dubai · Tonight, Thu 22</div>
+          <div class="row"><span class="chip hl">✓ Check-in tonight ✕</span><span class="chip">Sort</span><span class="chip">Filters</span></div>
+          <div class="hc"><div class="img"></div><div><b>FIVE Palm Jumeirah</b><span><span class="tag">Tonight</span></span></div></div>
+          <div class="hc"><div class="img"></div><div><b>Sofitel The Palm</b><span><span class="tag">Tonight</span></span></div></div>
+          <div class="hc"><div class="img"></div><div><b>Rove Downtown</b><span><span class="tag">Tonight</span></span></div></div>
+          <div class="ln w60"></div>` },
+      { id: '2D', name: 'Closest and staffed', size: 'M',
+        what: 'For tonight searches, the list is sorted by distance and each card shows travel time and whether reception is open 24 hours.',
+        pro: 'Answers the questions that matter at 1:30 AM.',
+        risk: 'Needs location access and data on reception hours. Price matters less here.',
+        deps: ['location', 'eligibility'],
+        sk: `${SB}<div class="nv">Near you · Tonight</div>
+          <div class="row"><span class="chip hl">Sort: Nearest</span><span class="chip">Filters</span></div>
+          <div class="hc"><div class="img"></div><div><b>Rove Downtown</b><span class="hl" style="border-radius:4px;padding:0 4px">12 min · 24h reception</span></div></div>
+          <div class="hc"><div class="img"></div><div><b>Sofitel The Palm</b><span class="hl" style="border-radius:4px;padding:0 4px">22 min · 24h reception</span></div></div>
+          <div class="hc"><div class="img"></div><div><b>FIVE Palm Jumeirah</b><span class="hl" style="border-radius:4px;padding:0 4px">25 min · 24h reception</span></div></div>` },
+    ]
+  },
+  {
+    n: '3', title: 'Hotel and rooms', ref: 'Screen 3',
+    q: 'On the hotel page, how does the guest know which night they’re paying for and when they can get in?',
+    dirs: [
+      { id: '3A', name: 'Stay timeline', size: 'S',
+        what: 'A strip above the rooms shows check-in now (01:30), check-out Fri 12:00, and about 10 hours in between.',
+        pro: 'Turns the wording problem into something people can see. Removes doubt about which night.',
+        risk: '“About 10 hours” may make people expect a lower price.',
+        deps: ['stay wording'],
+        sk: `${SB}<div class="img" style="height:60px"></div>
+          <div class="big">FIVE Palm Jumeirah Dubai</div>
+          <div class="hl"><div class="tl"><span>Now 01:30</span><i></i><span>Fri 12:00</span></div><div style="text-align:center;margin-top:3px">Your stay · about 10 hours · 1 night</div></div>
+          <div class="sec">Rooms</div>
+          <div class="hc"><div class="img"></div><div><b>Suite, King, Sea view</b><div class="ln w45"></div></div></div>
+          <div class="hc"><div class="img"></div><div><b>Suite, 2 Queen</b><div class="ln w45"></div></div></div>` },
+      { id: '3B', name: 'Eligible rates', size: 'M',
+        what: 'In each room, rates that allow check-in tonight are tagged. The others are greyed out and say “From Fri 23”.',
+        pro: 'Handles hotels where only some rates or rooms can be booked for tonight.',
+        risk: 'Needs eligibility data for each rate. Greyed-out rates add clutter.',
+        deps: ['eligibility'],
+        sk: `${SB}<div class="nv">Choose your room</div>
+          <div class="img" style="height:46px"></div>
+          <div class="sec">Suite, King, Sea view</div>
+          <div class="fld hl"><span><span class="tag">Check in tonight</span></span><b>Half board · AED 2,003</b><div class="btn" style="margin-top:3px">Select</div></div>
+          <div class="fld" style="opacity:.5"><small>From Fri 23 only</small><b>Room only · AED 2,008</b></div>
+          <div class="fld" style="opacity:.5"><small>From Fri 23 only</small><b>Breakfast · AED 2,240</b></div>` },
+      { id: '3C', name: '“Night of” wording', size: 'S',
+        what: 'Wherever dates appear, “22–23 Oct” becomes “Night of Thu 22 (tonight)”, with “Ready when you arrive” underneath.',
+        pro: 'Small change to copy only. Matches how people talk about it.',
+        risk: 'Every date chip and summary has to change consistently, all the way to the voucher.',
+        deps: ['stay wording'],
+        sk: `${SB}<div class="img" style="height:60px"></div>
+          <div class="big">FIVE Palm Jumeirah Dubai</div>
+          <div class="row"><span class="chip hl">Night of Thu 22 (tonight)</span><span class="chip">2 adults, 1 child</span></div>
+          <div style="color:var(--ok)">● Ready when you arrive · Check out Fri 12:00</div>
+          <div class="sec">Rooms</div>
+          <div class="hc"><div class="img"></div><div><b>Suite, King, Sea view</b><div class="ln w45"></div></div></div>
+          <div class="hc"><div class="img"></div><div><b>Suite, 2 Queen</b><div class="ln w45"></div></div></div>` },
+      { id: '3D', name: 'Room held for you', size: 'M',
+        what: 'A banner on the hotel page says the hotel has confirmed it can take a late arrival and will hold the room until 06:00.',
+        pro: 'Speaks to the biggest fear: turning up at 2 AM and finding no room.',
+        risk: 'Hotels have to commit to the hold. That’s operations work, not just design.',
+        deps: ['ops'],
+        sk: `${SB}<div class="img" style="height:60px"></div>
+          <div class="big">FIVE Palm Jumeirah Dubai</div>
+          <div class="hl"><b>Room held for you until 06:00</b><div>This hotel takes late arrivals. Reception is open 24 hours.</div></div>
+          <div class="sec">Rooms</div>
+          <div class="hc"><div class="img"></div><div><b>Suite, King, Sea view</b><div class="ln w45"></div></div></div>
+          <div class="hc"><div class="img"></div><div><b>Suite, 2 Queen</b><div class="ln w45"></div></div></div>` },
+    ]
+  },
+  {
+    n: '4–5', title: 'Guest details and payment', ref: 'Screens 4, 5',
+    q: 'What do we need to know, and what does the guest need to hear, before paying for a room they’ll be in within the hour?',
+    dirs: [
+      { id: '4A', name: 'Ask arrival time', size: 'S',
+        what: 'Guest details asks when they’ll arrive, using chips. We pass it to the hotel.',
+        pro: 'Gives the hotel something to act on. One tap.',
+        risk: 'Another field in the form. Only worth it if hotels actually use it.',
+        deps: ['ops'],
+        sk: `${SB}<div class="nv">Guest details</div>
+          <div class="fld"><small>Booking</small><b>FIVE Palm · Night of Thu 22</b></div>
+          <div class="fld"><small>Full name</small><div class="ln w60"></div></div>
+          <div class="hl"><b>When will you arrive?</b><div class="row" style="margin-top:4px"><span class="chip" style="background:var(--ink);color:var(--surface)">Within 1 hr</span><span class="chip">1–3 hrs</span><span class="chip">Later</span></div></div>
+          <div class="spacer"></div>
+          <div class="bar"><span>AED 2,003</span><span class="btn">Continue</span></div>` },
+      { id: '4B', name: 'Recap and guarantee', size: 'S',
+        what: 'The pay screen opens with a plain recap of tonight’s stay and a line saying we’ll rebook or refund if the hotel can’t take them.',
+        pro: 'Reassures the guest right before they pay. Builds on the relocation-history rule.',
+        risk: 'The guarantee has to be a real policy before we show it.',
+        deps: ['stay wording', 'ops'],
+        sk: `${SB}<div class="nv">Confirm and pay</div>
+          <div class="hl"><div class="big">Tonight, Thu 22 Oct</div><div class="tl" style="margin-top:4px"><span>In now</span><i></i><span>Out Fri 12:00</span></div></div>
+          <div style="color:var(--ok)">✓ If the hotel can’t take you, we’ll rebook or refund in full.</div>
+          <div class="fld"><small>Pay with</small><b>Apple Pay</b></div>
+          <div class="fld"><small>Voucher</small><div class="ln w30"></div></div>
+          <div class="spacer"></div>
+          <div class="bar"><span>AED 2,003</span><span class="btn"> Pay</span></div>` },
+      { id: '4C', name: 'Arrival pass', size: 'M',
+        what: 'After paying, the confirmation becomes a pass to show at reception, with the booking reference, directions and the hotel’s phone number.',
+        pro: 'The next step after paying is getting there. This puts it on one screen.',
+        risk: 'This is a new screen after the current funnel. Needs live travel times.',
+        deps: ['location'],
+        sk: `${SB}<div style="text-align:center;margin-top:8px" class="big">✓ Booked for tonight</div>
+          <div class="hl" style="text-align:center"><small>Show at reception</small><div class="big mono" style="font-size:15px;margin-block:2px">ALM-48213</div><div>FIVE Palm Jumeirah · Suite King</div></div>
+          <div class="row" style="justify-content:center"><span class="chip">Directions · 14 min</span><span class="chip">Call hotel</span></div>
+          <div class="ln w80" style="margin-inline:auto"></div><div class="ln w60" style="margin-inline:auto"></div>
+          <div class="spacer"></div><div class="btn alt">View booking</div>` },
+      { id: '4D', name: 'Book in one step', size: 'L',
+        what: 'For signed-in guests with saved details, choosing a rate opens a sheet with the recap and Apple Pay. Guest details is skipped.',
+        pro: 'Fewest taps for a tired guest. Uses data we already have.',
+        risk: 'Skips the review step, so mistakes are more likely. Larger change for engineering.',
+        deps: ['saved profile'],
+        sk: `${SB}<div class="nv">FIVE Palm Jumeirah</div>
+          <div class="scrim"></div>
+          <div class="sheet hl" style="border-radius:14px 14px 0 0">
+            <div class="big">Book tonight in one step</div>
+            <div>Suite King · Night of Thu 22</div>
+            <div class="fld"><small>Guest</small><b>Sara A. · 2 adults, 1 child</b></div>
+            <div class="bar"><span>AED 2,003</span><span class="btn"> Pay</span></div>
+          </div>` },
+    ]
+  },
+];
+
+// Instant check-in sketches share one base per screen; each idea only swaps the amber parts.
+const DAYS = '<span class="h">S</span><span class="h">M</span><span class="h">T</span><span class="h">W</span><span class="h">T</span><span class="h">F</span><span class="h">S</span>'
+  + [11,12,13,14,15,16,17,18,19,20,21].map(n => `<span class="x">${n}</span>`).join('');
+const srch = ({ ci = 'Thu 22 Oct', ciLabel = 'Check in', ciSub = '', ciHl = true, co = '', extra = '' } = {}) => `${SB}<div class="nv">Stays</div>
+  <div class="fld"><small>Destination</small><b>Dubai, UAE</b></div>
+  <div class="d2"><div class="fld${ciHl ? ' hl' : ''}"><small>${ciLabel}</small><b>${ci}</b>${ciSub ? `<small>${ciSub}</small>` : ''}</div><div class="fld"><small>Check out</small><b>Sun 25 Oct</b>${co ? `<small>${co}</small>` : ''}</div></div>
+  <div class="fld"><small>Guests</small><b>1 room, 2 adults</b></div>${extra}<div class="btn">Search</div>`;
+const cal = ({ mark = '', above = '', below = '', foot = '<span>Thu 22 → Sun 25 · 3 nights</span>' } = {}) => `${SB}<div class="nv">Select dates</div>${above}
+  <div class="sec">October 2026</div>
+  <div class="cal">${DAYS}<span class="cell hl">22${mark ? `<br>${mark}` : ''}</span><span class="in">23</span><span class="in">24</span>
+    <span class="e">25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span></div>${below}
+  <div class="spacer"></div><div class="bar">${foot}<span class="btn">Done</span></div>`;
+const plain = n => `<div class="hc"><div class="img"></div><div><b>${n}</b><div class="ln w45"></div></div></div>`;
+const res = card => `${SB}<div class="nv">Dubai · 22–25 Oct</div>
+  <div class="row"><span class="chip">Sort</span><span class="chip">Filters</span><span class="chip">Map</span></div>
+  ${card('FIVE Palm Jumeirah')}${card('Sofitel The Palm')}${plain('Rove Downtown')}`;
+const tagCard = label => n => `<div class="hc"><div class="img"></div><div><b>${n}</b><span><span class="tag">${label}</span></span></div></div>`;
+const LBL = '⚡ Instant check-in available';
+
+const XP = [
+  { id: 'A', name: 'Tonight labels', status: 'live', size: 'S',
+    what: 'Words only. The check-in field reads “Tonight, 22 Oct · Check in now”, the 22 in the calendar is labelled “Tonight”, and eligible hotels get a tag.',
+    pro: 'Smallest change. Says “tonight” wherever the date appears, so nobody wonders which night they booked.',
+    risk: '“Tonight” alone may read as a one-night offer. Nothing says a longer stay works too.',
+    deps: ['window', 'eligibility'],
+    s: [srch({ ci: 'Tonight, 22 Oct', ciSub: 'Check in now' }),
+        cal({ mark: '<span class="tag">Tonight</span>', below: '<div class="hlt" style="margin-top:4px">⚡ Instant check-in from 1:30 AM</div>' }),
+        res(tagCard(LBL))] },
+  { id: 'B', name: 'Explainer note', status: 'live', size: 'S',
+    what: 'A note explains it once: “Check in tonight, stay as long as you like.” On search it offers “Start my stay tonight” if a later date is picked; in the calendar it sits above the month. Cards get a one-line callout.',
+    pro: 'The only idea that says outright that longer stays count. Also rescues people who already picked Fri 23.',
+    risk: 'Notes get skipped. Two notes in a row (search, then calendar) may feel repetitive.',
+    deps: ['window', 'eligibility'],
+    s: [srch({ ci: 'Fri 23 Oct', ciHl: false, extra: '<div class="hl"><b>Check in tonight, stay as long as you like</b><div>Thu 22 is still bookable.</div><span class="lnk">Start my stay tonight</span></div>' }),
+        cal({ mark: '⚡', above: '<div class="hl"><b>Check in tonight, stay as long as you like</b></div>' }),
+        res(n => `<div class="hc"><div class="img"></div><div><b>${n}</b><div class="ln w45"></div><span class="hlt">${LBL}</span></div></div>`)] },
+  { id: 'C', name: 'Check in now', status: 'live', size: 'S',
+    what: 'Frames the date as an action. The field label becomes “Check in now”, the 22 says “Now”, and the calendar footer spells out both ends of the stay. Cards carry the label on the photo.',
+    pro: 'The footer answers “when do I get in, when do I leave” for any length of stay.',
+    risk: 'Relabelling a standard field may confuse people booking ahead after midnight. The photo label competes with other image badges.',
+    deps: ['window', 'eligibility', 'stay wording'],
+    s: [srch({ ciLabel: 'Check in now', ci: 'Thu 22 Oct' }),
+        cal({ mark: '<span class="tag">Now</span>', foot: '<span style="font-size:9px;line-height:1.35"><b>⚡ Check in now · 1:30 AM</b><br>Check out Sun 25 · by 12:00 (3 nights)</span>' }),
+        res(n => `<div class="hcv"><div class="img"><span class="tag">${LBL}</span></div><b>${n}</b><div class="ln w45"></div></div>`)] },
+  { id: 'D', name: 'Pointer tip', status: 'new', size: 'S',
+    what: 'A design-system Tooltip points at tonight the first time someone opens search or the calendar after midnight, then goes away.',
+    pro: 'Draws the eye to the exact spot that changed, and only once, so it doesn’t clutter later visits.',
+    risk: 'Easy to dismiss without reading. Needs a “seen it” flag per user.',
+    deps: ['window'],
+    s: [srch({ extra: '<div class="tip" style="--tip-x:22%">New: book tonight even after midnight, for as many nights as you need.</div>' }),
+        cal({ above: '<div class="tip down" style="--tip-x:62%;margin-top:2px">Tonight still counts. Check in now, stay as long as you like.</div>' }),
+        res(tagCard(LBL))] },
+  { id: 'E', name: 'Quick stay lengths', status: 'new', size: 'M',
+    what: 'Under the calendar, chips set the stay from tonight in one tap: 1 night, 2, 3, 1 week. The check-out field shows the night count.',
+    pro: 'Shows by example that “tonight” can be the start of a long stay. Saves a second tap on the calendar.',
+    risk: 'A new row in a crowded sheet. Chips must update if the person then taps a date.',
+    deps: ['window'],
+    s: [srch({ ci: 'Tonight, 22 Oct', co: '3 nights' }),
+        cal({ mark: '<span class="tag">Tonight</span>', below: '<div class="row" style="margin-top:6px"><span class="chip">1 night</span><span class="chip">2</span><span class="chip hl">3 nights</span><span class="chip">1 week</span></div>', foot: '<span>Check in now · 3 nights</span>' }),
+        res(n => `<div class="hc"><div class="img"></div><div><b>${n}</b><span><span class="tag">${LBL}</span></span><small>AED 2,003 for 3 nights</small></div></div>`)] },
+  { id: 'F', name: 'Stay strip', status: 'new', size: 'S',
+    what: 'A one-line timeline under the dates: in now at 1:30 AM, out Sun 25 at 12:00, 3 nights. The same strip closes the calendar.',
+    pro: 'Makes the start time visible, which is the real difference from a normal booking. Links to the 3A timeline on the hotel page.',
+    risk: 'Another line in the search card. The strip only makes sense after midnight.',
+    deps: ['window', 'stay wording'],
+    s: [srch({ ci: 'Tonight, 22 Oct', ciHl: false, extra: '<div class="hl"><div class="tl"><span>In 1:30 AM</span><i></i><span>Sun 12:00</span></div><div style="text-align:center;margin-top:2px">3 nights, starting now</div></div>' }),
+        cal({ mark: '<span class="tag">Tonight</span>', below: '<div class="hl" style="margin-top:6px"><div class="tl"><span>Now</span><i></i><span>Sun 12:00</span></div></div>' }),
+        res(n => `<div class="hc"><div class="img"></div><div><b>${n}</b><span><span class="tag">${LBL}</span></span><small>Ready from 1:30 AM</small></div></div>`)] },
+  { id: 'G', name: 'Check in now flow', status: 'team', size: 'M',
+    what: 'From the team’s exploration. A “Need to check in now?” banner on search jumps straight to tonight. The calendar asks when to check out: today at the hotel’s checkout time, or a later date. Then a matching banner runs through results, hotel, guest details and payment.',
+    pro: 'One idea carried across the whole funnel, so the promise made on search is repeated right up to paying. Shows local time, which settles “which night”.',
+    risk: 'Defaults to a same-morning checkout, so longer stays depend on “Stay longer”. Five banners is a lot. Results say “Check in now” where A–F say “Instant check-in available”.',
+    deps: ['window', 'eligibility', 'stay wording', 'ops'],
+    labels: ['Search', 'Dates', 'Results', 'Hotel', 'Guest details', 'Pay'],
+    s: [
+      `${SB}<div class="nv">Property search</div>
+        <div class="fld"><small>Destination</small><b>Dubai, UAE</b></div>
+        <div class="d2"><div class="fld"><small>Check in</small><b>Fri 23 Oct</b></div><div class="fld"><small>Check out</small><b>Sat 24 Oct</b></div></div>
+        <div class="hl"><div class="row" style="justify-content:space-between"><b>☾ Need to check in now?</b><span class="lnk">Check in now</span></div><div>It’s 1:30 AM in Dubai</div></div>
+        <div class="fld"><small>Guests</small><b>1 room, 2 adults</b></div><div class="btn">Search stays</div>`,
+      `${SB}<div class="nv">Select dates</div>
+        <div class="cal">${DAYS}<span class="cell hl">22<br><span class="tag">Now</span></span><span class="e">23</span><span>24</span>
+          <span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span></div>
+        <div class="hl"><b>When would you like to check out?</b>
+          <div style="margin-top:3px">◉ <b>Today, Fri 23</b> · hotel checkout time</div>
+          <div>○ Stay longer · pick a date above</div></div>
+        <div class="spacer"></div><div class="bar"><span style="font-size:9px">Check in now · out Fri 23, 12:00</span><span class="btn">Apply</span></div>`,
+      `${SB}<div class="nv">Dubai · Now – Fri 23</div>
+        <div class="row"><span class="chip">Sort</span><span class="chip">Price</span><span class="chip">Rating</span></div>
+        <div class="hl" style="text-align:center">Available for immediate check-in</div>
+        ${['FIVE Palm Jumeirah', 'Sofitel The Palm'].map(n => `<div class="hc"><div class="img"></div><div><b>${n}</b><span><span class="tag">⚡ Check in now</span></span><small>In: now · Out: Fri 23, 12:00</small></div></div>`).join('')}`,
+      `${SB}<div class="nv">FIVE Palm Jumeirah</div>
+        <div class="row"><span class="chip">Pay at property</span><span class="chip">Free cancellation</span></div>
+        <div class="hl"><b>☾ Check in now</b><div>Checkout Fri 23, 12:00 · hotel local time</div></div>
+        <div class="sec">Deluxe Room</div>
+        <div class="fld"><small>Room only</small><b>1 Double Bed</b><div class="ln w45"></div><b>AED 2,741</b></div>
+        <div class="fld"><small>Bed and breakfast</small><b>1 Double Bed</b><div class="ln w45"></div><b>AED 2,950</b></div>`,
+      `${SB}<div class="nv">Guest details</div>
+        <div class="fld"><small>Booking</small><b>FIVE Palm · Deluxe Room</b></div>
+        <div class="hl"><b>⚡ Your room is ready on arrival</b><div>Check in now · out Fri 23, 12:00</div></div>
+        <div class="fld"><small>First name</small><div class="ln w45"></div></div>
+        <div class="fld"><small>Last name</small><div class="ln w45"></div></div>
+        <div class="spacer"></div><div class="bar"><span>AED 2,741</span><span class="btn">Continue</span></div>`,
+      `${SB}<div class="nv">Confirm and pay</div>
+        <div class="hc"><div class="img"></div><div><b>FIVE Palm Jumeirah</b><small>Check-in: Now · Thu 22</small><small>Checkout: Fri 23, 12:00</small></div></div>
+        <div class="hl"><b>⚡ Immediate check-in assured</b><div>Hotel local time (Dubai)</div></div>
+        <div class="sec">Pay with</div>
+        <div class="row"><span class="chip hl">Apple Pay</span><span class="chip">Card</span><span class="chip">Tabby</span></div>
+        <div class="fld"><small>Voucher code</small><div class="ln w30"></div></div>
+        <div class="spacer"></div><div class="bar"><span>AED 2,741</span><span class="btn"> Pay</span></div>`,
+    ] },
+];
+document.getElementById('xp').innerHTML = XP.map(d => `
+  <article class="dir xdir" data-id="${d.id}">
+    <div class="dir-top"><span class="dir-id">${d.id}</span><span class="row"><span class="status ${d.status}">${{ live: 'In prototype', new: 'New idea', team: 'Team exploration' }[d.status]}</span><span class="size" title="Rough size of change">${d.size === 'S' ? 'Small' : 'Medium'}</span></span></div>
+    <h3>${d.name}</h3>
+    <div class="body${d.s.length > 3 ? ' wide' : ''}" style="--n:${d.s.length}">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p class="what">${d.what}</p>
+        <div class="notes">
+          <div><span class="k">Why</span><span>${d.pro}</span></div>
+          <div><span class="k">Watch</span><span>${d.risk}</span></div>
+          <div><span class="k">Needs</span><span class="deps">${d.deps.map(x => `<span class="dep">${x}</span>`).join('')}</span></div>
+        </div>
+      </div>
+      <div class="phs">${(d.labels || ['Search', 'Dates', 'Results']).map((c, i) => `<figure><figcaption>${c}</figcaption><div class="ph" aria-hidden="true">${d.s[i]}</div></figure>`).join('')}</div>
+    </div>
+    <label class="pick"><input type="checkbox" id="pick-${d.id}" value="${d.id}"> Shortlist ${d.id}</label>
+  </article>`).join('');
+
+const board = document.getElementById('board');
+board.style.cssText = 'display:flex;flex-direction:column;gap:56px';
+board.innerHTML = TP.map(t => `
+  <section class="tp" id="tp-${t.n.replace('–','-')}">
+    <div class="tp-head"><span class="tp-num">${t.n}</span><h2>${t.title} <span class="eyebrow" style="font-family:var(--f-mono);font-size:12px;font-weight:400;letter-spacing:.06em">${t.ref}</span></h2><p class="tp-q">${t.q}</p></div>
+    <div class="grid">${t.dirs.map(d => `
+      <article class="dir" data-id="${d.id}">
+        <div class="dir-top"><span class="dir-id">${d.id}</span><span class="size" title="Rough size of change">${d.size === 'S' ? 'Small' : d.size === 'M' ? 'Medium' : 'Large'}</span></div>
+        <h3>${d.name}</h3>
+        <div class="ph" aria-hidden="true">${d.sk}</div>
+        <p class="what">${d.what}</p>
+        <div class="notes">
+          <div><span class="k">Why</span><span>${d.pro}</span></div>
+          <div><span class="k">Watch</span><span>${d.risk}</span></div>
+          <div><span class="k">Needs</span><span class="deps">${d.deps.map(x => `<span class="dep">${x}</span>`).join('')}</span></div>
+        </div>
+        <label class="pick"><input type="checkbox" id="pick-${d.id}" value="${d.id}"> Shortlist ${d.id}</label>
+      </article>`).join('')}
+    </div>
+  </section>`).join('');
+
+const KEY = 'midnight-board-picks';
+const listEl = document.getElementById('list');
+let picks = [];
+try { picks = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { picks = []; }
+function names() {
+  const all = [...XP, ...TP.flatMap(t => t.dirs)];
+  return picks.map(id => `${id} ${all.find(d => d.id === id)?.name || ''}`.trim());
+}
+function render() {
+  document.querySelectorAll('.pick input').forEach(i => {
+    i.checked = picks.includes(i.value);
+    i.closest('.dir').classList.toggle('picked', i.checked);
+  });
+  listEl.textContent = picks.length ? picks.join(' · ') : 'Nothing ticked yet';
+  try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {}
+}
+document.addEventListener('change', e => {
+  if (!e.target.matches('.pick input')) return;
+  const id = e.target.value;
+  picks = e.target.checked ? [...picks, id] : picks.filter(p => p !== id);
+  const order = [...XP.map(d => d.id), ...TP.flatMap(t => t.dirs.map(d => d.id))];
+  picks.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  render();
+});
+document.getElementById('clear').addEventListener('click', () => { picks = []; render(); });
+document.getElementById('copy').addEventListener('click', e => {
+  const btn = e.currentTarget;
+  const text = picks.length ? 'Midnight booking shortlist: ' + names().join(', ') : 'Midnight booking shortlist: none yet';
+  const done = () => { btn.textContent = 'Copied'; setTimeout(() => btn.textContent = 'Copy shortlist', 1500); };
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => { listEl.textContent = text; window.getSelection().selectAllChildren(listEl); });
+  } else { listEl.textContent = text; window.getSelection().selectAllChildren(listEl); }
+});
+render();
+</script>

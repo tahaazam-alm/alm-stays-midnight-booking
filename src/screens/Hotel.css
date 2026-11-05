@@ -10,3 +10,10 @@
 .hotel__h .ds-icon { color: var(--icon-secondary-default); }
 .hotel__note { text-align: center; }
 .hotel__pills { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+.hotel__fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+/* Rooms note under the fields: a slimmer banner, 10px top and bottom */
+.hotel__now-banner .system-banner { padding-block: calc(var(--space-sm) + var(--space-2xs)); }
+/* Rooms note with a check-in time line: the title goes back to body bold, like the SystemBanner default */
+.hotel__now-banner .system-banner__title { font: var(--type-body-bold-weight) var(--type-body-size)/var(--type-body-lh) var(--type-body-semibold-family); }
+/* Tabs, dates/guests fields and the rooms note read as one group: 12px between them instead of the body's gap */
+.hotel__fields, .hotel__now-banner { margin-block-start: calc(var(--space-md) - var(--space-lg)); }

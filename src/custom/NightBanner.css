@@ -1,0 +1,129 @@
+.night-banner {
+  display: flex; align-items: flex-start; gap: var(--space-md);
+  padding: var(--space-md); border-radius: var(--rounded-lg);
+  background: var(--color-aqua-10); box-shadow: inset 0 0 0 1px var(--color-aqua-30);
+  color: var(--text-base-default);
+}
+.night-banner--filled { background: var(--color-aqua-200); box-shadow: none; color: var(--text-base-inverted-static); }
+.night-banner__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.night-banner__body { opacity: .9; }
+.night-banner__actions { display: flex; align-items: center; gap: var(--space-md); margin-block-start: var(--space-sm); }
+.night-banner__link { border: 0; padding: 0; background: none; cursor: pointer; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.night-banner--tinted .night-banner__link { color: var(--text-link-default); }
+
+.night-mark {
+  position: relative; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%;
+  background: var(--color-aqua-200); color: var(--icon-base-inverted-static);
+}
+.night-banner--filled .night-mark { background: color-mix(in srgb, var(--icon-base-inverted-static) 18%, transparent); }
+.night-mark__bolt {
+  position: absolute; inset-block-end: -3px; inset-inline-end: -3px; display: grid; place-items: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--background-base-default); color: var(--color-aqua-200);
+  box-shadow: 0 0 0 2px var(--color-aqua-10);
+}
+.night-banner--filled .night-mark__bolt { box-shadow: 0 0 0 2px var(--color-aqua-200); }
+
+/* Photo tag (results card, top-start corner): the tooltip's navy, hairline stroke and light-teal bolt */
+.night-tag {
+  display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  height: 24px; padding-inline: 8px; border-radius: var(--rounded-sm);
+  background: var(--color-almosafer); color: var(--text-base-inverted-static);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-white-static) 16%, var(--color-almosafer));
+}
+.night-tag .ds-icon { color: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%); }
+
+/* Tooltip: brand navy with a hairline light stroke that runs round the caret too (Agoda / MD Vinyl pattern) */
+.night-tip {
+  --night-tip-bg: var(--color-almosafer);
+  --night-tip-stroke: color-mix(in srgb, var(--color-white-static) 16%, var(--color-almosafer));
+  position: relative; display: flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-sm); border-radius: var(--rounded);
+  background: var(--night-tip-bg); border: 1px solid var(--night-tip-stroke); color: var(--text-base-inverted-static);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-white-static) 8%, transparent),
+    0 2px 4px color-mix(in srgb, var(--color-almosafer) 18%, transparent),
+    0 10px 24px -6px color-mix(in srgb, var(--color-almosafer) 40%, transparent);
+}
+.night-tip > .ds-icon {
+  /* Faint teal tint for the circle with a white filled moon */
+  flex-shrink: 0; box-sizing: content-box; padding: 6px; border-radius: 50%;
+  background: color-mix(in srgb, var(--color-aqua-100) 22%, transparent);
+  color: var(--icon-base-inverted-static);
+}
+/* No filled moon in the DS set: fill the line icon's crescent (the sparkle strokes have no area) */
+.night-tip > .ds-icon path { fill: currentColor; }
+.night-tip::after {
+  content: ''; position: absolute; inset-inline-start: var(--night-tip-caret, 24px); width: 11px; height: 11px;
+  background: var(--night-tip-bg); border: 1px solid var(--night-tip-stroke); border-radius: 2px 0 0 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+[dir='rtl'] .night-tip::after { transform: translateX(50%) rotate(45deg); }
+.night-tip--top::after { inset-block-start: -7px; border-inline-end-color: transparent; border-block-end-color: transparent; }
+.night-tip--bottom::after { inset-block-end: -7px; border-inline-start-color: transparent; border-block-start-color: transparent; border-radius: 0 0 2px 0; }
+.night-tip--none::after { display: none; }
+.night-tip__text { flex: 1; min-width: 0; }
+.night-tip__body { opacity: .75; }
+/* Text-link action, lifted toward white so it reads on navy */
+.night-tip__action {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; padding: 4px;
+  border: 0; background: none; cursor: pointer;
+  color: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%);
+}
+.night-tip__link {
+  flex-shrink: 0; border: 0; padding: 4px; background: none; cursor: pointer; color: inherit;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* On arrival a glowing point runs once around the stroke, then the background flashes as it lands */
+@property --night-tip-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.night-tip--pulse { animation: night-tip-flash 700ms cubic-bezier(.2, 0, .2, 1) 1500ms 1 both; }
+.night-tip__orbit {
+  position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  --night-tip-glow: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%);
+  animation: night-tip-glow 1300ms ease-in-out 300ms 1 both;
+}
+.night-tip__orbit > i {
+  position: absolute; inset: 0; border-radius: inherit; padding: 2px;
+  background: conic-gradient(from var(--night-tip-angle), transparent 0 72%,
+    color-mix(in srgb, var(--night-tip-glow) 70%, transparent) 86%, var(--night-tip-glow) 93%, var(--color-white-static) 97.5%, transparent 98%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: night-tip-orbit 1300ms cubic-bezier(.45, 0, .25, 1) 300ms 1 both;
+}
+@keyframes night-tip-orbit {
+  0% { --night-tip-angle: 0deg; opacity: 0; }
+  10%, 85% { opacity: 1; }
+  100% { --night-tip-angle: 360deg; opacity: 0; }
+}
+/* The point's glow breathes as it travels */
+@keyframes night-tip-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  25%, 75% { filter: drop-shadow(0 0 3px var(--night-tip-glow)) drop-shadow(0 0 10px var(--night-tip-glow)); }
+  50% { filter: drop-shadow(0 0 2px var(--night-tip-glow)) drop-shadow(0 0 4px var(--night-tip-glow)); }
+}
+@keyframes night-tip-flash {
+  0%, 100% { background-color: var(--color-almosafer); border-color: var(--night-tip-stroke); }
+  18% {
+    background-color: color-mix(in srgb, var(--color-aqua-200) 34%, var(--color-almosafer));
+    border-color: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%);
+  }
+}
+@media (prefers-reduced-motion: reduce) { .night-tip--pulse, .night-tip__orbit, .night-tip__orbit > i { animation: none; } .night-tip__orbit { display: none; } }
+/* B: the toggle sits on navy, so the off track is lifted toward white to stay visible */
+.night-tip__toggle { flex-shrink: 0; }
+/* B's banner reads as part of the date row: flat and tight */
+.night-tip--toggle { padding: var(--space-sm); box-shadow: none; }
+.stay-form__tip:has(.night-tip--toggle) { padding-block-start: 0; margin-block-start: calc(-1 * var(--space-sm)); }
+.night-tip__toggle:not(.toggle--checked) .toggle__track { background: color-mix(in srgb, var(--color-white-static) 28%, transparent); }
+/* B's toggle banner uses the caption scale so it sits quietly under the dates */
+.night-tip--toggle .t-body-semi { font: var(--type-caption-semibold-weight) var(--type-caption-size)/var(--type-caption-lh) var(--type-caption-semibold-family); }
+.night-tip--toggle .t-body { font: var(--type-caption-regular-weight) var(--type-caption-size)/var(--type-caption-lh) var(--type-caption-regular-family); }
+
+/* MoonBanner: SystemBanner neutral with the DS moon in place of the info icon (see MOON in NightBanner.jsx) */
+.moon-banner .system-banner__icon-slot {
+  background: currentColor;
+  -webkit-mask: var(--moon-banner-icon) center / contain no-repeat; mask: var(--moon-banner-icon) center / contain no-repeat;
+}
+.moon-banner .system-banner__icon-slot > svg { visibility: hidden; }
+.moon-banner .system-banner { align-items: center; padding-inline: var(--space-md); gap: var(--space-sm); }
+.moon-banner .system-banner__title { font: var(--type-caption-semibold-weight) var(--type-caption-size)/var(--type-caption-lh) var(--type-caption-semibold-family); }

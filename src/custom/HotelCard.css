@@ -25,3 +25,4 @@
 .recent-card__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: var(--space-sm) var(--space-md); }
 .recent-card__name, .recent-card__meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .recent-card__when { margin-block-start: auto; }
+.hotel-card__overlay { position: absolute; inset-block-start: var(--space-sm); inset-inline-start: var(--space-sm); display: flex; }

@@ -14,14 +14,16 @@ export const RECENT_DESTINATIONS = [
 export const POPULAR_CITIES = [
   { name: 'Dubai', region: 'United Arab Emirates' },
   { name: 'Riyadh', region: 'Saudi Arabia' },
+  { name: 'London', region: 'United Kingdom', tzBehind: 2 },
   { name: 'Jeddah', region: 'Saudi Arabia' },
   { name: 'Makkah', region: 'Saudi Arabia' },
   { name: 'Abu Dhabi', region: 'United Arab Emirates' },
 ]
 
+// `instant`: eligible for instant (same-night) check-in — only high-quality properties, per the brief.
 export const HOTELS = [
   {
-    id: 'five', name: 'FIVE Palm Jumeirah Dubai', image: five, stars: 5, type: '5-star Resort',
+    id: 'five', instant: true, name: 'FIVE Palm Jumeirah Dubai', image: five, stars: 5, type: '5-star Resort',
     address: 'No. 1 The Palm, Dubai, United Arab Emirates', area: 'Palm Jumeirah',
     score: 8.0, scoreLabel: 'Very good', reviews: 1003, price: 2008, was: 2788,
     blurb: 'The hotel offers a vibrant atmosphere with excellent amenities.',
@@ -30,17 +32,17 @@ export const HOTELS = [
     landmarks: [['Iconic Landmark', 'Palm Jumeirah', '1.3 km'], ['Shopping', 'Nakheel Mall', '1.4 km'], ['Transport', 'Al Khail Metro', '2.0 km']],
   },
   {
-    id: 'sofitel', name: 'Sofitel Dubai The Palm Resort & Spa', image: sofitel, stars: 5, type: '5-star Resort',
+    id: 'sofitel', instant: true, name: 'Sofitel Dubai The Palm Resort & Spa', image: sofitel, stars: 5, type: '5-star Resort',
     address: 'East Crescent Road, Dubai, United Arab Emirates, 55558', area: 'Palm Jumeirah',
     score: 8.6, scoreLabel: 'Excellent', reviews: 2214, price: 1564,
   },
   {
-    id: 'anantara', name: 'Anantara The Palm Dubai Resort', image: five, stars: 5, type: '5-star Resort',
+    id: 'anantara', instant: true, name: 'Anantara The Palm Dubai Resort', image: five, stars: 5, type: '5-star Resort',
     address: 'East Crescent, Palm Jumeirah, Dubai, United Arab Emirates', area: 'Palm Jumeirah',
     score: 8.8, scoreLabel: 'Excellent', reviews: 1876, price: 1395, was: 1640,
   },
   {
-    id: 'rove', name: 'Rove Downtown', image: sofitel, stars: 3, type: '3-star Hotel',
+    id: 'rove', instant: false, name: 'Rove Downtown', image: sofitel, stars: 3, type: '3-star Hotel',
     address: '312 Al Sa\'ada Street, Downtown Dubai, United Arab Emirates', area: 'Downtown',
     score: 8.4, scoreLabel: 'Very good', reviews: 5120, price: 489,
   },

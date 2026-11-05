@@ -7,7 +7,14 @@
 }
 .stay-form__sep { width: auto; margin-inline: 57px 0; }
 .stay-form__dates { display: flex; align-items: center; }
-.stay-form__dates > .widget-field { flex: 1; min-width: 0; }
 .stay-form__arrow { display: flex; color: var(--icon-base-subtle); flex-shrink: 0; }
 .stay-form__foot { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-sm) var(--space) var(--space-lg); }
 .stay-form__foot .legacy-btn { width: 100%; }
+.stay-form__tip { padding: var(--space-xs) var(--space) var(--space-md); }
+.stay-form__tip .night-tip { --night-tip-caret: 25%; }
+/* B · row in widget: the check-in tonight toggle as a widget cell under the dates, no divider above; the tint (NowToggleRow.css) sits on the row while off and spreads over the dates once on */
+.stay-form__now { min-height: 68px; padding: var(--space-xs) var(--space); }
+.stay-form__night.is-on .widget-field { background: transparent; }
+.stay-form--now-on .stay-form__dates > .widget-field:first-child .widget-field__value {
+  font-family: var(--type-body-bold-family); font-weight: var(--type-body-bold-weight);
+}

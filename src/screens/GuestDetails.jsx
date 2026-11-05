@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Navbar, Chip, TextInput, ListItem, Cell, LegacyBottomActionBar } from 'design-system'
 import { useNav } from '../shell/navigation.jsx'
+import { useProto } from '../shell/PrototypeShell.jsx'
 import { Icon } from '../shell/Icon.jsx'
 import { useStay } from '../state.jsx'
 import { useCopy } from '../copy.js'
@@ -15,7 +16,8 @@ import './Funnel.css'
 export default function GuestDetails() {
   const nav = useNav()
   const t = useCopy()
-  const { search, booking } = useStay()
+  const { controls } = useProto()
+  const { search, booking, nowOn } = useStay()
   const [f, setF] = useState({ title: 'Mr', first: 'Taha', last: 'Azam', email: 'taha.azam@almosafer.com', code: '+971', phone: '50 334 2582', other: false })
   const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
   const total = (booking.rate?.price ?? booking.hotel.price) * 0.99727
@@ -24,7 +26,7 @@ export default function GuestDetails() {
     <div className="screen funnel">
       <div className="screen__nav"><Navbar toolbar={{ title: t('guestDetails'), onBack: () => nav.back() }} /></div>
       <div className="screen__body funnel__body">
-        <BookingSummary hotel={booking.hotel} search={search} />
+        <BookingSummary hotel={booking.hotel} search={search} now={nowOn && controls.paySummary} />
         <section className="funnel__section">
           <h2 className="t-title t-reset">{t('contactDetails')}</h2>
           <div className="funnel__card">

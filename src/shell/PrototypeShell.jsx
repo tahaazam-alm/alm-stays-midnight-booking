@@ -1,5 +1,6 @@
 // Prototype chrome: control bar + device frame + DesignSystemProvider.
 // Not part of the product UI — devs can ignore everything under src/shell/.
+import { BottomSheet, SegmentedControl, Button } from 'design-system'
 import { createContext, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { DesignSystemProvider } from 'design-system'
 
@@ -66,7 +67,7 @@ function Toggle({ label, options, value, onChange }) {
 export function PrototypeShell({ config, children }) {
   const [platform, setPlatform] = useState(config.platform)
   const [lang, setLang] = useState(config.lang)
-  const [theme, setTheme] = useState(config.theme || 'light')
+  const [theme, setTheme] = useState(config.hideBasics ? 'light' : config.theme || 'light')
   const [controls, setControls] = useState(() => initialControls(config))
   const [restartKey, setRestartKey] = useState(0)
 
@@ -82,13 +83,11 @@ export function PrototypeShell({ config, children }) {
   const scale = useFitScale(stageRef, size)
 
   const restart = () => setRestartKey((k) => k + 1)
-  const setControl = (id, v) => {
-    setControls((c) => ({ ...c, [id]: v }))
-    restart()
-  }
+  // Scenario controls update in place, so the current screen stays put; Restart is separate
+  const setControl = (id, v) => setControls((c) => ({ ...c, [id]: v }))
 
   const value = useMemo(
-    () => ({ platform, lang, dir, theme, controls, setControl, config, restart, restartKey }),
+    () => ({ platform, lang, dir, theme, controls, setControl, config, restart, restartKey, setLang }),
     [platform, lang, dir, theme, controls, config, restartKey],
   )
 
@@ -104,12 +103,6 @@ export function PrototypeShell({ config, children }) {
       <div className={`proto proto--${frame}`}>
         <header className="proto-bar">
           <strong className="proto-bar__name">{config.name}</strong>
-          <Toggle label="Platform" options={platformOpts} value={platform} onChange={(v) => { setPlatform(v); restart() }} />
-          <Toggle label="Language" options={langOpts} value={lang} onChange={setLang} />
-          <Toggle label="Theme" options={THEME_OPTS} value={theme} onChange={setTheme} />
-          {(config.controls || []).map((c) => (
-            <Toggle key={c.id} label={c.label} options={c.options} value={controls[c.id]} onChange={(v) => setControl(c.id, v)} />
-          ))}
           <button type="button" className="proto-bar__restart" onClick={restart}>Restart</button>
         </header>
 
@@ -134,5 +127,38 @@ export function PrototypeShell({ config, children }) {
         </main>
       </div>
     </ProtoContext.Provider>
+  )
+}
+
+// Prototype settings, opened from the gear next to the search title. A sheet inside the phone, like a test build's
+// debug menu: one segmented control per scenario option, the language, and Restart.
+const LANG_ITEMS = [['en', 'English'], ['ar', 'العربية']]
+export function ProtoSettings({ open, onClose }) {
+  const { config, controls, setControl, lang, setLang, restart, platform, dir } = useProto()
+  const [langNote, setLangNote] = useState(false)
+  const list = (config.controls || []).filter((c) => !c.when || Object.entries(c.when).every(([k, v]) => [].concat(v).includes(controls[k])))
+  const pickLang = (i) => {
+    const [code] = LANG_ITEMS[i]
+    if (!config.langs[code]) return setLangNote(true) // not translated yet: stay put and say so
+    setLangNote(false); setLang(code)
+  }
+  return (
+    <BottomSheet open={open} size="medium" platform={platform} dir={dir} title="Prototype settings" onClose={onClose} className="proto-sheet">
+      <div className="proto-sheet__body">
+        {list.map((c) => (
+          <section key={c.id} className="proto-sheet__group">
+            <h3 className="t-caption-semi t-subtext t-reset">{c.label}</h3>
+            <SegmentedControl items={c.options.map((o) => o.label)} value={Math.max(0, c.options.findIndex((o) => o.value === controls[c.id]))}
+              onChange={(i) => setControl(c.id, c.options[i].value)} />
+          </section>
+        ))}
+        <section className="proto-sheet__group">
+          <h3 className="t-caption-semi t-subtext t-reset">Language</h3>
+          <SegmentedControl items={LANG_ITEMS.map(([, l]) => l)} value={LANG_ITEMS.findIndex(([c]) => c === lang)} onChange={pickLang} />
+          {langNote && <p className="t-caption t-subtext t-reset">Arabic isn’t translated yet, so the prototype stays in English.</p>}
+        </section>
+        <Button variant="secondary" label="Restart prototype" onClick={() => { onClose(); restart() }} />
+      </div>
+    </BottomSheet>
   )
 }

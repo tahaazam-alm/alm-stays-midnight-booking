@@ -6,9 +6,10 @@ import { Icon } from '../shell/Icon.jsx'
 import { useStay } from '../state.jsx'
 import { useCopy } from '../copy.js'
 import { HOTELS, ROOMS } from '../data.js'
-import { addDays, fmtRange, guestCount, money, nights } from '../logic.js'
-import { ReviewPanel, ReviewSnippets, MapLandmarks, DateStrip } from '../custom/HotelOverview.jsx'
+import { fmtRange, fmtShort, guestCount, nights, WD } from '../logic.js'
+import { ReviewPanel, ReviewSnippets, MapLandmarks, StayField } from '../custom/HotelOverview.jsx'
 import { RoomCard } from '../custom/RoomCard.jsx'
+import { NightTip, MoonBanner } from '../custom/NightBanner.jsx'
 import * as I from '../icons.js'
 import '../custom/type.css'
 import './Hotel.css'
@@ -16,17 +17,14 @@ import './Hotel.css'
 export default function Hotel() {
   const nav = useNav()
   const t = useCopy()
-  const { search, booking, setBooking } = useStay()
+  const { search, booking, setBooking, nowOn } = useStay()
+  const under = nowOn // settled: banner under the fields
   const [tab, setTab] = useState(0)
   const [toast, setToast] = useState('')
   const soon = () => setToast(t('notBuilt'))
   // Hotels without their own detail content borrow FIVE's (base prototype)
   const hotel = { ...HOTELS[0], ...booking.hotel }
   const n = nights(search.checkIn, search.checkOut)
-  const strip = [
-    { label: money(hotel.price), sub: fmtRange(search.checkIn, search.checkOut), selected: true },
-    ...[1, 2].map((k) => ({ sub: fmtRange(addDays(search.checkIn, k), addDays(search.checkOut, k)) })),
-  ]
 
   return (
     <div className="screen hotel">
@@ -54,15 +52,11 @@ export default function Hotel() {
         <SegmentedControl items={[t('availableRooms'), t('propertyDetails')]} value={tab} onChange={setTab} />
         {tab === 0 ? (
           <>
-            <div className="hotel__pills">
-              <Chip icon={<Icon svg={I.calendar} />} label={fmtRange(search.checkIn, search.checkOut)} onClick={() => nav.popTo('search')} />
-              <Chip icon={<Icon svg={I.usersTwo} />} label={`${guestCount(search.rooms)} Guests`} onClick={() => nav.popTo('search')} />
+            <div className="hotel__fields">
+              <StayField icon={I.calendar} label={!under && nowOn ? t('nowWindowRange', fmtShort(search.checkOut)) : fmtRange(search.checkIn, search.checkOut)} onClick={() => nav.popTo('search')} />
+              <StayField icon={I.usersTwo} label={`${guestCount(search.rooms)} Guests`} onClick={() => nav.popTo('search')} />
             </div>
-            <section className="hotel__section">
-              <h2 className="t-subtitle t-reset hotel__h"><Icon svg={I.calendar} size={20} />{t('otherDates')}</h2>
-              <DateStrip options={strip} onPick={soon} />
-              <p className="t-caption t-subtext t-reset hotel__note">{t('otherDatesNote')}</p>
-            </section>
+            {under && <MoonBanner className="hotel__now-banner" text={t('nowRoomsTitle')} description={t('nowRoomsBody')} />}
             <div className="hotel__pills">
               <Chip label="Breakfast included" onClick={soon} />
               <Chip label="Bedding Preference" onClick={soon} />

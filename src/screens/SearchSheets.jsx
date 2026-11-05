@@ -1,11 +1,13 @@
 // 1.1 destination · 1.2 dates · 1.3 guests — the pickers opened from the search card.
 import { useEffect, useState } from 'react'
-import { BottomSheet, Search, Cell, Button, MultiSelection, Chip, Dialog } from 'design-system'
+import { BottomSheet, Search, Cell, Button, MultiSelection, Chip, Dialog, WidgetField } from 'design-system'
 import { Icon } from '../shell/Icon.jsx'
-import { useStay } from '../state.jsx'
+import { useStay, checkInNowDates } from '../state.jsx'
 import { useCopy } from '../copy.js'
 import { RECENT_DESTINATIONS, POPULAR_CITIES } from '../data.js'
-import { earliestCheckIn, rangeSummary } from '../logic.js'
+import { earliestCheckIn, rangeSummary, isPastMidnight, timeLabel, destCity, sameDay, WD, MON } from '../logic.js'
+import { NightTip } from '../custom/NightBanner.jsx'
+import { NowToggleRow } from '../custom/NowToggleRow.jsx'
 import { RangeCalendar } from '../custom/RangeCalendar.jsx'
 import * as I from '../icons.js'
 
@@ -33,18 +35,83 @@ export function DestinationSheet({ open, onClose, onPick }) {
 }
 
 // 1.2
-export function DatesSheet({ open, onClose, onConfirm }) {
+const fmtDay = (d) => `${WD[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`
+
+export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
   const t = useCopy()
-  const { now, search } = useStay()
+  const { now, search, variant, awayTime } = useStay()
   const [range, setRange] = useState({ start: search.checkIn, end: search.checkOut })
-  useEffect(() => { if (open) setRange({ start: search.checkIn, end: search.checkOut }) }, [open, search.checkIn, search.checkOut])
+  // The sheet keeps its own opt-in until Confirm, so closing it changes nothing
+  const [nowOn, setNowOn] = useState(search.checkInNow)
+  useEffect(() => { if (open) { setRange({ start: search.checkIn, end: search.checkOut }); setNowOn(search.checkInNow) } }, [open, search.checkIn, search.checkOut, search.checkInNow])
+  const optIn = (on) => {
+    const d = checkInNowDates(now, { checkIn: range.start, checkOut: range.end }, on)
+    setNowOn(on); setRange({ start: d.checkIn, end: d.checkOut })
+  }
+  const offerNow = variant !== 'base' && isPastMidnight(now) && !nowOn && range.start && sameDay(range.start, now)
   const sum = range.end && rangeSummary(range.start, range.end)
+  // Opted in: the stay is booked from tonight, but the calendar shows it from today's date (it's already Fri 23), so only today lights up
+  const today = earliestCheckIn(now)
+  const nowView = variant !== 'base' && nowOn
+  const city = destCity(search.dest)
+  // A: an offer tooltip with a Check in now action, swapped for a Remove tip in the footer once on.
+  // B: the same tooltip with a toggle; it stays on today's cell in both states.
+  // B · row in widget: no tooltip; the toggle row sits in the footer, which takes the widget's night tint once on.
+  const navyRow = false // settled on the row in the widget
+  const nowRow = variant === 'b' && (offerNow || nowView)
+  const tip = nowRow ? null : variant === 'b'
+    ? (offerNow || nowView) && { date: today, node: (
+      <NightTip arrow="none" title={t('wantNowTitle')} body={t('nowWindowNote')}
+        toggle={{ checked: nowOn, onChange: optIn }} />
+    ) }
+    : offerNow && { date: range.start, node: <NightTip arrow="none" title={t('needNowTitle')} body={t('tipNowBody', timeLabel(now), city)} actionLabel={t('needNowAction')} onAction={() => optIn(true)} /> }
   return (
     <BottomSheet open={open} size="fullscreen" title={t('selectDates')} onClose={onClose}>
-      <RangeCalendar start={range.start} end={range.end} minDate={earliestCheckIn(now)} onChange={(start, end) => setRange({ start, end })} />
-      <div className="dates-sheet__foot">
-        <span className="t-body">{sum ? <><b>{sum.dates}</b> {sum.nights}</> : 'Select a check-out date'}</span>
-        <Button variant="primary" label={t('confirm')} disabled={!range.end} onClick={() => onConfirm(range.start, range.end)} />
+      <RangeCalendar start={range.start} end={range.end} minDate={nowView ? today : earliestCheckIn(now, nowOn)}
+        shownStart={nowView ? today : undefined} lockStart={nowView} tone={nowView ? 'night' : undefined}
+        tip={tip} onChange={(start, end) => setRange({ start, end })} />
+      <div className={`dates-sheet__foot night-tint ${nowRow && nowOn && !navyRow ? 'is-on' : ''}`}>
+        {nowRow && (navyRow
+          ? <NowToggleRow navy className="dates-sheet__now-row" title={t(nowOn ? 'tonightOnShort' : 'tonightShort')} subtext={t('tonightWindow')} note={awayTime && t('tipNowBody', timeLabel(awayTime), city)} onInfo={onHowItWorks} infoLabel={t('howItWorks')} checked={nowOn} onChange={optIn} />
+          : <NowToggleRow className="dates-sheet__now-row" title={t('tonightTitle')} note={awayTime && t('tipNowBody', timeLabel(awayTime), city)} linkLabel={t('howItWorks')} onLink={onHowItWorks} checked={nowOn} onChange={optIn} />)}
+        {variant === 'a' && nowOn && (
+          <NightTip arrow="none" className="dates-sheet__now" title={t('tipOnTitle')} body={t('tipOnBody')} linkLabel={t('removeNow')} onLink={() => optIn(false)} />
+        )}
+        {true /* settled: date fields */ ? (
+          // Date fields: check-in and check-out as two bordered cells; the one being picked next is outlined in aqua
+          <div className="dates-sheet__fields">
+            <div className={`dates-sheet__field ${!range.start || range.end ? 'is-active' : ''}`}>
+              <WidgetField variant="populated" label={t('checkIn')} value={fmtDay(nowView ? today : range.start)} />
+            </div>
+            <div className={`dates-sheet__field ${range.start && !range.end ? 'is-active' : ''}`}>
+              {range.end
+                ? <WidgetField variant="populated" label={t('checkOut')} value={fmtDay(range.end)} />
+                : <WidgetField variant="empty" label={t('checkOut')} />}
+            </div>
+          </div>
+        ) : nowView && range.end ? (
+          // Opted in: one line, starting now and ending at check-out time
+          <span className="t-body"><b>{t('nowStart')} – {fmtDay(range.end)} • {t('checkOutTime')}</b> {t('stayDays', Math.round((range.end - range.start) / 864e5))}</span>
+        ) : (
+          <span className="t-body">{sum ? <><b>{sum.dates}</b> {sum.nights}</> : 'Select a check-out date'}</span>
+        )}
+        <Button variant="primary" label={t('confirm')} disabled={!range.end} onClick={() => onConfirm(range.start, range.end, nowView)} />
+      </div>
+    </BottomSheet>
+  )
+}
+
+// 1.2a How it works? — opened from the check-in tonight row (widget and calendar footer)
+export function HowItWorksSheet({ open, onClose }) {
+  const t = useCopy()
+  const rows = [[I.clock, 'howWindow'], [I.lightning, 'howInstant'], [I.door, 'howCheckout']]
+  return (
+    <BottomSheet className="how-sheet-wrap" open={open} size="medium" title={t('howTitle')} onClose={onClose}>
+      <div className="how-sheet">
+        {rows.map(([icon, k], i) => (
+          <Cell key={k} visual="icon" icon={<Icon svg={icon} />} label={t(`${k}Title`)} subtext={t(`${k}Body`)} trailing="none" showSeparator={i < rows.length - 1} />
+        ))}
+        <Button variant="primary" label={t('gotIt')} onClick={onClose} />
       </div>
     </BottomSheet>
   )

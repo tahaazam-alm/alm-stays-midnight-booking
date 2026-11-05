@@ -81,10 +81,12 @@ body {
   box-shadow: 0 0 0 1px #d8dcde, 0 16px 40px rgba(0,0,0,.12);
 }
 
-.proto-viewport { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.proto-viewport { position: relative; width: 100%; height: 100%; overflow: hidden; transform: translateZ(0); }
+/* Sheets pin to the viewport, not the scrolling screen, so they stay on the bottom edge when the page is scrolled */
+.proto-screen .bottom-sheet { position: fixed; }
 
 /* On an actual phone: no frame, no bar — the prototype fills the screen */
-@media (max-width: 500px) {
+@media (max-width: 500px), (pointer: coarse) and (max-height: 500px) {
   .proto--phone .proto-bar, .proto--browser .proto-bar { display: none; }
   .proto--phone .proto-stage, .proto--browser .proto-stage { padding: 0; }
   .proto--phone .proto-fit, .proto--browser .proto-fit { width: 100% !important; height: 100% !important; }
@@ -92,6 +94,11 @@ body {
     width: 100% !important; height: 100% !important; transform: none !important;
     border-radius: 0; box-shadow: none;
   }
+  /* The phone shows its own status bar, so the drawn one goes; only the notch/safe-area space is kept */
+  .proto-device .navbar__status { block-size: max(env(safe-area-inset-top, 0px), var(--space-xs)) !important; min-block-size: 0 !important; padding: 0 !important; overflow: hidden; visibility: hidden; }
+  .proto-device { --bottom-sheet-top-inset: env(safe-area-inset-top, 0px); box-sizing: border-box; padding-block-end: env(safe-area-inset-bottom, 0px); }
+  html, body { overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+  body { -webkit-tap-highlight-color: transparent; }
 }
 
 /* ── Screens + transitions ───────────────────────────────── */
@@ -113,3 +120,24 @@ body {
 .screen__nav { position: sticky; top: 0; z-index: 5; } /* wrap Navbar to keep it pinned while scrolling */
 .ds-icon { display: inline-flex; flex-shrink: 0; }
 .ds-icon > svg { width: 100%; height: 100%; }
+
+/* Settings gear (first screen only) and its panel of scenario toggles */
+.proto-bar { position: relative; }
+.proto-bar__gear {
+  display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border-radius: 999px;
+  border: 1px solid var(--proto-line); background: var(--proto-chip); color: var(--proto-muted); cursor: pointer;
+}
+.proto-bar__gear:hover { border-color: var(--proto-line-hover); color: var(--proto-text); }
+.proto-bar__gear.is-open { border-color: var(--proto-sel-line); background: var(--proto-sel-bg); color: var(--proto-sel-text); }
+.proto-settings {
+  position: absolute; inset-block-start: calc(100% + 8px); inset-inline-start: 50%; transform: translateX(-50%); z-index: 10;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 16px;
+  border-radius: 14px; border: 1px solid var(--proto-line); background: var(--proto-chip);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .08);
+}
+/* Prototype settings sheet (inside the phone) */
+.proto-sheet { --bottom-sheet-min-height: 0; }
+.proto-sheet__body { display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-sm) var(--space-container) var(--space-lg); }
+.proto-sheet__group { display: flex; flex-direction: column; gap: var(--space-sm); }
+.proto-sheet__body .btn { width: 100%; }
+.bottom-sheet.proto-sheet.bottom-sheet--medium .bottom-sheet__panel { background: var(--background-base-default); }

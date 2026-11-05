@@ -1,0 +1,4 @@
+/* CUSTOM: not in the design system — BottomSheet caps its frame (and the scrim inside it) at 390px,
+   but the iPhone frame here is 402pt wide, so the page showed through undimmed down both sides.
+   Let the frame fill the screen so the scrim and fullscreen panel span edge to edge. */
+.bottom-sheet { --bottom-sheet-width: 100%; }

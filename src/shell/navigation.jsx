@@ -27,6 +27,7 @@ export function Navigator({ screens, initial, initialParams }) {
   }, [])
 
   const top = stack[stack.length - 1]
+  // Tell the shell when we're on the first screen, so the settings gear shows only there
   const Screen = screens[top.name]
   if (!Screen) throw new Error(`No screen registered as "${top.name}" in App.jsx`)
 

@@ -1,10 +1,10 @@
 .stay-search { background: var(--background-base-default); }
 .stay-search__body { display: flex; flex-direction: column; gap: var(--space-xl); padding: var(--space-md) var(--space-container) var(--space-xl); }
 .stay-search__nearby { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm); border: 0; background: none; cursor: pointer; }
-.stay-search__recents { display: flex; gap: var(--space-sm); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--space-container)); padding-inline: var(--space-container); }
+.stay-search__recents { display: flex; gap: var(--space-sm); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--space-container)); padding-inline: var(--space-container); scroll-padding-inline: var(--space-container); }
 .stay-search__recents::-webkit-scrollbar { display: none; }
 .sheet-pad { padding: 0 var(--space-container); }
-.sheet-list > .cell { padding-inline: var(--space-container); }
+.sheet-list > .cell { padding-inline: var(--space-container); scroll-padding-inline: var(--space-container); }
 .sheet-eyebrow { display: flex; justify-content: space-between; align-items: baseline; padding: var(--space-lg) var(--space-container) var(--space-xs); }
 .dates-sheet__foot {
   position: sticky; bottom: 0; display: flex; flex-direction: column; align-items: center; gap: var(--space-sm);
@@ -17,3 +17,24 @@
 .guests-sheet__ages { display: flex; flex-wrap: wrap; gap: var(--space-sm); padding-inline: var(--space); margin-block-start: calc(-1 * var(--space-sm)); }
 .guests-sheet__add { align-self: center; }
 .guests-sheet__foot { margin-block-start: auto; position: sticky; bottom: 0; padding-block: var(--space-md); background: var(--background-base-default); }
+.dates-sheet__note { padding: var(--space-md) var(--space-container) 0; }
+.dates-sheet__stay { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.dates-sheet__stay span, .dates-sheet__instant { display: inline-flex; align-items: center; gap: var(--space-xs); }
+.dates-sheet__stay .ds-icon, .dates-sheet__instant .ds-icon { color: var(--icon-secondary-default); }
+.dates-sheet__instant { color: var(--text-link-default); }
+.stay-search__note .system-banner { margin-block-end: var(--space-xs); }
+.dates-sheet__now, .dates-sheet__now-row { align-self: stretch; }
+.dates-sheet__now-row { padding-block-end: var(--space-sm); }
+/* edge to edge: bleed past the foot gutter, pad back so the content stays where it was */
+.dates-sheet__now-row.now-row--navy { margin-inline: calc(-1 * var(--space-container)); padding: var(--space-sm) calc(var(--space-container) + var(--space-sm)); border-radius: 0; }
+.how-sheet { display: flex; flex-direction: column; gap: var(--space-sm); padding: 0 var(--space-container) var(--space-lg); }
+.how-sheet .cell { padding-inline: 0; }
+.how-sheet .btn { width: 100%; margin-block-start: var(--space-sm); }
+/* The iOS glass panel lets the page show through and the explainer copy gets hard to read, so this sheet sits on a solid surface */
+.bottom-sheet.how-sheet-wrap.bottom-sheet--medium .bottom-sheet__panel { background: var(--background-base-default); }
+/* Calendar footer · date fields: two bordered cells side by side, the one being picked next outlined in aqua */
+.dates-sheet__fields { align-self: stretch; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+.dates-sheet__field { border-radius: var(--rounded); box-shadow: inset 0 0 0 1px var(--border-base-default); background: var(--background-base-default); overflow: hidden; }
+.dates-sheet__field .widget-field { width: 100%; }
+.dates-sheet__field.is-active { box-shadow: inset 0 0 0 2px var(--border-secondary-default); background: var(--background-primary-subtle); }
+.dates-sheet__field.is-active .widget-field__label { color: var(--text-link-default); }

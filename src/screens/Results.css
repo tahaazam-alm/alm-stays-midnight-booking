@@ -1,3 +1,40 @@
 .results { background: var(--background-base-default); }
 .results__body { display: flex; flex-direction: column; gap: var(--space-card-gap); padding: var(--space-md) var(--space-container) 96px; }
 .results__count { text-align: center; margin-block: calc(-1 * var(--space-xs)); }
+/* B: the banner starts under the AI search, then pins under the header with no strip of its own;
+   a blur like the header's sits behind it so the cards soften as they pass under */
+.results__banner {
+  position: sticky; top: var(--results-nav-h, 0px); z-index: 4;
+  margin: calc(-1 * var(--space-card-gap)) calc(-1 * var(--space-container));
+  padding: var(--space-card-gap) var(--space-container);
+}
+.results__banner::before {
+  content: ''; position: absolute; inset: 0 0 -24px; z-index: -1; pointer-events: none;
+  background: var(--overlay-navbar); -webkit-backdrop-filter: blur(20px) saturate(1.8); backdrop-filter: blur(20px) saturate(1.8);
+  mask-image: linear-gradient(#000 0 calc(100% - 40px), #0000 100%);
+}
+.results__banner:not(.results--pinned *)::before { display: none; }
+/* Pinned: stays a rounded banner, 12px under the header and 16px in from the edges, on the header's blur */
+/* The chip row collapses while scrolling down */
+.results .navbar__chips { max-height: 64px; transition: max-height .25s ease, padding-block .25s ease, opacity .2s ease; }
+.results--tucked .navbar__chips { max-height: 0; padding-block: 0; opacity: 0; }
+.proto-screen:has(> .results) { overflow-anchor: none; }
+/* Navy band version: the header rounds its foot into the band and the band rounds its own foot over the list, all pinned together.
+   The band tucks up behind the header's rounded corners, so no strip shows behind either curve. */
+.results--band .screen__nav .navbar { z-index: 1; border-end-start-radius: var(--rounded-lg); border-end-end-radius: var(--rounded-lg); border-block-end: 0; }
+.results--band .night-band {
+  margin-block-start: calc(-1 * var(--rounded-lg)); padding-block-start: calc(var(--space-md) + var(--rounded-lg));
+}
+/* Foot of the band flares down into the list: navy fills the two corners above the list's rounded top */
+.results--band .night-band::after {
+  content: ''; position: absolute; inset-inline: 0; top: 100%; height: var(--rounded-lg); pointer-events: none;
+  background: var(--color-almosafer);
+  -webkit-mask: radial-gradient(circle at 100% 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) left top / var(--rounded-lg) var(--rounded-lg) no-repeat,
+    radial-gradient(circle at 0 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) right top / var(--rounded-lg) var(--rounded-lg) no-repeat;
+  mask: radial-gradient(circle at 100% 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) left top / var(--rounded-lg) var(--rounded-lg) no-repeat,
+    radial-gradient(circle at 0 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) right top / var(--rounded-lg) var(--rounded-lg) no-repeat;
+}
+/* Chip row tucked away: keep a gap between the modify pill and the header's rounded foot */
+.results--band.results--tucked .screen__nav .navbar { padding-block-end: var(--space-sm); }
+/* No glass here: a solid white header, no blur or fade, so it meets the band in a clean edge */
+.results--band .screen__nav .navbar::before { inset: 0; background: var(--background-base-default); border-radius: inherit; -webkit-backdrop-filter: none; backdrop-filter: none; -webkit-mask-image: none; mask-image: none; }

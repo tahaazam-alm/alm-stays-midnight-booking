@@ -1,0 +1,8 @@
+/* Brand navy band, pinned with the header; the list scrolls straight under its flat bottom edge */
+.night-band {
+  position: relative; display: flex; align-items: center; gap: var(--space-md);
+  padding: var(--space-md) var(--space-container);
+  background: var(--color-almosafer); color: var(--text-base-inverted-static);
+}
+.night-band .ds-icon { flex-shrink: 0; color: var(--text-base-inverted-static); }
+.night-band__text { font: var(--type-body-semibold-weight) var(--type-body-size)/var(--type-body-lh) var(--type-body-semibold-family); }

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:handoff": "node scripts/build-handoff.mjs",
-    "update-ds": "npm install git+https://github.com/tajawal/design-system.git"
+    "update-ds": "npm install git+https://github.com/tajawal/design-system.git",
+    "deploy": "npm run build:handoff && node scripts/deploy-pages.mjs"
   },
   "dependencies": {
     "design-system": "git+https://github.com/tajawal/design-system.git",

@@ -12,11 +12,64 @@
   height: 48px; border: 0; padding: 0; background: none; cursor: pointer;
   color: var(--text-base-default); font-weight: var(--type-body-semibold-weight);
 }
-.range-cal__day span { display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.range-cal__day > span { position: relative; flex-direction: column; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
 .range-cal__day:disabled { color: var(--text-base-subtext); font-weight: var(--type-body-regular-weight); cursor: default; }
 .range-cal__day.is-in { background: var(--background-primary-subtle); }
-.range-cal__day.is-edge { background: var(--background-primary-default); color: var(--text-base-inverted-static); }
+.range-cal__day.is-edge { color: var(--text-base-inverted-static); }
+/* Edge days (production calendar style): the fill sits on the inner span so check-in and check-out can point at each other,
+   with a small handle bar on each outer side. Over a longer stay the range tint shows through the cut */
+.range-cal__day.is-edge > span { background: var(--background-primary-default); border-radius: var(--rounded); overflow: hidden; }
+.range-cal__day.is-edge.is-long { background: var(--background-primary-subtle); }
+.range-cal__day.is-start.has-end > span {
+  border-start-end-radius: 0; border-end-end-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+}
+.range-cal__day.is-end > span {
+  border-start-start-radius: 0; border-end-start-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+}
+[dir='rtl'] .range-cal__day.is-start.has-end > span { clip-path: polygon(100% 0, 10px 0, 0 50%, 10px 100%, 100% 100%); }
+[dir='rtl'] .range-cal__day.is-end > span { clip-path: polygon(calc(100% - 10px) 0, 0 0, 0 100%, calc(100% - 10px) 100%, 100% 50%); }
+.range-cal__day.is-start.has-end > span::before, .range-cal__day.is-end > span::before {
+  content: ''; position: absolute; inset-block-start: calc(50% - 7px); width: 2px; height: 14px; border-radius: 1px;
+  background: var(--text-base-inverted-static);
+}
+.range-cal__day.is-start.has-end > span::before { inset-inline-start: 6px; }
+.range-cal__day.is-end > span::before { inset-inline-end: 6px; }
 .range-cal__day.is-start { border-start-start-radius: var(--rounded); border-end-start-radius: var(--rounded); }
 .range-cal__day.is-start:not(.has-end) { border-radius: var(--rounded); }
 .range-cal__day.is-end { border-start-end-radius: var(--rounded); border-end-end-radius: var(--rounded); }
 .range-cal__day.is-today:not(.is-edge) span { text-decoration: underline; text-underline-offset: 4px; }
+.range-cal__mark { display: block; font-size: 10px; line-height: 12px; font-weight: var(--type-body-semibold-weight); color: var(--text-link-default); }
+.range-cal__mark--icon { position: absolute; inset-block-start: 4px; inset-inline-end: 8px; color: var(--icon-secondary-default); }
+.range-cal__day.is-edge .range-cal__mark, .range-cal__day.is-edge .range-cal__mark--icon { color: var(--text-base-inverted-static); }
+
+/* Floating tip: the grid cell is its containing block, so it can sit over the week above its day */
+.range-cal__wd { z-index: 2; }
+.range-cal__grid { position: relative; }
+.range-cal__tip { position: absolute; inset: auto 0 100% 0; z-index: 1; pointer-events: none; }
+.range-cal__tip-bubble {
+  /* Spans the whole week: the cell is 1/7 of the grid, so shift back by --col cells */
+  /* Sits a caret's height (half its 11px diagonal, ~8px) above the day so the caret tip lands on the day's top edge */
+  position: absolute; inset-block-end: 8px; width: 700%; pointer-events: auto;
+  inset-inline-start: calc(var(--col) * -100%);
+}
+.range-cal__tip-caret {
+  position: absolute; inset-block-end: 2.5px; inset-inline-start: 50%; width: 11px; height: 11px; border-radius: 0 0 2px 0;
+  background: var(--color-almosafer); transform: translateX(-50%) rotate(45deg);
+  border: 1px solid color-mix(in srgb, var(--color-white-static) 16%, var(--color-almosafer));
+  border-block-start-color: transparent; border-inline-start-color: transparent;
+}
+[dir='rtl'] .range-cal__tip-caret { transform: translateX(50%) rotate(45deg); }
+.range-cal__mark .ds-icon { display: inline-flex; vertical-align: -1px; margin-inline-end: 2px; }
+/* Night "Now" tag: the day keeps the normal selected colour, with a banner-navy band across its foot and light-teal text */
+.range-cal--night .range-cal__day.is-edge:has(.range-cal__mark) > span { justify-content: flex-start; padding-block-start: 7px; box-sizing: border-box; }
+.range-cal--night .range-cal__day.is-edge .range-cal__mark {
+  position: absolute; inset-inline: 0; inset-block-end: 0; padding-block: 1px;
+  background: var(--color-almosafer); color: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%);
+}
+/* Over a longer stay the "Now" day's fill runs a little into the next day so the tag fits; the date stays on its own cell */
+.range-cal--night .range-cal__day.is-start.has-end.is-long:has(.range-cal__mark) > span {
+  position: relative; z-index: 1; width: calc(100% + var(--space-md)); padding-inline-end: var(--space-md);
+}
+.range-cal--night .range-cal__day.is-start.has-end.is-long .range-cal__mark { padding-inline-end: 6px; }

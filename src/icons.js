@@ -1,4 +1,5 @@
 // Design-system icons used by this prototype (imported one by one to keep the build small).
+export { default as lightning } from '@ds-icons/line-icons/lightningFill.svg?raw'
 export { default as pin } from '@ds-icons/line-icons/pin.svg?raw'
 export { default as calendar } from '@ds-icons/line-icons/calendar.svg?raw'
 export { default as usersTwo } from '@ds-icons/line-icons/usersTwo.svg?raw'
@@ -27,8 +28,11 @@ export { default as shield } from '@ds-icons/line-icons/shieldCheck.svg?raw'
 export { default as info } from '@ds-icons/line-icons/infoCircle.svg?raw'
 export { default as card } from '@ds-icons/line-icons/creditCard.svg?raw'
 export { default as currency } from '@ds-icons/line-icons/currency.svg?raw'
+export { default as clock } from '@ds-icons/line-icons/clock.svg?raw'
+export { default as door } from '@ds-icons/line-icons/door.svg?raw'
 export { default as night } from '@ds-icons/line-icons/timeNight.svg?raw'
 // Payment logotypes (as URLs: their SVGs share clip-path ids, so inlining them together breaks them)
 export { default as applePay } from '@ds-icons/logotypes/payment/applepay.svg'
 export { default as tamara } from '@ds-icons/logotypes/payment/tamara.svg'
 export { default as tabby } from '@ds-icons/logotypes/payment/tabby.svg'
+export { default as gear } from '@ds-icons/line-icons/gear.svg?raw'

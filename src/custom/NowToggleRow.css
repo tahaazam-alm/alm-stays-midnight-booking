@@ -1,0 +1,27 @@
+.now-row { display: flex; align-items: center; gap: var(--space); box-sizing: border-box; cursor: pointer; }
+.now-row__icon { display: inline-flex; flex-shrink: 0; color: var(--icon-base-subtle); }
+.now-row__text { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+.now-row__link { border: 0; padding: 0; background: none; cursor: pointer; text-align: start; }
+.now-row__title { display: inline-flex; align-items: center; gap: var(--space-sm); }
+.now-row__info { display: inline-flex; border: 0; padding: 0; background: none; cursor: pointer; color: var(--text-link-default); }
+.now-row__sub, .now-row__note { color: var(--text-base-subtle); }
+
+/* Navy on select: aqua tint while off, brand navy (the tooltip's) on the row alone once on */
+.now-row--navy { transition: background-color .3s cubic-bezier(.23, 1, .32, 1), color .3s cubic-bezier(.23, 1, .32, 1); }
+.now-row--navy.is-navy { background-color: var(--color-almosafer); color: var(--text-base-inverted-static); }
+.now-row--navy.is-navy .now-row__icon, .now-row--navy.is-navy .now-row__sub, .now-row--navy.is-navy .now-row__note { color: var(--text-base-inverted-static); }
+.now-row--navy.is-navy .now-row__sub { font-family: var(--type-body-semibold-family); font-weight: var(--type-body-semibold-weight); }
+.now-row--navy.is-navy .now-row__info { color: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%); }
+
+/* Check-in now: a light aqua tint fades in from the inline-end edge (widget row, dates block once on, calendar footer).
+   The colour and how far it reaches are registered properties, so turning it on sweeps the tint out from the toggle side and off pulls it back. */
+@property --night-tint-color { syntax: '<color>'; inherits: false; initial-value: transparent; }
+@property --night-tint-reach { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.night-tint {
+  --night-tint-to: 250deg;
+  background-image: linear-gradient(var(--night-tint-to), var(--night-tint-color), transparent var(--night-tint-reach));
+  transition: --night-tint-color .45s cubic-bezier(.23, 1, .32, 1), --night-tint-reach .45s cubic-bezier(.23, 1, .32, 1);
+}
+[dir="rtl"] .night-tint { --night-tint-to: 110deg; }
+.night-tint.is-on { --night-tint-color: var(--color-aqua-30); --night-tint-reach: 80%; }
+@media (prefers-reduced-motion: reduce) { .night-tint, .now-row--navy { transition: none; } }

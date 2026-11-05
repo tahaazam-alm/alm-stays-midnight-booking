@@ -1,8 +1,9 @@
 // CUSTOM: not in the design system — hotel details building blocks: review score panel, review snippets,
-// map + landmarks, and the "Explore other dates" strip.
+// map + landmarks, the "Explore other dates" strip, and the dates / guests fields above the rooms.
 import { LinearProgressIndicator, Tag } from 'design-system'
 import { Icon } from '../shell/Icon.jsx'
 import * as I from '../icons.js'
+import MapArt from './MapArt.jsx'
 import './HotelOverview.css'
 
 export function ReviewPanel({ hotel }) {
@@ -42,9 +43,7 @@ export function ReviewSnippets({ reviews = [] }) {
 export function MapLandmarks({ hotel }) {
   return (
     <div className="map-card">
-      <div className="map-card__map" aria-label="Map">
-        <span className="map-card__pin t-caption-semi"><Icon svg={I.pin} size={20} />Your stay</span>
-      </div>
+      <MapArt landmark={hotel.landmarks?.[0]} image={hotel.image} stayLabel="Your stay" />
       <div className="map-card__body">
         <p className="t-body t-reset">Landmarks around your hotel</p>
         <div className="h-scroll">
@@ -73,5 +72,14 @@ export function DateStrip({ options, onPick }) {
         </button>
       ))}
     </div>
+  )
+}
+
+/** Half-width, square-cornered field (dates or guests) that reopens the search */
+export function StayField({ icon, label, onClick }) {
+  return (
+    <button type="button" className="stay-field t-body" onClick={onClick}>
+      <Icon svg={icon} size={20} /><span className="stay-field__label">{label}</span>
+    </button>
   )
 }

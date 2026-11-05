@@ -3,6 +3,7 @@ import { Price } from 'design-system'
 import { Icon } from '../shell/Icon.jsx'
 import * as I from '../icons.js'
 import { money } from '../logic.js'
+import { NightTag } from './NightBanner.jsx'
 import './HotelCard.css'
 
 export function Score({ hotel, count = true }) {
@@ -15,13 +16,15 @@ export function Score({ hotel, count = true }) {
   )
 }
 
-export function HotelCard({ hotel, nightsLabel, onSelect }) {
+// `instant`: show the navy "Instant check-in available" tag on the photo (check-in now explorations).
+export function HotelCard({ hotel, nightsLabel, instant, instantLabel, onSelect }) {
   const drop = hotel.was ? Math.round((1 - hotel.price / hotel.was) * 100) : 0
   return (
     <article className="hotel-card" onClick={onSelect}>
       <div className="hotel-card__media">
         <img src={hotel.image} alt="" />
         <span className="hotel-card__fav"><Icon svg={I.heart} size={24} /></span>
+        {instant && <span className="hotel-card__overlay"><NightTag label={instantLabel} /></span>}
       </div>
       <div className="hotel-card__body">
         <h3 className="t-title t-reset">{hotel.name}</h3>

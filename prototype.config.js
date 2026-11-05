@@ -6,6 +6,7 @@
 
 export default {
   name: 'Midnight Booking',
+  hideBasics: true, // Platform, Language and Theme switches hidden; iOS, English, light mode only for now
 
   platform: 'ios', // starting platform: ios | android | desktop | mobile-web
   lang: 'en', //              starting language: en | ar
@@ -15,7 +16,13 @@ export default {
 
   // Scenario toggles. The first option is the default. Read with useProto().controls.<id>
   controls: [
-    // Device clock. "Past midnight" = Fri 23 Oct, 01:30 local — the traveller still wants Thu 22's night.
-    { id: 'clock', label: 'Local time', options: [{ value: 'day', label: 'Thu 6:51 PM' }, { value: 'midnight', label: 'Fri 1:30 AM' }] },
+    // Settled: the clock is always past midnight (Fri 23 Oct, 1:30 AM at the destination). Picking London in the search
+    // makes the traveller abroad (phone on Riyadh time). Search uses the row in the widget, the calendar the date fields,
+    // results the navy band, hotel details the banner under the fields.
+    // Guest Details + Confirm and Pay: how the booking summary carries instant check-in
+    { id: 'paySummary', label: 'Booking summary', options: [
+      { value: 'quiet', label: 'Plain text' },
+      { value: 'line', label: 'Tag under date' },
+    ] },
   ],
 }
