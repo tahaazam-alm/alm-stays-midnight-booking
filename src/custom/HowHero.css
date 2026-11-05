@@ -1,7 +1,7 @@
 /* Aqua gradient, light at the start, deeper toward the illustration */
 .how-hero {
   display: flex; align-items: flex-end; gap: var(--space-sm);
-  padding: 0 var(--space-md) 0 var(--space-container);
+  padding-block: 0; padding-inline: var(--space-container) var(--space-md);
   background: radial-gradient(120% 140% at 100% 0%, var(--color-aqua-50) 0%, var(--color-aqua-30) 45%, var(--color-aqua-10) 100%);
 }
 [dir='rtl'] .how-hero { background: radial-gradient(120% 140% at 0% 0%, var(--color-aqua-50) 0%, var(--color-aqua-30) 45%, var(--color-aqua-10) 100%); }
