@@ -29,8 +29,8 @@ export default function Search() {
   const navyRow = false // settled on the row in the widget
   const nowRow = variant === 'b' && (offerNow || nowOn)
     ? navyRow
-      ? { navy: true, title: t(nowOn ? 'tonightOnShort' : 'tonightShort'), subtext: t('tonightWindow'), note: awayTime && t('tipNowBody', timeLabel(awayTime), city), onInfo: () => setHow(true), infoLabel: t('howItWorks'), checked: nowOn, onChange: setCheckInNow }
-      : { title: t('tonightTitle'), note: awayTime && t('tipNowBody', timeLabel(awayTime), city), linkLabel: t('howItWorks'), onLink: () => setHow(true), checked: nowOn, onChange: setCheckInNow }
+      ? { navy: true, title: t(nowOn ? 'tonightOnShort' : 'tonightShort'), subtext: t('tonightWindow'), note: awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city)), onInfo: () => setHow(true), infoLabel: t('howItWorks'), checked: nowOn, onChange: setCheckInNow }
+      : { title: t('tonightTitle'), note: awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city)), linkLabel: t('howItWorks'), onLink: () => setHow(true), checked: nowOn, onChange: setCheckInNow }
     : null
   // Opted in: check-in reads as tonight's window (row: today's date, the stay starts tonight), check-out keeps its date
   const checkInField = nowOn ? { value: nowRow ? fmtFull(earliestCheckIn(now)) : t('nowWindow') } : undefined
@@ -41,7 +41,7 @@ export default function Search() {
         toggle={{ checked: nowOn, onChange: setCheckInNow }} />
     )
     : offerNow
-      ? <NightTip title={t('needNowTitle')} body={t('tipNowBody', timeLabel(now), city)} actionLabel={t('needNowAction')} onAction={() => setCheckInNow(true)} />
+      ? <NightTip title={t('needNowTitle')} body={t('tipNowBody', timeLabel(now), t.d(city))} actionLabel={t('needNowAction')} onAction={() => setCheckInNow(true)} />
       : nowOn && <NightTip title={t('tipOnTitle')} body={t('tipOnBody')} linkLabel={t('removeNow')} onLink={() => setCheckInNow(false)} />
   const [sheet, setSheet] = useState(null) // 'dest' | 'dates' | 'guests'
   const [toast, setToast] = useState('')
@@ -53,7 +53,7 @@ export default function Search() {
     <div className="screen stay-search">
       <div className="screen__nav">
         <Navbar toolbar={{ title: t('propertySearch'), subtitle: t('propertySearchSub'), onBack: () => setToast(t('notBuilt')),
-          rightActions: [{ icon: <Icon svg={I.gear} />, onClick: () => setSettings(true), 'aria-label': 'Prototype settings' }] }} />
+          rightActions: [{ icon: <Icon svg={I.gear} />, onClick: () => setSettings(true), 'aria-label': t('settings') }] }} />
       </div>
       <div className="screen__body stay-search__body">
         <StayForm search={search} checkInField={checkInField} datesTip={datesTip} nowRow={nowRow} nowOn={nowOn && !nowRow} onDest={() => setSheet('dest')} onDates={() => setSheet('dates')} onGuests={() => setSheet('guests')}>
@@ -70,7 +70,7 @@ export default function Search() {
           </div>
           <div className="stay-search__recents">
             {HOTELS.slice(0, 3).map((h) => (
-              <RecentCard key={h.id} hotel={h} dates={fmtRange(search.checkIn, search.checkOut)} place="Dubai, United Arab Emirates"
+              <RecentCard key={h.id} hotel={h} dates={fmtRange(search.checkIn, search.checkOut)} place={t.d('Dubai, United Arab Emirates')}
                 onSelect={() => { updateSearch({ dest: { name: h.name, region: 'United Arab Emirates, Dubai', hotelId: h.id } }); nav.push('results') }} />
             ))}
           </div>

@@ -4,22 +4,24 @@ import { LinearProgressIndicator, Tag } from 'design-system'
 import { Icon } from '../shell/Icon.jsx'
 import * as I from '../icons.js'
 import MapArt from './MapArt.jsx'
+import { useCopy } from '../copy.js'
 import './HotelOverview.css'
 
 export function ReviewPanel({ hotel }) {
+  const t = useCopy()
   return (
     <div className="review-panel">
       <div className="review-panel__score">
         <div className="t-headline review-panel__big">{hotel.score.toFixed(1)} <Icon svg={I.star} size={22} /></div>
-        <div className="t-caption t-subtext">Based on {hotel.reviews.toLocaleString('en-US')} reviews</div>
-        <p className="t-caption t-reset">{hotel.blurb}</p>
-        <button type="button" className="t-caption-semi t-link review-panel__link">See all reviews</button>
+        <div className="t-caption t-subtext">{t('basedOn', hotel.reviews.toLocaleString('en-US'))}</div>
+        <p className="t-caption t-reset">{t.d(hotel.blurb)}</p>
+        <button type="button" className="t-caption-semi t-link review-panel__link">{t('seeAllReviews')}</button>
       </div>
       <div className="review-panel__subs">
         {(hotel.subScores || []).map(([k, v]) => (
           <div key={k} className="review-panel__sub">
-            <div className="review-panel__row t-caption"><span>{k}</span><span className="t-caption-semi">{v}</span></div>
-            <LinearProgressIndicator value={v * 10} aria-label={k} />
+            <div className="review-panel__row t-caption"><span>{t.d(k)}</span><span className="t-caption-semi">{v}</span></div>
+            <LinearProgressIndicator value={v * 10} aria-label={t.d(k)} />
           </div>
         ))}
       </div>
@@ -28,12 +30,13 @@ export function ReviewPanel({ hotel }) {
 }
 
 export function ReviewSnippets({ reviews = [] }) {
+  const t = useCopy()
   return (
     <div className="h-scroll">
       {reviews.map(([text, who, when]) => (
         <div key={text} className="snippet">
-          <p className="t-caption t-reset">{text}</p>
-          <p className="t-caption t-reset"><b>{who}</b> <span className="t-subtext">• {when}</span></p>
+          <p className="t-caption t-reset">{t.d(text)}</p>
+          <p className="t-caption t-reset"><b>{t.d(who)}</b> <span className="t-subtext">• {t.d(when)}</span></p>
         </div>
       ))}
     </div>
@@ -41,13 +44,15 @@ export function ReviewSnippets({ reviews = [] }) {
 }
 
 export function MapLandmarks({ hotel }) {
+  const t = useCopy()
+  const landmarks = (hotel.landmarks || []).map((l) => l.map(t.d))
   return (
     <div className="map-card">
-      <MapArt landmark={hotel.landmarks?.[0]} image={hotel.image} stayLabel="Your stay" />
+      <MapArt landmark={landmarks[0]} image={hotel.image} stayLabel={t('yourStay')} />
       <div className="map-card__body">
-        <p className="t-body t-reset">Landmarks around your hotel</p>
+        <p className="t-body t-reset">{t('landmarksAround')}</p>
         <div className="h-scroll">
-          {(hotel.landmarks || []).map(([kind, name, km]) => (
+          {landmarks.map(([kind, name, km]) => (
             <div key={name} className="landmark">
               <Tag label={kind} variant="success" />
               <span className="t-body-semi">{name}</span>
@@ -62,11 +67,12 @@ export function MapLandmarks({ hotel }) {
 
 /** options: [{ label, sub, selected }] */
 export function DateStrip({ options, onPick }) {
+  const t = useCopy()
   return (
     <div className="h-scroll date-strip">
       {options.map((o) => (
         <button key={o.sub} type="button" className={`date-strip__opt ${o.selected ? 'is-on' : ''}`} onClick={() => onPick?.(o)}>
-          {o.selected ? <span className="t-caption t-subtext">Your Dates</span> : <Icon svg={I.search} size={18} />}
+          {o.selected ? <span className="t-caption t-subtext">{t('yourDates')}</span> : <Icon svg={I.search} size={18} />}
           {o.label && <span className="t-body-semi">{o.label}</span>}
           <span className="t-caption">{o.sub}</span>
         </button>

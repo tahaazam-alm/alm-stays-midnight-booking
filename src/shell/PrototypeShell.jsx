@@ -3,6 +3,7 @@
 import { BottomSheet, SegmentedControl, Button } from 'design-system'
 import { createContext, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { DesignSystemProvider } from 'design-system'
+import { setFmtLang } from '../logic.js'
 
 const ProtoContext = createContext(null)
 
@@ -72,6 +73,7 @@ export function PrototypeShell({ config, children }) {
   const [restartKey, setRestartKey] = useState(0)
 
   const dir = lang === 'ar' ? 'rtl' : 'ltr'
+  setFmtLang(lang) // dates and counts in src/logic.js follow the language
   const dsPlatform = platform === 'android' ? 'android' : 'ios'
   const frame = platform === 'desktop' ? 'desktop' : platform === 'mobile-web' ? 'browser' : 'phone'
 
@@ -133,9 +135,16 @@ export function PrototypeShell({ config, children }) {
 // Prototype settings, opened from the gear next to the search title. A sheet inside the phone, like a test build's
 // debug menu: one segmented control per scenario option, the language, and Restart.
 const LANG_ITEMS = [['en', 'English'], ['ar', 'العربية']]
+// The sheet's own words, in the prototype's language (control labels can add `labelAr` / option `labelAr` in prototype.config.js)
+const SHEET_COPY = {
+  en: { title: 'Prototype settings', language: 'Language', restart: 'Restart prototype' },
+  ar: { title: 'إعدادات النموذج التجريبي', language: 'اللغة', restart: 'إعادة تشغيل النموذج' },
+}
 export function ProtoSettings({ open, onClose }) {
   const { config, controls, setControl, lang, setLang, restart, platform, dir } = useProto()
   const [langNote, setLangNote] = useState(false)
+  const w = SHEET_COPY[lang] || SHEET_COPY.en
+  const lbl = (x) => (lang === 'ar' && x.labelAr) || x.label
   const list = (config.controls || []).filter((c) => !c.when || Object.entries(c.when).every(([k, v]) => [].concat(v).includes(controls[k])))
   const pickLang = (i) => {
     const [code] = LANG_ITEMS[i]
@@ -143,21 +152,21 @@ export function ProtoSettings({ open, onClose }) {
     setLangNote(false); setLang(code)
   }
   return (
-    <BottomSheet open={open} size="medium" platform={platform} dir={dir} title="Prototype settings" onClose={onClose} className="proto-sheet">
+    <BottomSheet open={open} size="medium" platform={platform} dir={dir} title={w.title} onClose={onClose} className="proto-sheet">
       <div className="proto-sheet__body">
         {list.map((c) => (
           <section key={c.id} className="proto-sheet__group">
-            <h3 className="t-caption-semi t-subtext t-reset">{c.label}</h3>
-            <SegmentedControl items={c.options.map((o) => o.label)} value={Math.max(0, c.options.findIndex((o) => o.value === controls[c.id]))}
+            <h3 className="t-caption-semi t-subtext t-reset">{lbl(c)}</h3>
+            <SegmentedControl items={c.options.map(lbl)} value={Math.max(0, c.options.findIndex((o) => o.value === controls[c.id]))}
               onChange={(i) => setControl(c.id, c.options[i].value)} />
           </section>
         ))}
         <section className="proto-sheet__group">
-          <h3 className="t-caption-semi t-subtext t-reset">Language</h3>
+          <h3 className="t-caption-semi t-subtext t-reset">{w.language}</h3>
           <SegmentedControl items={LANG_ITEMS.map(([, l]) => l)} value={LANG_ITEMS.findIndex(([c]) => c === lang)} onChange={pickLang} />
           {langNote && <p className="t-caption t-subtext t-reset">Arabic isn’t translated yet, so the prototype stays in English.</p>}
         </section>
-        <Button variant="secondary" label="Restart prototype" onClick={() => { onClose(); restart() }} />
+        <Button variant="secondary" label={w.restart} onClick={() => { onClose(); restart() }} />
       </div>
     </BottomSheet>
   )

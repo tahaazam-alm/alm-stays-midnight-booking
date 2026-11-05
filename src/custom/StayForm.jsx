@@ -19,7 +19,7 @@ export function StayForm({ search, checkInField, checkOutField, datesTip, nowRow
   const { dir } = useProto()
   return (
     <div className={`stay-form ${nowOn ? 'stay-form--now-on' : ''}`}>
-      <WidgetField variant="populated" label={t('destination')} value={search.dest.name} icon={<Icon svg={I.pin} />} onPress={onDest} />
+      <WidgetField variant="populated" label={t('destination')} value={t.d(search.dest.name)} icon={<Icon svg={I.pin} />} onPress={onDest} />
       <Separator className="stay-form__sep" />
       <div className={`stay-form__night night-tint ${nowRow?.checked && !nowRow.navy ? 'is-on' : ''}`}>
       <div className="stay-form__dates">

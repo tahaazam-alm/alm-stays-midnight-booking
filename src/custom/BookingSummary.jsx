@@ -19,11 +19,11 @@ export function BookingSummary({ hotel, search, now }) {
       <div className="booking-summary__main">
         <img className="booking-summary__thumb" src={hotel.image} alt="" />
         <div className="booking-summary__text">
-          <h3 className="t-subtitle t-reset">{hotel.name}</h3>
+          <h3 className="t-subtitle t-reset">{t.d(hotel.name)}</h3>
           <p className="t-body t-reset">{fmtFullRange(search.checkIn, out)}</p>
           {now === 'quiet' && <span className="booking-summary__quiet t-caption"><Icon svg={I.night} size={16} />{t('tonightBetween')}</span>}
           {now === 'line' && <span className="booking-summary__now"><NightTag label={t('instantBetween')} /></span>}
-          <p className="t-caption t-subtext t-reset">{search.rooms.length} Room{search.rooms.length > 1 ? 's' : ''} | {g} Guests</p>
+          <p className="t-caption t-subtext t-reset">{t('roomsGuests', search.rooms.length, g)}</p>
         </div>
       </div>
       {now === 'strip' && <div className="booking-summary__strip"><NightTag label={t('instantBetween')} /></div>}

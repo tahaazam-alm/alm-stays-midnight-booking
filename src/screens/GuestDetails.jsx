@@ -18,7 +18,7 @@ export default function GuestDetails() {
   const t = useCopy()
   const { controls } = useProto()
   const { search, booking, nowOn } = useStay()
-  const [f, setF] = useState({ title: 'Mr', first: 'Taha', last: 'Azam', email: 'taha.azam@almosafer.com', code: '+971', phone: '50 334 2582', other: false })
+  const [f, setF] = useState({ title: 0, first: t.d('Taha'), last: t.d('Azam'), email: 'taha.azam@almosafer.com', code: '+971', phone: '50 334 2582', other: false })
   const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
   const total = (booking.rate?.price ?? booking.hotel.price) * 0.99727
 
@@ -31,14 +31,14 @@ export default function GuestDetails() {
           <h2 className="t-title t-reset">{t('contactDetails')}</h2>
           <div className="funnel__card">
             <div className="funnel__titles">
-              {['Mr', 'Ms', 'Mrs'].map((x) => <Chip key={x} label={x} selected={f.title === x} onClick={() => setF((s) => ({ ...s, title: x }))} />)}
+              {t('titles').map((x, i) => <Chip key={i} label={x} selected={f.title === i} onClick={() => setF((s) => ({ ...s, title: i }))} />)}
             </div>
-            <TextInput label="First name" value={f.first} onChange={set('first')} />
-            <TextInput label="Last name" value={f.last} onChange={set('last')} />
-            <TextInput label="Email" value={f.email} onChange={set('email')} />
+            <TextInput label={t('firstName')} value={f.first} onChange={set('first')} />
+            <TextInput label={t('lastName')} value={f.last} onChange={set('last')} />
+            <TextInput label={t('email')} value={f.email} onChange={set('email')} />
             <div className="funnel__phone">
-              <TextInput label="Code" value={f.code} onChange={set('code')} dropdown />
-              <TextInput label="Phone number" value={f.phone} onChange={set('phone')} />
+              <TextInput label={t('code')} value={f.code} onChange={set('code')} dropdown />
+              <TextInput label={t('phone')} value={f.phone} onChange={set('phone')} />
             </div>
           </div>
           <p className="t-caption t-subtext t-reset funnel__center">{t('voucherNote')}</p>
@@ -47,7 +47,7 @@ export default function GuestDetails() {
           <ListItem type="checkbox" label={t('someoneElse')} selected={f.other} onChange={() => setF((s) => ({ ...s, other: !s.other }))} />
         </div>
         <div className="funnel__card funnel__card--row">
-          <Cell visual={null} label={t('specialRequests')} showSeparator={false} />
+          <Cell dir={t.dir} visual={null} label={t('specialRequests')} showSeparator={false} />
         </div>
         <section className="funnel__section">
           <div>
@@ -55,7 +55,7 @@ export default function GuestDetails() {
             <p className="t-caption t-subtext t-reset">{t('rewardSub')}</p>
           </div>
           <div className="funnel__card funnel__card--row">
-            <Cell visual="icon" icon={<Icon svg={I.reward} />} label="Shukrans" tag={SHUKRANS.toLocaleString('en-US')} sideIcon={<Icon svg={I.info} />} trailing="none" showSeparator={false} />
+            <Cell dir={t.dir} visual="icon" icon={<Icon svg={I.reward} />} label={t('shukrans')} tag={SHUKRANS.toLocaleString('en-US')} sideIcon={<Icon svg={I.info} />} trailing="none" showSeparator={false} />
           </div>
         </section>
       </div>

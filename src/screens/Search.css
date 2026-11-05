@@ -29,6 +29,7 @@
 .dates-sheet__now-row.now-row--navy { margin-inline: calc(-1 * var(--space-container)); padding: var(--space-sm) calc(var(--space-container) + var(--space-sm)); border-radius: 0; }
 .how-sheet { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-lg) var(--space-container) var(--space-lg); }
 .how-sheet .cell { padding-inline: 0; }
+.how-sheet .cell__visual--icon { color: var(--icon-base-subtle); }
 .how-sheet .btn { width: 100%; margin-block-start: var(--space-sm); }
 /* The iOS glass panel lets the page show through and the explainer copy gets hard to read, so this sheet sits on a solid surface */
 .bottom-sheet.how-sheet-wrap.bottom-sheet--medium .bottom-sheet__panel { background: var(--background-base-default); }

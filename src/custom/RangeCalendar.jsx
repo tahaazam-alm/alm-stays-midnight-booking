@@ -4,7 +4,7 @@
 // `tip` ({ date, node }) floats a tooltip over the week above that day, its caret on the day (check-in now).
 // `shownStart` paints the range from a later day than the real check-in (check-in now: booked from tonight, shown from today).
 // `lockStart` keeps the check-in fixed so taps only move check-out; `tone="night"` paints the range teal (check-in now).
-import { WD, MONTH, sameDay } from '../logic.js'
+import { wdShortNames, monthNames, sameDay } from '../logic.js'
 import { Icon } from '../shell/Icon.jsx'
 import './RangeCalendar.css'
 
@@ -17,13 +17,13 @@ export function RangeCalendar({ start, end, shownStart, minDate, mark, lockStart
   const first = new Date(minDate.getFullYear(), minDate.getMonth(), 1)
   return (
     <div className={`range-cal ${tone ? `range-cal--${tone}` : ''}`}>
-      <div className="range-cal__wd">{WD.map((w) => <span key={w} className="t-caption">{w}</span>)}</div>
+      <div className="range-cal__wd">{wdShortNames().map((w) => <span key={w} className="t-caption">{w}</span>)}</div>
       {Array.from({ length: months }, (_, mi) => {
         const m0 = new Date(first.getFullYear(), first.getMonth() + mi, 1)
         const days = new Date(m0.getFullYear(), m0.getMonth() + 1, 0).getDate()
         return (
           <section key={mi} className="range-cal__month">
-            <h3 className="t-subtitle t-reset range-cal__title">{MONTH[m0.getMonth()]} <span className="t-subtext">{m0.getFullYear()}</span></h3>
+            <h3 className="t-subtitle t-reset range-cal__title">{monthNames()[m0.getMonth()]} <span className="t-subtext">{m0.getFullYear()}</span></h3>
             <div className="range-cal__grid">
               {Array.from({ length: m0.getDay() }, (_, i) => <span key={`b${i}`} />)}
               {Array.from({ length: days }, (_, i) => {

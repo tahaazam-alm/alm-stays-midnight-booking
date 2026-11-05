@@ -5,7 +5,7 @@ import { Icon } from '../shell/Icon.jsx'
 import { useStay, checkInNowDates } from '../state.jsx'
 import { useCopy } from '../copy.js'
 import { RECENT_DESTINATIONS, POPULAR_CITIES } from '../data.js'
-import { earliestCheckIn, rangeSummary, isPastMidnight, timeLabel, destCity, sameDay, WD, MON } from '../logic.js'
+import { earliestCheckIn, rangeSummary, isPastMidnight, timeLabel, destCity, sameDay, fmtDay } from '../logic.js'
 import { NightTip } from '../custom/NightBanner.jsx'
 import { NowToggleRow } from '../custom/NowToggleRow.jsx'
 import { RangeCalendar } from '../custom/RangeCalendar.jsx'
@@ -17,15 +17,15 @@ export function DestinationSheet({ open, onClose, onPick }) {
   const t = useCopy()
   const [q, setQ] = useState('')
   useEffect(() => { if (open) setQ('') }, [open])
-  const match = (d) => !q || `${d.name} ${d.region}`.toLowerCase().includes(q.toLowerCase())
+  const match = (d) => !q || `${d.name} ${d.region} ${t.d(d.name)} ${t.d(d.region)}`.toLowerCase().includes(q.toLowerCase())
   const row = (d, icon) => (
-    <Cell key={d.name} visual="icon" icon={<Icon svg={icon} />} label={d.name} subtext={d.region} trailing="none" onClick={() => onPick(d)} />
+    <Cell dir={t.dir} key={d.name} visual="icon" icon={<Icon svg={icon} />} label={t.d(d.name)} subtext={t.d(d.region)} trailing="none" onClick={() => onPick(d)} />
   )
   return (
     <BottomSheet open={open} size="fullscreen" title={t('searchDestination')} onClose={onClose}
       search={<Search value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder={t('whereTo')} />}>
       <div className="sheet-list">
-        <Cell visual="icon" icon={<Icon svg={I.navArrow} />} label={t('autoDetect')} trailing="none" showSeparator={false} />
+        <Cell dir={t.dir} visual="icon" icon={<Icon svg={I.navArrow} />} label={t('autoDetect')} trailing="none" showSeparator={false} />
         <div className="sheet-eyebrow"><span className="t-subtitle">{t('recent')}</span><span className="t-subtitle t-link">{t('clear')}</span></div>
         {RECENT_DESTINATIONS.filter(match).map((d) => row(d, I.history))}
         <div className="sheet-eyebrow"><span className="t-subtitle">{t('popularCities')}</span></div>
@@ -36,7 +36,6 @@ export function DestinationSheet({ open, onClose, onPick }) {
 }
 
 // 1.2
-const fmtDay = (d) => `${WD[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`
 
 export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
   const t = useCopy()
@@ -65,7 +64,7 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
       <NightTip arrow="none" title={t('wantNowTitle')} body={t('nowWindowNote')}
         toggle={{ checked: nowOn, onChange: optIn }} />
     ) }
-    : offerNow && { date: range.start, node: <NightTip arrow="none" title={t('needNowTitle')} body={t('tipNowBody', timeLabel(now), city)} actionLabel={t('needNowAction')} onAction={() => optIn(true)} /> }
+    : offerNow && { date: range.start, node: <NightTip arrow="none" title={t('needNowTitle')} body={t('tipNowBody', timeLabel(now), t.d(city))} actionLabel={t('needNowAction')} onAction={() => optIn(true)} /> }
   return (
     <BottomSheet open={open} size="fullscreen" title={t('selectDates')} onClose={onClose}>
       <RangeCalendar start={range.start} end={range.end} minDate={nowView ? today : earliestCheckIn(now, nowOn)}
@@ -73,8 +72,8 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
         tip={tip} onChange={(start, end) => setRange({ start, end })} />
       <div className={`dates-sheet__foot night-tint ${nowRow && nowOn && !navyRow ? 'is-on' : ''}`}>
         {nowRow && (navyRow
-          ? <NowToggleRow navy className="dates-sheet__now-row" title={t(nowOn ? 'tonightOnShort' : 'tonightShort')} subtext={t('tonightWindow')} note={awayTime && t('tipNowBody', timeLabel(awayTime), city)} onInfo={onHowItWorks} infoLabel={t('howItWorks')} checked={nowOn} onChange={optIn} />
-          : <NowToggleRow className="dates-sheet__now-row" title={t('tonightTitle')} note={awayTime && t('tipNowBody', timeLabel(awayTime), city)} linkLabel={t('howItWorks')} onLink={onHowItWorks} checked={nowOn} onChange={optIn} />)}
+          ? <NowToggleRow navy className="dates-sheet__now-row" title={t(nowOn ? 'tonightOnShort' : 'tonightShort')} subtext={t('tonightWindow')} note={awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city))} onInfo={onHowItWorks} infoLabel={t('howItWorks')} checked={nowOn} onChange={optIn} />
+          : <NowToggleRow className="dates-sheet__now-row" title={t('tonightTitle')} note={awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city))} linkLabel={t('howItWorks')} onLink={onHowItWorks} checked={nowOn} onChange={optIn} />)}
         {variant === 'a' && nowOn && (
           <NightTip arrow="none" className="dates-sheet__now" title={t('tipOnTitle')} body={t('tipOnBody')} linkLabel={t('removeNow')} onLink={() => optIn(false)} />
         )}
@@ -94,7 +93,7 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
           // Opted in: one line, starting now and ending at check-out time
           <span className="t-body"><b>{t('nowStart')} – {fmtDay(range.end)} • {t('checkOutTime')}</b> {t('stayDays', Math.round((range.end - range.start) / 864e5))}</span>
         ) : (
-          <span className="t-body">{sum ? <><b>{sum.dates}</b> {sum.nights}</> : 'Select a check-out date'}</span>
+          <span className="t-body">{sum ? <><b>{sum.dates}</b> {sum.nights}</> : t('selectCheckout')}</span>
         )}
         <Button variant="primary" label={t('confirm')} disabled={!range.end} onClick={() => onConfirm(range.start, range.end, nowView)} />
       </div>
@@ -106,14 +105,14 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
 // 1.2a How it works? — opened from the check-in tonight row (widget and calendar footer)
 export function HowItWorksSheet({ open, onClose }) {
   const t = useCopy()
-  const rows = [[I.clock, 'howWindow'], [I.lightning, 'howInstant'], [I.door, 'howCheckout']]
+  const rows = [[I.clockForward, 'howWindow'], [I.lightningLine, 'howInstant'], [I.door, 'howCheckout']]
   return (
     <BottomSheet className="how-sheet-wrap" open={open} size="medium" onClose={onClose}>
       <HowHero eyebrow={t('howEyebrow')} title={t('howHeroTitle')} />
       <div className="how-sheet">
         <h3 className="t-subtitle t-reset how-sheet__heading">{t('howHeading')}</h3>
         {rows.map(([icon, k], i) => (
-          <Cell key={k} visual="icon" icon={<Icon svg={icon} />} label={t(`${k}Title`)} subtext={t(`${k}Body`)} trailing="none" showSeparator={i < rows.length - 1} />
+          <Cell dir={t.dir} key={k} visual="icon" icon={<Icon svg={icon} />} label={t(`${k}Title`)} subtext={t(`${k}Body`)} trailing="none" showSeparator={i < rows.length - 1} />
         ))}
         <Button variant="primary" label={t('gotIt')} onClick={onClose} />
       </div>
@@ -148,7 +147,7 @@ export function GuestsSheet({ open, onClose, onApply }) {
               onRemove={rooms.length > 1 ? () => setRooms((rs) => rs.filter((_, j) => j !== i)) : undefined} />
             {r.ages.length > 0 && (
               <div className="guests-sheet__ages">
-                {r.ages.map((a, k) => <Chip key={k} label={`Child ${k + 1}: ${a} year${a === 1 ? '' : 's'}`} dropdown onClick={() => bumpAge(i, k)} />)}
+                {r.ages.map((a, k) => <Chip key={k} label={t('childAge', k + 1, a)} dropdown onClick={() => bumpAge(i, k)} />)}
               </div>
             )}
           </div>
@@ -159,7 +158,7 @@ export function GuestsSheet({ open, onClose, onApply }) {
           <Button variant="primary" label={t('apply')} onClick={() => onApply(rooms.map(({ id, ...r }) => r))} />
         </div>
       </div>
-      {full && <Dialog title={t('maxGuests')} primaryAction={{ label: 'OK', onClick: () => setFull(false) }} onClose={() => setFull(false)} />}
+      {full && <Dialog title={t('maxGuests')} primaryAction={{ label: t('ok'), onClick: () => setFull(false) }} onClose={() => setFull(false)} />}
     </BottomSheet>
   )
 }

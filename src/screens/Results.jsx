@@ -72,15 +72,15 @@ export default function Results() {
       <div ref={navRef} className="screen__nav">
         <Navbar
           toolbar={{
-            variant: 'stays', location: search.dest.name, guests: guestCount(search.rooms),
+            variant: 'stays', location: t.d(search.dest.name), guests: guestCount(search.rooms),
             dates: fmtRange(search.checkIn, search.checkOut),
             onBack: () => nav.back(), onItinerary: () => nav.back(), onCurrency: soon,
           }}
           chips={[
-            { icon: <Icon svg={I.sort} />, label: 'Sort by', onClick: soon },
-            { icon: <Icon svg={I.sliders} />, label: 'Filters', onClick: soon },
-            { label: 'Popular locations', dropdown: true, onClick: soon },
-            { label: 'Star rating', dropdown: true, onClick: soon },
+            { icon: <Icon svg={I.sort} />, label: t('sortBy'), onClick: soon },
+            { icon: <Icon svg={I.sliders} />, label: t('filters'), onClick: soon },
+            { label: t('popularLocations'), dropdown: true, onClick: soon },
+            { label: t('starRating'), dropdown: true, onClick: soon },
           ]}
         />
         {band && <NightBand text={t('nowResultsBand')} />}
@@ -90,8 +90,8 @@ export default function Results() {
         {variant === 'b' && nowOn && !band && (
           <MoonBanner className="results__banner" text={t('nowResultsLine')} />
         )}
-        {variant === 'a' && nowOn && <NightTip arrow="none" pulse title={t('nowResultsTitle')} body={t('nowResultsBody', destCity(search.dest))} />}
-        <p className="t-caption t-subtext t-reset results__count">{t('propertiesFound', nowOn ? '1,284' : '7,519', 'Dubai')}</p>
+        {variant === 'a' && nowOn && <NightTip arrow="none" pulse title={t('nowResultsTitle')} body={t('nowResultsBody', t.d(destCity(search.dest)))} />}
+        <p className="t-caption t-subtext t-reset results__count">{t('propertiesFound', nowOn ? '1,284' : '7,519', t.d('Dubai'))}</p>
         {list.map((h) => (
           <HotelCard key={h.id} hotel={h} nightsLabel={t('totalFor', n)} onSelect={() => { setBooking({ hotel: h, room: null, rate: null }); nav.push('hotel') }} />
         ))}
