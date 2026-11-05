@@ -5,11 +5,13 @@ import { LegacyButton, Toggle, SystemBanner } from 'design-system'
 import { Icon } from '../shell/Icon.jsx'
 import * as I from '../icons.js'
 import './NightBanner.css'
+import { useCopy } from '../copy.js'
 
 // SystemBanner's icon is fixed per type, so the moon banner masks its slot with the DS moon (results, hotel rooms)
 const MOON = `url("data:image/svg+xml,${encodeURIComponent(I.night)}")`
 export function MoonBanner({ text, description, className = '' }) {
-  return <div className={`moon-banner ${className}`} style={{ '--moon-banner-icon': MOON }}><SystemBanner type="neutral" title={text} description={description} /></div>
+  const t = useCopy()
+  return <div className={`moon-banner ${className}`} style={{ '--moon-banner-icon': MOON }}><SystemBanner type="neutral" title={text} description={description} dir={t.dir} /></div>
 }
 
 export function NightMark({ size = 40 }) {
