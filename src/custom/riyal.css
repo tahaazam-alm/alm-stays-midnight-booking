@@ -1,0 +1,9 @@
+/* CUSTOM: not in the design system — the DS fonts (Open Sans, Noto Sans Arabic) have no glyph for the new
+   Saudi Riyal sign (U+20C1). A one-character "Riyal" face goes first in the DS font tokens, so any price string
+   using \20C1 shows the official symbol on every device; every other character falls through to the DS font.
+   Font: "riyal" npm package (MIT). */
+@font-face { font-family: 'Riyal'; src: url('../assets/fonts/riyal-regular.woff2') format('woff2'); font-weight: 100 450; unicode-range: U+20C1; }
+@font-face { font-family: 'Riyal'; src: url('../assets/fonts/riyal-medium.woff2') format('woff2'); font-weight: 451 550; unicode-range: U+20C1; }
+@font-face { font-family: 'Riyal'; src: url('../assets/fonts/riyal-bold.woff2') format('woff2'); font-weight: 551 900; unicode-range: U+20C1; }
+:root { --font-body: 'Riyal', "Open Sans", system-ui, sans-serif; --font-display: 'Riyal', "Open Sans", system-ui, sans-serif; --font-latin: 'Riyal', "Open Sans", system-ui, sans-serif; }
+[dir='rtl'] { --font-body: 'Riyal', "Noto Sans Arabic", system-ui, sans-serif; --font-display: 'Riyal', "Noto Sans Arabic", system-ui, sans-serif; }

@@ -99,4 +99,4 @@ export function guestsLabel(rooms) {
   return [plural(rooms.length, 'Room'), plural(a, 'Adult'), c ? plural(c, 'Child', 'Children') : null].filter(Boolean).join(', ')
 }
 
-export const money = (n, dp = 0) => `AED ${n.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp })}`
+export const money = (n, dp = 0) => `\u20C1 ${n.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp })}`
