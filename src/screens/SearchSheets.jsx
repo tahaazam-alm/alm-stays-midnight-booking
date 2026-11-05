@@ -10,6 +10,7 @@ import { NightTip } from '../custom/NightBanner.jsx'
 import { NowToggleRow } from '../custom/NowToggleRow.jsx'
 import { RangeCalendar } from '../custom/RangeCalendar.jsx'
 import * as I from '../icons.js'
+import HowHero from '../custom/HowHero.jsx'
 
 // 1.1
 export function DestinationSheet({ open, onClose, onPick }) {
@@ -101,13 +102,16 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
   )
 }
 
+
 // 1.2a How it works? — opened from the check-in tonight row (widget and calendar footer)
 export function HowItWorksSheet({ open, onClose }) {
   const t = useCopy()
   const rows = [[I.clock, 'howWindow'], [I.lightning, 'howInstant'], [I.door, 'howCheckout']]
   return (
-    <BottomSheet className="how-sheet-wrap" open={open} size="medium" title={t('howTitle')} onClose={onClose}>
+    <BottomSheet className="how-sheet-wrap" open={open} size="medium" onClose={onClose}>
+      <HowHero eyebrow={t('howEyebrow')} title={t('howHeroTitle')} />
       <div className="how-sheet">
+        <h3 className="t-subtitle t-reset how-sheet__heading">{t('howHeading')}</h3>
         {rows.map(([icon, k], i) => (
           <Cell key={k} visual="icon" icon={<Icon svg={icon} />} label={t(`${k}Title`)} subtext={t(`${k}Body`)} trailing="none" showSeparator={i < rows.length - 1} />
         ))}

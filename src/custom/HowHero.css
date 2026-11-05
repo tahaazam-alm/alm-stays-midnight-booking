@@ -1,0 +1,17 @@
+/* Aqua gradient, light at the start, deeper toward the illustration */
+.how-hero {
+  display: flex; align-items: flex-end; gap: var(--space-sm);
+  padding: 0 var(--space-md) 0 var(--space-container);
+  background: radial-gradient(120% 140% at 100% 0%, var(--color-aqua-50) 0%, var(--color-aqua-30) 45%, var(--color-aqua-10) 100%);
+}
+[dir='rtl'] .how-hero { background: radial-gradient(120% 140% at 0% 0%, var(--color-aqua-50) 0%, var(--color-aqua-30) 45%, var(--color-aqua-10) 100%); }
+.how-hero__text { flex: 1; display: flex; flex-direction: column; gap: var(--space-xs); padding-block-end: var(--space-lg); }
+.how-hero__text h2 { font-weight: 700; max-inline-size: 11em; }
+.how-hero__eyebrow { text-transform: uppercase; letter-spacing: .12em; }
+.how-hero__art { inline-size: 132px; block-size: auto; flex-shrink: 0; align-self: flex-end; margin-block-end: var(--space-xs); }
+
+/* The sheet's grabber + close button float over the hero, so the gradient runs to the panel's top edge */
+.how-sheet-wrap { --bottom-sheet-min-height: 0; }
+.how-sheet-wrap .bottom-sheet__grabber-row, .how-sheet-wrap .bottom-sheet__toolbar { position: relative; z-index: 1; }
+.how-sheet-wrap .bottom-sheet__content { margin-block-start: -64px; }
+.how-hero { padding-block-start: 72px; }

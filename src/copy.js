@@ -69,6 +69,9 @@ export const copy = {
     tonightWindow: '12 AM – 6 AM',
     // How it works? explainer sheet
     howTitle: 'Checking in tonight',
+    howEyebrow: 'Introducing',
+    howHeroTitle: 'Book and check in at midnight',
+    howHeading: 'How does it work',
     howWindowTitle: 'Arrive any time before 6 AM',
     howWindowBody: 'Past midnight, your stay starts tonight, not tomorrow. Check in between 12 AM and 6 AM.',
     howInstantTitle: 'Only hotels ready for you now',
