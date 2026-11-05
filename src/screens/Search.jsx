@@ -70,8 +70,8 @@ export default function Search() {
           </div>
           <div className="stay-search__recents">
             {HOTELS.slice(0, 3).map((h) => (
-              <RecentCard key={h.id} hotel={h} dates={fmtRange(search.checkIn, search.checkOut)} place={t.d('Dubai, United Arab Emirates')}
-                onSelect={() => { updateSearch({ dest: { name: h.name, region: 'United Arab Emirates, Dubai', hotelId: h.id } }); nav.push('results') }} />
+              <RecentCard key={h.id} hotel={h} dates={fmtRange(search.checkIn, search.checkOut)} place={t.d('Riyadh, Saudi Arabia')}
+                onSelect={() => { updateSearch({ dest: { name: h.name, region: 'Saudi Arabia, Riyadh', hotelId: h.id } }); nav.push('results') }} />
             ))}
           </div>
         </section>

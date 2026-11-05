@@ -18,7 +18,7 @@ export function RoomCard({ room, nightsLabel, open: initialOpen = false, onSelec
         <div className="room-card__info">
           <div className="room-card__img"><img src={room.image} alt="" /></div>
           <ul className="room-card__specs t-body">
-            <li><Icon svg={I.resize} size={18} />{t.d(room.size)}</li>
+            {room.size && <li><Icon svg={I.resize} size={18} />{t.d(room.size)}</li>}
             <li><Icon svg={I.bed} size={18} />{t.d(room.beds)}</li>
             <li><Icon svg={I.usersTwo} size={18} />{t.d(room.fits)}</li>
             <li><button type="button" className="t-body-semi t-link room-card__link">{t('viewRoomDetails')}</button></li>

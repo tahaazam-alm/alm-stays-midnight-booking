@@ -24,11 +24,11 @@ export function StayProvider({ children }) {
   const now = clockFor('midnight') // always past midnight
   // Both explorations start as production and only open tonight once the traveller opts in (search.checkInNow).
   const variant = 'b' // Exploration switch removed; B · check-in now toggle is the prototype now ('base' / 'a' paths kept in code)
-  const homeDest = { name: 'FIVE Palm Jumeirah Dubai', region: 'United Arab Emirates, Dubai', hotelId: 'five' }
+  const homeDest = { name: 'Riyadh', region: 'Saudi Arabia' }
   const [search, setSearch] = useState(() => ({
     dest: homeDest,
     ...defaultDates(now),
-    rooms: [{ adults: 2, children: 1, ages: [5] }],
+    rooms: [{ adults: 2, children: 0, ages: [] }], // matches the rooms fetched from almosafer.com (2 adults)
     checkInNow: false,
   }))
   const [booking, setBooking] = useState({ hotel: HOTELS[0], room: null, rate: null })

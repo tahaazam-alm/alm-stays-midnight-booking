@@ -5,7 +5,7 @@ import { useNav } from '../shell/navigation.jsx'
 import { Icon } from '../shell/Icon.jsx'
 import { useStay } from '../state.jsx'
 import { useCopy } from '../copy.js'
-import { HOTELS, ROOMS } from '../data.js'
+import { HOTELS } from '../data.js'
 import { fmtRange, fmtShort, guestCount, nights } from '../logic.js'
 import { ReviewPanel, ReviewSnippets, MapLandmarks, StayField } from '../custom/HotelOverview.jsx'
 import { RoomCard } from '../custom/RoomCard.jsx'
@@ -22,8 +22,7 @@ export default function Hotel() {
   const [tab, setTab] = useState(0)
   const [toast, setToast] = useState('')
   const soon = () => setToast(t('notBuilt'))
-  // Hotels without their own detail content borrow FIVE's (base prototype)
-  const hotel = { ...HOTELS[0], ...booking.hotel }
+  const hotel = booking.hotel || HOTELS[0]
   const n = nights(search.checkIn, search.checkOut)
 
   return (
@@ -41,13 +40,15 @@ export default function Hotel() {
       <div className="screen__body hotel__body">
         <div>
           <h1 className="t-title t-reset">{t.d(hotel.name)}</h1>
-          <p className="t-caption t-subtext t-reset">{t('starResort', hotel.stars)} • {t.d(hotel.address)}</p>
+          <p className="t-caption t-subtext t-reset">{t.d(hotel.type)} • {t.d(hotel.address)}</p>
         </div>
         <ReviewPanel hotel={hotel} />
-        <section className="hotel__section">
-          <h2 className="t-subtitle t-reset">{t('recentReviews')}</h2>
-          <ReviewSnippets reviews={hotel.recentReviews} />
-        </section>
+        {hotel.recentReviews?.length > 0 && (
+          <section className="hotel__section">
+            <h2 className="t-subtitle t-reset">{t('recentReviews')}</h2>
+            <ReviewSnippets reviews={hotel.recentReviews} />
+          </section>
+        )}
         <MapLandmarks hotel={hotel} />
         <SegmentedControl items={[t('availableRooms'), t('propertyDetails')]} value={tab} onChange={setTab} />
         {tab === 0 ? (
@@ -61,7 +62,7 @@ export default function Hotel() {
               <Chip label={t('breakfastIncluded')} onClick={soon} />
               <Chip label={t('bedding')} onClick={soon} />
             </div>
-            {ROOMS.map((room, i) => (
+            {hotel.rooms.map((room, i) => (
               <RoomCard key={room.id} room={room} open={i === 0} nightsLabel={t('totalForShort', n)}
                 onSelect={(rate) => { setBooking({ hotel, room, rate }); nav.push('guest') }} />
             ))}

@@ -20,7 +20,7 @@ export function ReviewPanel({ hotel }) {
       <div className="review-panel__subs">
         {(hotel.subScores || []).map(([k, v]) => (
           <div key={k} className="review-panel__sub">
-            <div className="review-panel__row t-caption"><span>{t.d(k)}</span><span className="t-caption-semi">{v}</span></div>
+            <div className="review-panel__row t-caption"><span>{t.d(k)}</span><span className="t-caption-semi">{v.toFixed(1)}</span></div>
             <LinearProgressIndicator value={v * 10} aria-label={t.d(k)} />
           </div>
         ))}

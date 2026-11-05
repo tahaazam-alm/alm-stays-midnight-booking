@@ -91,7 +91,7 @@ export default function Results() {
           <MoonBanner className="results__banner" text={t('nowResultsLine')} />
         )}
         {variant === 'a' && nowOn && <NightTip arrow="none" pulse title={t('nowResultsTitle')} body={t('nowResultsBody', t.d(destCity(search.dest)))} />}
-        <p className="t-caption t-subtext t-reset results__count">{t('propertiesFound', nowOn ? '1,284' : '7,519', t.d('Dubai'))}</p>
+        <p className="t-caption t-subtext t-reset results__count">{t('propertiesFound', nowOn ? '186' : '1,214', t.d(destCity(search.dest)))}</p>
         {list.map((h) => (
           <HotelCard key={h.id} hotel={h} nightsLabel={t('totalFor', n)} onSelect={() => { setBooking({ hotel: h, room: null, rate: null }); nav.push('hotel') }} />
         ))}
