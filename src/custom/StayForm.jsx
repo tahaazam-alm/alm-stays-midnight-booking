@@ -7,6 +7,7 @@ import * as I from '../icons.js'
 import { useCopy } from '../copy.js'
 import { useProto } from '../shell/PrototypeShell.jsx'
 import { fmtFull, guestsLabel } from '../logic.js'
+import { useStay } from '../state.jsx'
 import './StayForm.css'
 
 // `checkInField` / `checkOutField` override a date cell's label/value/subtext (instant check-in explorations).
@@ -15,6 +16,7 @@ import './StayForm.css'
 // `nowOn` sets the check-in value in bold. `nowRow` is tinted on its own while off; once on, the tint covers the dates block too
 // (`nowRow.navy`: the row turns navy on its own instead).
 export function StayForm({ search, checkInField, checkOutField, datesTip, nowRow, nowOn, onDest, onDates, onGuests, children }) {
+  const { shownCheckIn } = useStay()
   const t = useCopy()
   const { dir } = useProto()
   return (
@@ -23,7 +25,7 @@ export function StayForm({ search, checkInField, checkOutField, datesTip, nowRow
       <Separator className="stay-form__sep" />
       <div className={`stay-form__night night-tint ${nowRow?.checked && !nowRow.navy ? 'is-on' : ''}`}>
       <div className="stay-form__dates">
-        <WidgetField variant="populated" label={t('checkIn')} value={fmtFull(search.checkIn)} icon={<Icon svg={I.calendar} />} onPress={onDates} {...checkInField} />
+        <WidgetField variant="populated" label={t('checkIn')} value={fmtFull(shownCheckIn)} icon={<Icon svg={I.calendar} />} onPress={onDates} {...checkInField} />
         <span className="stay-form__arrow"><Icon svg={dir === 'rtl' ? I.chevronLeft : I.chevronRight} size={20} /></span>
         <WidgetField variant="populated" label={t('checkOut')} value={fmtFull(search.checkOut)} onPress={onDates} {...checkOutField} />
       </div>

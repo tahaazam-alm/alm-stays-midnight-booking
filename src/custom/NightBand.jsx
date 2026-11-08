@@ -7,7 +7,7 @@ import './NightBand.css'
 export function NightBand({ text }) {
   return (
     <div className="night-band" role="status">
-      <Icon svg={I.night} size={24} />
+      <Icon svg={I.night} size={20} />
       <span className="night-band__text">{text}</span>
     </div>
   )

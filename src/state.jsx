@@ -32,12 +32,14 @@ export function StayProvider({ children }) {
     checkInNow: false,
   }))
   const [booking, setBooking] = useState({ hotel: HOTELS[0], room: null, rate: null })
-  // Picking a destination in another time zone (London) makes the traveller abroad: see awayTime and the status bar
+  // Picking a destination in another time zone (London, Dubai) makes the traveller abroad: see awayTime and the status bar
   const value = useMemo(() => ({
     now,
     variant,
     search,
     nowOn: variant !== 'base' && search.checkInNow,
+    // Check in tonight books from the night before (Thu 22) but the traveller sees today's date (Fri 23) everywhere
+    shownCheckIn: search.checkInNow ? startOfDay(now) : search.checkIn,
     // Destination in another time zone: the check-in now row says what time it is there
     awayTime: search.dest.tzBehind ? now : null,
     updateSearch: (patch) => setSearch((s) => ({ ...s, ...patch })),

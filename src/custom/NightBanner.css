@@ -127,3 +127,13 @@
 .moon-banner .system-banner__icon-slot > svg { visibility: hidden; }
 .moon-banner .system-banner { align-items: center; padding-inline: var(--space-md); gap: var(--space-sm); }
 .moon-banner .system-banner__title { font: var(--type-caption-semibold-weight) var(--type-caption-size)/var(--type-caption-lh) var(--type-caption-semibold-family); }
+
+/* Same-day check-out tip (calendar): minimal metal bubble, no icon, one line and a plain text-link action */
+.night-tip--ask { --night-tip-bg: var(--color-metal-static); --night-tip-stroke: var(--color-metal-static);
+  padding-inline-start: var(--space-md); box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--color-metal-static) 40%, transparent); }
+.night-tip--ask > .ds-icon, .night-tip--ask .night-tip__action .ds-icon { display: none; }
+/* Arrival-window pill on the check-in date: moon icon and the 12 AM – 6 AM window, nothing else */
+/* Same padding, border and radius as the question tip; the text row matches the Yes button's height so both tips stand the same */
+.night-tip--ask.night-tip--time { gap: var(--space-xs); padding-inline: var(--space-md); }
+.night-tip--ask.night-tip--time .night-tip__text { display: flex; align-items: center; min-block-size: 28px; }
+.night-tip--ask.night-tip--time > .ds-icon { display: inline-flex; padding: 0; background: none; }

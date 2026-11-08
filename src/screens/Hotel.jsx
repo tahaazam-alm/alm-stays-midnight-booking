@@ -17,7 +17,7 @@ import './Hotel.css'
 export default function Hotel() {
   const nav = useNav()
   const t = useCopy()
-  const { search, booking, setBooking, nowOn } = useStay()
+  const { search, booking, setBooking, nowOn, shownCheckIn } = useStay()
   const under = nowOn // settled: banner under the fields
   const [tab, setTab] = useState(0)
   const [toast, setToast] = useState('')
@@ -54,7 +54,7 @@ export default function Hotel() {
         {tab === 0 ? (
           <>
             <div className="hotel__fields">
-              <StayField icon={I.calendar} label={!under && nowOn ? t('nowWindowRange', fmtShort(search.checkOut)) : fmtRange(search.checkIn, search.checkOut)} onClick={() => nav.popTo('search')} />
+              <StayField icon={I.calendar} label={!under && nowOn ? t('nowWindowRange', fmtShort(search.checkOut)) : fmtRange(shownCheckIn, search.checkOut)} onClick={() => nav.popTo('search')} />
               <StayField icon={I.usersTwo} label={t('guestsN', guestCount(search.rooms))} onClick={() => nav.popTo('search')} />
             </div>
             {under && <MoonBanner className="hotel__now-banner" text={t('nowRoomsTitle')} description={t('nowRoomsBody')} />}

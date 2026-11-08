@@ -56,8 +56,8 @@
 }
 .range-cal__tip-caret {
   position: absolute; inset-block-end: 2.5px; inset-inline-start: 50%; width: 11px; height: 11px; border-radius: 0 0 2px 0;
-  background: var(--color-almosafer); transform: translateX(-50%) rotate(45deg);
-  border: 1px solid color-mix(in srgb, var(--color-white-static) 16%, var(--color-almosafer));
+  background: var(--tip-bg, var(--color-almosafer)); transform: translateX(-50%) rotate(45deg);
+  border: 1px solid var(--tip-stroke, color-mix(in srgb, var(--color-white-static) 16%, var(--color-almosafer)));
   border-block-start-color: transparent; border-inline-start-color: transparent;
 }
 [dir='rtl'] .range-cal__tip-caret { transform: translateX(50%) rotate(45deg); }
@@ -73,3 +73,17 @@
   position: relative; z-index: 1; width: calc(100% + var(--space-md)); padding-inline-end: var(--space-md);
 }
 .range-cal--night .range-cal__day.is-start.has-end.is-long .range-cal__mark { padding-inline-end: 6px; }
+/* Same-day check-out tip: the caret follows the bubble's metal colour */
+/* Small pill tip: sized to its content and centred on the day; on the first or last day of the week it holds to the outer edge so it stays on screen */
+.range-cal__tip--time .range-cal__tip-bubble { width: max-content; inset-inline-start: 50%; transform: translateX(-50%); }
+[dir='rtl'] .range-cal__tip--time .range-cal__tip-bubble { transform: translateX(50%); }
+.range-cal__tip--time[data-edge] .range-cal__tip-bubble { transform: none; }
+.range-cal__tip--time[data-edge='start'] .range-cal__tip-bubble { inset-inline-start: 0; }
+.range-cal__tip--time[data-edge='end'] .range-cal__tip-bubble { inset-inline-start: auto; inset-inline-end: 0; }
+.range-cal__tip--ask, .range-cal__tip--time { --tip-bg: var(--color-metal-static); --tip-stroke: var(--color-metal-static); }
+/* Tip morph (tone change): the bubble's fill animates its box; the new words and the old ones (a fill-less copy) sit centred in it and crossfade */
+.range-cal__tip-bubble.is-morphing > * { height: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; justify-content: center; }
+.range-cal__tip-ghost {
+  position: absolute; inset-block: -1px; left: 50%; transform: translateX(-50%); margin: 0; pointer-events: none;
+  background: transparent; border-color: transparent; box-shadow: none;
+}

@@ -5,7 +5,7 @@ import { useNav } from '../shell/navigation.jsx'
 import { Icon } from '../shell/Icon.jsx'
 import { useStay } from '../state.jsx'
 import { useCopy } from '../copy.js'
-import { HOTELS } from '../data.js'
+import { hotelsFor, countsFor } from '../data.js'
 import { fmtRange, guestCount, nights, destCity } from '../logic.js'
 import { HotelCard } from '../custom/HotelCard.jsx'
 import { AiSearchBar, MapPill } from '../custom/ResultsExtras.jsx'
@@ -19,7 +19,7 @@ import './Results.css'
 export default function Results() {
   const nav = useNav()
   const t = useCopy()
-  const { variant, search, nowOn, setBooking } = useStay()
+  const { variant, search, nowOn, setBooking, shownCheckIn } = useStay()
   // Results banner: the rounded banner that pins under the header, or a navy band that is part of the sticky header
   const band = variant === 'b' && nowOn // settled: navy band
   const [toast, setToast] = useState('')
@@ -65,7 +65,7 @@ export default function Results() {
   const soon = () => setToast(t('notBuilt'))
   const n = nights(search.checkIn, search.checkOut)
   // A hotel search puts that hotel first, as in the app
-  const list = [...HOTELS].filter((h) => !nowOn || h.instant).sort((a, b) => (b.id === search.dest.hotelId) - (a.id === search.dest.hotelId))
+  const list = [...hotelsFor(search.dest)].filter((h) => !nowOn || h.instant).sort((a, b) => (b.id === search.dest.hotelId) - (a.id === search.dest.hotelId))
 
   return (
     <div ref={ref} className={`screen results ${tucked ? 'results--tucked' : ''} ${pinned ? 'results--pinned' : ''} ${band ? 'results--band' : ''}`}>
@@ -73,7 +73,7 @@ export default function Results() {
         <Navbar
           toolbar={{
             variant: 'stays', location: t.d(search.dest.name), guests: guestCount(search.rooms),
-            dates: fmtRange(search.checkIn, search.checkOut),
+            dates: fmtRange(shownCheckIn, search.checkOut),
             onBack: () => nav.back(), onItinerary: () => nav.back(), onCurrency: soon,
           }}
           chips={[
@@ -91,7 +91,7 @@ export default function Results() {
           <MoonBanner className="results__banner" text={t('nowResultsLine')} />
         )}
         {variant === 'a' && nowOn && <NightTip arrow="none" pulse title={t('nowResultsTitle')} body={t('nowResultsBody', t.d(destCity(search.dest)))} />}
-        <p className="t-caption t-subtext t-reset results__count">{t('propertiesFound', nowOn ? '186' : '1,214', t.d(destCity(search.dest)))}</p>
+        <p className="t-caption t-subtext t-reset results__count">{t('propertiesFound', countsFor(search.dest)[nowOn ? 'tonight' : 'all'], t.d(destCity(search.dest)))}</p>
         {list.map((h) => (
           <HotelCard key={h.id} hotel={h} nightsLabel={t('totalFor', n)} onSelect={() => { setBooking({ hotel: h, room: null, rate: null }); nav.push('hotel') }} />
         ))}

@@ -16,7 +16,12 @@ export default {
 
   // Scenario toggles. The first option is the default. Read with useProto().controls.<id>
   controls: [
-    // Settled: the clock is always past midnight (Fri 23 Oct, 1:30 AM at the destination). Picking London in the search
+    // Calendar, check in tonight on: keep today's check-out date fields, or clear check-out and ask about same-day check-out in an aqua tip
+    { id: 'calCheckout', label: 'Calendar check-out', labelAr: 'المغادرة في التقويم', options: [
+      { value: 'fields', label: 'Date fields', labelAr: 'حقول التاريخ' },
+      { value: 'ask', label: 'Same-day tip', labelAr: 'تلميح نفس اليوم' },
+    ] },
+    // Settled: the clock is always past midnight (Fri 23 Oct, 1:30 AM at the destination). Picking London or Dubai in the search
     // makes the traveller abroad (phone on Riyadh time). Search uses the row in the widget, the calendar the date fields,
     // results the navy band, hotel details the banner under the fields.
     // Guest Details + Confirm and Pay: how the booking summary carries instant check-in

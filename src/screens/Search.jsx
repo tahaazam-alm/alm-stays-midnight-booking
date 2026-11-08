@@ -19,7 +19,7 @@ import './Search.css'
 export default function Search() {
   const nav = useNav()
   const t = useCopy()
-  const { now, variant, search, nowOn, awayTime, updateSearch, setCheckInNow } = useStay()
+  const { now, variant, search, nowOn, awayTime, updateSearch, setCheckInNow, shownCheckIn } = useStay()
   // Opted in: check-in reads as tonight's window, check-out keeps its date
   // Offer checking in now past midnight while check-in is still today (production's earliest date)
   const offerNow = variant !== 'base' && isPastMidnight(now) && !nowOn && sameDay(search.checkIn, now)
@@ -70,7 +70,7 @@ export default function Search() {
           </div>
           <div className="stay-search__recents">
             {HOTELS.slice(0, 3).map((h) => (
-              <RecentCard key={h.id} hotel={h} dates={fmtRange(search.checkIn, search.checkOut)} place={t.d('Riyadh, Saudi Arabia')}
+              <RecentCard key={h.id} hotel={h} dates={fmtRange(shownCheckIn, search.checkOut)} place={t.d('Riyadh, Saudi Arabia')}
                 onSelect={() => { updateSearch({ dest: { name: h.name, region: 'Saudi Arabia, Riyadh', hotelId: h.id } }); nav.push('results') }} />
             ))}
           </div>

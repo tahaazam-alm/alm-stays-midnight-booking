@@ -34,7 +34,7 @@ export function clockFor(scenario) {
   return scenario === 'midnight' ? new Date(2026, 9, 23, 1, 30) : new Date(2026, 9, 22, 18, 51)
 }
 
-/** Riyadh → London: the phone runs on Riyadh time (UTC+3), London is on BST (UTC+1) until 25 Oct 2026, so 2 hours behind. */
+/** The phone runs on Riyadh time (UTC+3). London (BST, UTC+1 until 25 Oct 2026) is 2 hours behind; Dubai (UTC+4) is 1 ahead, so tzBehind -1. */
 export const LONDON = { name: 'London', region: 'United Kingdom', tzBehind: 2 }
 export const deviceClock = (destNow, dest) => (dest.tzBehind ? new Date(+destNow + dest.tzBehind * 36e5) : destNow)
 
