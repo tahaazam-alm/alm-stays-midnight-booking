@@ -29,13 +29,20 @@ export const AR_NOUNS = {
   year: ['سنة واحدة', 'سنتان', 'سنوات', 'سنة'],
 }
 
-/** The device clock for each scenario in the control bar. */
+/** The device clock for each scenario, on the real date: 1:30 AM today (past midnight), or 6:51 PM the evening before. */
 export function clockFor(scenario) {
-  return scenario === 'midnight' ? new Date(2026, 9, 23, 1, 30) : new Date(2026, 9, 22, 18, 51)
+  const t = new Date()
+  return scenario === 'midnight' ? new Date(t.getFullYear(), t.getMonth(), t.getDate(), 1, 30) : new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1, 18, 51)
 }
 
-/** The phone runs on Riyadh time (UTC+3). London (BST, UTC+1 until 25 Oct 2026) is 2 hours behind; Dubai (UTC+4) is 1 ahead, so tzBehind -1. */
-export const LONDON = { name: 'London', region: 'United Kingdom', tzBehind: 2 }
+/** Hours London is behind Riyadh (UTC+3) today: 2 in British Summer Time, 3 in winter. */
+export const londonBehind = () => {
+  const off = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', timeZoneName: 'shortOffset' }).formatToParts(new Date()).find((p) => p.type === 'timeZoneName')?.value
+  return 3 - (Number((off || 'GMT').slice(3)) || 0)
+}
+
+/** The phone runs on Riyadh time (UTC+3). London is 2–3 hours behind (see londonBehind); Dubai (UTC+4) is 1 ahead, so tzBehind -1. */
+export const LONDON = { name: 'London', region: 'United Kingdom', tzBehind: londonBehind() }
 export const deviceClock = (destNow, dest) => (dest.tzBehind ? new Date(+destNow + dest.tzBehind * 36e5) : destNow)
 
 export const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
@@ -56,7 +63,7 @@ export const isPastMidnight = (now) => now.getHours() < MIDNIGHT_WINDOW_END
  * Earliest bookable check-in.
  * - CURRENT PRODUCTION RULE (`instant` false): the device's calendar date. After midnight this is
  *   already "tomorrow" for a guest who hasn't slept yet — the gap the Midnight Booking project closes.
- * - INSTANT CHECK-IN (`instant` true): the night the traveller is in, so Thu 22 stays open at 01:30 Fri.
+ * - INSTANT CHECK-IN (`instant` true): the night the traveller is in, so last night's date stays open at 01:30.
  */
 export const earliestCheckIn = (now, instant = false) => (instant ? nightOf(now) : startOfDay(now))
 

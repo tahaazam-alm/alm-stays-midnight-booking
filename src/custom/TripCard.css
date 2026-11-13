@@ -1,0 +1,24 @@
+/* CUSTOM: trip card for Home and My Trips (see TripCard.jsx) */
+.trip-card {
+  position: relative; z-index: 1; display: flex; flex-direction: column; width: 100%; padding: 0; border: 0; overflow: hidden; cursor: pointer;
+  border-radius: var(--rounded-lg); background: var(--background-base-subtle); text-align: start;
+}
+.trip-card__photo {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 112px;
+  padding: var(--space-md) var(--space); background: var(--trip-card-image) center / cover;
+  color: var(--text-base-inverted-static);
+}
+.trip-card__photo::before { content: ''; position: absolute; inset: 0; background: var(--gradient-vertical-bottom); }
+.trip-card__photo > * { position: relative; }
+.trip-card__photo > .trip-card__tonight {
+  position: absolute; inset-block-start: var(--space-sm); inset-inline-end: var(--space-sm); padding: var(--space-2xs) var(--space-sm);
+  border-radius: var(--rounded-xs); background: var(--overlay-default); color: var(--text-base-inverted-static); white-space: nowrap;
+}
+.trip-card__city { line-height: var(--type-title-lh); }
+.trip-card__info { position: relative; display: flex; flex-direction: column; gap: var(--space-2xs); padding: var(--space-md) var(--space); min-width: 0; overflow: hidden; }
+/* The photo carries on under the hotel name, blurred and washed out */
+.trip-card__info::before { content: ''; position: absolute; inset: calc(var(--space-xl) * -1); background: var(--trip-card-image) bottom / cover; filter: blur(16px); }
+.trip-card__info::after { content: ''; position: absolute; inset: 0; background: color-mix(in srgb, var(--background-base-default) 72%, transparent); }
+.trip-card__info > * { position: relative; z-index: 1; }
+.trip-card__title { color: var(--text-base-default); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trip-card__status { display: flex; }

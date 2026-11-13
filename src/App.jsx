@@ -7,6 +7,10 @@ import Results from './screens/Results.jsx'
 import Hotel from './screens/Hotel.jsx'
 import GuestDetails from './screens/GuestDetails.jsx'
 import Pay from './screens/Pay.jsx'
+import Home from './screens/Home.jsx'
+import Trips from './screens/Trips.jsx'
+import BookingDetails from './screens/BookingDetails.jsx'
+import ManageBooking from './screens/ManageBooking.jsx'
 
 // Every screen of the prototype, keyed by name. Numbers match the reference screenshots in /reference.
 const screens = {
@@ -15,6 +19,11 @@ const screens = {
   hotel: Hotel, //         3
   guest: GuestDetails, //  4
   pay: Pay, //             5
+  // After booking
+  home: Home, //           7 · home with the upcoming trip (the booking confirmed sheet opens over it after Pay)
+  trips: Trips, //         8 · My Trips tab
+  details: BookingDetails, // 9 · Your booking
+  manage: ManageBooking, // 10 · Manage booking
 }
 
 export default function App() {

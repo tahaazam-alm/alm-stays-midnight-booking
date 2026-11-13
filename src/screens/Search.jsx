@@ -52,7 +52,7 @@ export default function Search() {
   return (
     <div className="screen stay-search">
       <div className="screen__nav">
-        <Navbar toolbar={{ title: t('propertySearch'), subtitle: t('propertySearchSub'), onBack: () => setToast(t('notBuilt')),
+        <Navbar toolbar={{ title: t('propertySearch'), subtitle: t('propertySearchSub'), onBack: () => nav.reset('home'),
           rightActions: [{ icon: <Icon svg={I.gear} />, onClick: () => setSettings(true), 'aria-label': t('settings') }] }} />
       </div>
       <div className="screen__body stay-search__body">
@@ -78,7 +78,7 @@ export default function Search() {
       </div>
 
       <DestinationSheet open={sheet === 'dest'} onClose={close} onPick={(dest) => { updateSearch({ dest }); close() }} />
-      <DatesSheet open={sheet === 'dates'} onClose={close} onHowItWorks={() => setHow(true)} onConfirm={(checkIn, checkOut, checkInNow = false) => { updateSearch({ checkIn, checkOut, checkInNow }); close() }} />
+      <DatesSheet open={sheet === 'dates'} onClose={close} onHowItWorks={() => setHow(true)} onConfirm={(checkIn, checkOut, checkInNow = false, datesPicked = false) => { updateSearch({ checkIn, checkOut, checkInNow, datesPicked }); close() }} />
       <GuestsSheet open={sheet === 'guests'} onClose={close} onApply={(rooms) => { updateSearch({ rooms }); close() }} />
       <HowItWorksSheet open={how} onClose={() => setHow(false)} />
       <ProtoSettings open={settings} onClose={() => setSettings(false)} />

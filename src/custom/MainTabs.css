@@ -1,0 +1,5 @@
+/* The DS TabBar brings its own 16px side padding; the wrapper adds none so the pill sits 16px from the edges and the bottom */
+.main-tabs { position: sticky; bottom: 0; z-index: 4; display: flex; justify-content: center; }
+.main-tabs .tabbar { inline-size: 100%; padding-block-end: var(--space); }
+/* The library ships the glass blur with the -webkit- prefix only (Safari); repeat it unprefixed so it shows everywhere */
+.main-tabs .tabbar__pill { backdrop-filter: var(--liquid-glass-filter); }

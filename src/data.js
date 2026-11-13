@@ -1,5 +1,6 @@
 // Mock data for the stays funnel: Riyadh's top 5 "Recommended" stays on almosafer.com, read in Chrome (20–21 Nov 2026, 2 adults),
 // with their real photos, scores, reviews, landmarks and room types. Prices are the site's, shown as SAR.
+import { londonBehind } from './logic.js'
 import narcissus from './assets/riyadh/narcissus.jpg'
 import narcissusTwin from './assets/riyadh/narcissus-twin.jpg'
 import narcissusTower from './assets/riyadh/narcissus-tower.jpg'
@@ -72,7 +73,7 @@ export const RECENT_DESTINATIONS = [
 export const POPULAR_CITIES = [
   { name: 'Riyadh', region: 'Saudi Arabia' },
   { name: 'Dubai', region: 'United Arab Emirates', tzBehind: -1 }, // Dubai is 1 hour ahead of Riyadh: 1:30 AM there, 12:30 AM on the phone
-  { name: 'London', region: 'United Kingdom', tzBehind: 2 },
+  { name: 'London', region: 'United Kingdom', tzBehind: londonBehind() },
   { name: 'Jeddah', region: 'Saudi Arabia' },
   { name: 'Makkah', region: 'Saudi Arabia' },
   { name: 'Abu Dhabi', region: 'United Arab Emirates' },

@@ -18,4 +18,4 @@
 .booking-summary__top .ds-icon { color: color-mix(in srgb, var(--color-aqua-100), var(--color-white-static) 35%); }
 /* 'quiet': no tag or tint, just the moon and a line of text in the body colour */
 .booking-summary__quiet { display: flex; align-items: center; gap: 4px; margin-block: 2px; color: var(--text-base-default); }
-.booking-summary__quiet .ds-icon { color: var(--icon-base-subtle); flex-shrink: 0; }
+.booking-summary__quiet .ds-icon { color: var(--text-base-default); flex-shrink: 0; }

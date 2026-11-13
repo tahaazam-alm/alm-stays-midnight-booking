@@ -39,7 +39,8 @@
 .range-cal__day.is-start { border-start-start-radius: var(--rounded); border-end-start-radius: var(--rounded); }
 .range-cal__day.is-start:not(.has-end) { border-radius: var(--rounded); }
 .range-cal__day.is-end { border-start-end-radius: var(--rounded); border-end-end-radius: var(--rounded); }
-.range-cal__day.is-today:not(.is-edge) span { text-decoration: underline; text-underline-offset: 4px; }
+/* Today, when it is not part of the stay: outlined square, as in production */
+.range-cal__day.is-today:not(.is-edge):not(.is-in) > span { box-shadow: inset 0 0 0 2px var(--border-secondary-default); border-radius: var(--rounded); }
 .range-cal__mark { display: block; font-size: 10px; line-height: 12px; font-weight: var(--type-body-semibold-weight); color: var(--text-link-default); }
 .range-cal__mark--icon { position: absolute; inset-block-start: 4px; inset-inline-end: 8px; color: var(--icon-secondary-default); }
 .range-cal__day.is-edge .range-cal__mark, .range-cal__day.is-edge .range-cal__mark--icon { color: var(--text-base-inverted-static); }
@@ -74,12 +75,8 @@
 }
 .range-cal--night .range-cal__day.is-start.has-end.is-long .range-cal__mark { padding-inline-end: 6px; }
 /* Same-day check-out tip: the caret follows the bubble's metal colour */
-/* Small pill tip: sized to its content and centred on the day; on the first or last day of the week it holds to the outer edge so it stays on screen */
-.range-cal__tip--time .range-cal__tip-bubble { width: max-content; inset-inline-start: 50%; transform: translateX(-50%); }
-[dir='rtl'] .range-cal__tip--time .range-cal__tip-bubble { transform: translateX(50%); }
-.range-cal__tip--time[data-edge] .range-cal__tip-bubble { transform: none; }
-.range-cal__tip--time[data-edge='start'] .range-cal__tip-bubble { inset-inline-start: 0; }
-.range-cal__tip--time[data-edge='end'] .range-cal__tip-bubble { inset-inline-start: auto; inset-inline-end: 0; }
+/* Small pill tip: sized to its content. RangeCalendar places it over its day, held at least 8px inside the calendar; the caret stays centred on the day */
+.range-cal__tip--time .range-cal__tip-bubble { width: max-content; }
 .range-cal__tip--ask, .range-cal__tip--time { --tip-bg: var(--color-metal-static); --tip-stroke: var(--color-metal-static); }
 /* Tip morph (tone change): the bubble's fill animates its box; the new words and the old ones (a fill-less copy) sit centred in it and crossfade */
 .range-cal__tip-bubble.is-morphing > * { height: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; justify-content: center; }

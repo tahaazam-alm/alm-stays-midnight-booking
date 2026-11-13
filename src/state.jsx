@@ -32,13 +32,15 @@ export function StayProvider({ children }) {
     checkInNow: false,
   }))
   const [booking, setBooking] = useState({ hotel: HOTELS[0], room: null, rate: null })
+  // Snapshot taken when the traveller pays: what the confirmation, My Trips, booking details and manage screens show
+  const [booked, setBooked] = useState(null)
   // Picking a destination in another time zone (London, Dubai) makes the traveller abroad: see awayTime and the status bar
   const value = useMemo(() => ({
     now,
     variant,
     search,
     nowOn: variant !== 'base' && search.checkInNow,
-    // Check in tonight books from the night before (Thu 22) but the traveller sees today's date (Fri 23) everywhere
+    // Check in tonight books from the night before but the traveller sees today's date everywhere
     shownCheckIn: search.checkInNow ? startOfDay(now) : search.checkIn,
     // Destination in another time zone: the check-in now row says what time it is there
     awayTime: search.dest.tzBehind ? now : null,
@@ -46,7 +48,9 @@ export function StayProvider({ children }) {
     setCheckInNow: (on) => setSearch((s) => ({ ...s, checkInNow: on, ...checkInNowDates(now, s, on) })),
     booking,
     setBooking,
-  }), [now, variant, search, booking])
+    booked,
+    confirmBooking: (total) => setBooked({ hotel: booking.hotel, search, tonight: variant !== 'base' && search.checkInNow, checkIn: search.checkInNow ? startOfDay(now) : search.checkIn, checkOut: search.checkOut, total, id: 'H0080403392' }),
+  }), [now, variant, search, booking, booked])
 
   return (
     <StayContext.Provider value={value}>
