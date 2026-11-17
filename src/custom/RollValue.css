@@ -1,0 +1,5 @@
+/* The value settles up from 40% below and sharpens from a 2px blur, 220ms ease-out. Transform, opacity and blur only. */
+.roll-value { display: inline-block; }
+.roll-value--in { animation: roll-value-in 220ms cubic-bezier(.23, 1, .32, 1) both; }
+@keyframes roll-value-in { from { opacity: 0; filter: blur(2px); transform: translateY(40%); } }
+@media (prefers-reduced-motion: reduce) { .roll-value--in { animation: none; } }

@@ -49,7 +49,7 @@ export function StayProvider({ children }) {
     booking,
     setBooking,
     booked,
-    confirmBooking: (total) => setBooked({ hotel: booking.hotel, search, tonight: variant !== 'base' && search.checkInNow, checkIn: search.checkInNow ? startOfDay(now) : search.checkIn, checkOut: search.checkOut, total, id: 'H0080403392' }),
+    confirmBooking: (total) => setBooked({ hotel: booking.hotel, room: booking.room, rate: booking.rate, search, tonight: variant !== 'base' && search.checkInNow, checkIn: search.checkInNow ? startOfDay(now) : search.checkIn, checkOut: search.checkOut, total, id: 'H0080403392' }),
   }), [now, variant, search, booking, booked])
 
   return (

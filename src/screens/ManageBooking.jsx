@@ -23,7 +23,7 @@ export default function ManageBooking() {
     <div className="screen funnel after">
       <div className="screen__nav"><Navbar toolbar={{ title: t('manageBooking'), onBack: () => nav.back() }} /></div>
       <div className="screen__body funnel__body">
-        <BookingSummary hotel={booked.hotel} search={booked.search} now={booked.tonight && 'quiet'} />
+        <BookingSummary hotel={booked.hotel} search={booked.search} />
 
         <div className="funnel__card after__cancel">
           <div className="after__cancel-head">

@@ -5,7 +5,7 @@ import { Icon } from '../shell/Icon.jsx'
 import { useStay, checkInNowDates } from '../state.jsx'
 import { useCopy } from '../copy.js'
 import { RECENT_DESTINATIONS, POPULAR_CITIES } from '../data.js'
-import { earliestCheckIn, rangeSummary, isPastMidnight, timeLabel, destCity, sameDay, fmtDay, startOfDay } from '../logic.js'
+import { earliestCheckIn, rangeSummary, isPastMidnight, timeLabel, destCity, sameDay, fmtDay, fmtShort, startOfDay } from '../logic.js'
 import { NightTip } from '../custom/NightBanner.jsx'
 import { NowToggleRow } from '../custom/NowToggleRow.jsx'
 import { RangeCalendar } from '../custom/RangeCalendar.jsx'
@@ -38,18 +38,30 @@ export function DestinationSheet({ open, onClose, onPick }) {
 
 // 1.2
 
-export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
+// `startNow`: opened by the tonight toggle on the search widget (Tonight toggle · Ask check-out): starts with tonight on and asks about check-out
+// `clearOut` (Tonight toggle · Empty check-out): with `startNow`, check-out always starts empty, even dates picked by hand
+export function DatesSheet({ open, onClose, onConfirm, onHowItWorks, startNow, clearOut }) {
   const t = useCopy()
   const { now, search, variant, awayTime } = useStay()
   // Same-day tip variation: turning tonight on clears check-out and asks about same-day check-out on today's date
-  const ask = useProto().controls.calCheckout === 'ask'
+  const { controls } = useProto()
+  const ask = true // settled: the calendar always clears check-out and asks about same-day check-out in the aqua tip (the Date fields option is gone)
   const [range, setRange] = useState({ start: search.checkIn, end: search.checkOut })
   // The sheet keeps its own opt-in until Confirm, so closing it changes nothing
   const [nowOn, setNowOn] = useState(search.checkInNow)
   // Dates the traveller picked by hand (here or in an earlier visit) keep their check-out when tonight goes on,
   // with no same-day question: it only shows when check-out is cleared
   const [picked, setPicked] = useState(!!search.datesPicked)
-  useEffect(() => { if (open) { setRange({ start: search.checkIn, end: search.checkOut }); setNowOn(search.checkInNow); setPicked(!!search.datesPicked)} }, [open, search.checkIn, search.checkOut, search.checkInNow, search.datesPicked])
+  useEffect(() => {
+    if (!open) return
+    setPicked(!!search.datesPicked)
+    if (startNow) {
+      // Same as turning tonight on inside the calendar: check-out is cleared (unless picked by hand) and the same-day question shows
+      const d = checkInNowDates(now, search, true)
+      const keep = !clearOut && search.datesPicked && search.checkOut > startOfDay(now)
+      setNowOn(true); setRange({ start: d.checkIn, end: keep ? search.checkOut : null })
+    } else { setRange({ start: search.checkIn, end: search.checkOut }); setNowOn(search.checkInNow) }
+  }, [open, startNow, clearOut, search.checkIn, search.checkOut, search.checkInNow, search.datesPicked])
   const optIn = (on) => {
     const d = checkInNowDates(now, { checkIn: range.start, checkOut: range.end }, on)
     const keep = ask && on && picked && range.end && range.end > startOfDay(now)
@@ -74,7 +86,7 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
   const nowRow = variant === 'b' && (offerNow || nowView)
   const asking = ask && nowView && !range.end
   const tip = asking ? { date: today, tone: 'ask', node: (
-    <NightTip arrow="none" className="night-tip--ask" title={t('sameDayTitle')}
+    <NightTip arrow="none" className="night-tip--ask" title={t('sameDayTitle', fmtShort(today))}
       actionLabel={t('sameDayAction')} onAction={() => { setRange((r) => ({ ...r, end: today })) }} />
   ) } : ask && nowView ? { date: today, tone: 'time', node: (
     // Check-out picked: a small pill on the check-in date with the arrival window
@@ -90,10 +102,10 @@ export function DatesSheet({ open, onClose, onConfirm, onHowItWorks }) {
       <RangeCalendar start={range.start} end={range.end} minDate={nowView ? today : earliestCheckIn(now, nowOn)}
         shownStart={nowView ? today : undefined} tone={nowView ? 'night' : undefined}
         tip={tip} onChange={pick} />
-      <div className={`dates-sheet__foot night-tint ${ask ? 'dates-sheet__foot--ask' : ''} ${nowRow && nowOn && !navyRow ? 'is-on' : ''}`}>
+      <div className={`dates-sheet__foot night-tint ${ask ? 'dates-sheet__foot--ask' : ''} ${nowRow && nowOn && !navyRow && !ask ? 'is-on' : ''}`}>
         {nowRow && (navyRow
           ? <NowToggleRow navy className="dates-sheet__now-row" title={t(nowOn ? 'tonightOnShort' : 'tonightShort')} subtext={t('tonightWindow')} note={awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city))} onInfo={onHowItWorks} infoLabel={t('howItWorks')} checked={nowOn} onChange={optIn} />
-          : <NowToggleRow className="dates-sheet__now-row" title={t('tonightTitle')} note={awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city))} linkLabel={t('howItWorks')} onLink={onHowItWorks} checked={nowOn} onChange={optIn} />)}
+          : <NowToggleRow tinted={ask} className="dates-sheet__now-row" title={t('tonightTitle')} note={awayTime && t('tipNowBody', timeLabel(awayTime), t.d(city))} linkLabel={t('howItWorks')} onLink={onHowItWorks} checked={nowOn} onChange={optIn} />)}
         {variant === 'a' && nowOn && (
           <NightTip arrow="none" className="dates-sheet__now" title={t('tipOnTitle')} body={t('tipOnBody')} linkLabel={t('removeNow')} onLink={() => optIn(false)} />
         )}

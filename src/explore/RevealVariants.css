@@ -1,0 +1,115 @@
+/* Arrival explorations: the option is not there at first. Same motion rules as TonightVariants.css (its --tx-* variables):
+   transitions only, ease-out entrances, a 2px blur to soften the fade, nothing from scale(0), origin at the thing it comes from. */
+
+/* Fold: the row's height opens through grid rows while its content settles 6px down into place */
+.rv-fold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--tx-slow) var(--tx-ease-out); }
+.rv-fold > * { min-block-size: 0; overflow: hidden; opacity: 0; filter: blur(2px); transform: translateY(-6px);
+  transition: opacity var(--tx-base) var(--tx-ease-out), filter var(--tx-base) var(--tx-ease-out), transform var(--tx-slow) var(--tx-ease-out); }
+.rv-fold.is-shown { grid-template-rows: 1fr; }
+.rv-fold.is-shown > * { opacity: 1; filter: none; transform: none; transition-delay: var(--tx-stagger); }
+/* Reveal off (I): the row is on the widget from the start, so nothing opens and only the light plays */
+.rv-fold.rv-fold--there { grid-template-rows: 1fr; transition: none; }
+.rv-fold.rv-fold--there > * { opacity: 1; filter: none; transform: none; transition: none; }
+/* On the widget behind the calendar: wait for the sheet to be on its way down, so the row is seen landing */
+.rv-fold--late.is-shown, .rv-fold--late.is-shown > * { transition-delay: calc(180ms * var(--tx-speed, 1)); }
+
+/* G · no tint; each letter turns navy in turn, a wave that runs to the end of the title and back, once.
+   Keyframes: a one-off, two-leg wave nobody interrupts. Two runs of the same keyframes per letter, one for each leg. */
+.rv-wave { --step: calc(26ms * var(--tx-speed, 1)); --beat: calc(360ms * var(--tx-speed, 1)); }
+.rv-shimmer.is-shown .rv-wave > span {
+  animation: rv-wave var(--beat) cubic-bezier(.45, 0, .55, 1) calc(var(--tx-slow) + var(--i) * var(--step)),
+    rv-wave var(--beat) cubic-bezier(.45, 0, .55, 1) calc(var(--tx-slow) + var(--beat) + (2 * var(--n) - var(--i)) * var(--step)); }
+@keyframes rv-wave { 50% { color: var(--color-aqua-100); } }
+
+/* H · no tint; as the row opens, one soft blob of navy light drifts across it from the start edge to the end edge, once.
+   After Linear's shimmer (a blurred ellipse gliding inside a clipped shape): a radial glow, wider than tall, that swells
+   mid-way and thins out as it leaves. Keyframes: a one-off pass nobody interrupts. Transform and opacity only;
+   multiply keeps the text and toggle readable under the glow. */
+.rv-sheen > * { position: relative; }
+.rv-sheen > *::after { content: ''; position: absolute; inset-inline-start: 0; inset-block: -20%; inline-size: 34%; pointer-events: none;
+  mix-blend-mode: multiply; opacity: 0; translate: -100% -8%; scale: .85;
+  background: radial-gradient(closest-side, var(--color-aqua-50), var(--color-aqua-30) 45%, transparent); }
+/* translate has only a start and an end, so the curve shapes one unbroken glide; scale and opacity ride on top */
+.rv-sheen.is-shown > *::after { animation: rv-blob calc(1250ms * var(--tx-speed, 1)) cubic-bezier(.45, .05, .35, 1) calc(260ms * var(--tx-speed, 1)) both; }
+/* H's own reveal: the card grows on an ease-in-out (it is moving on screen, not entering), slow enough to follow.
+   The content fades up a beat behind the height, so it is never seen squeezed; the band starts as the content lands. */
+.rv-sheen { --rv-ease: cubic-bezier(.3, 0, .1, 1); --rv-open: calc(560ms * var(--tx-speed, 1)); --rv-lag: calc(140ms * var(--tx-speed, 1)); transition: grid-template-rows var(--rv-open) var(--rv-ease); }
+.rv-sheen > * { filter: none; transform: translateY(-4px); transition: opacity calc(var(--rv-open) - var(--rv-lag)) var(--tx-ease-out), transform calc(var(--rv-open) - var(--rv-lag)) var(--tx-ease-out); }
+.rv-sheen.is-shown > * { transition-delay: var(--rv-lag); }
+.rv-sheen:dir(rtl) > *::after { translate: 100% -8%; }
+.rv-sheen.is-shown:dir(rtl) > *::after { animation-name: rv-blob-rtl; }
+@keyframes rv-blob { from { opacity: 0; translate: -100% -8%; scale: .85; } 25% { opacity: 1; }
+  50% { scale: 1.1; } 70% { opacity: 1; } to { opacity: 0; translate: 295% 8%; scale: .9; } }
+@keyframes rv-blob-rtl { from { opacity: 0; translate: 100% -8%; scale: .85; } 25% { opacity: 1; }
+  50% { scale: 1.1; } 70% { opacity: 1; } to { opacity: 0; translate: -295% 8%; scale: .9; } }
+
+/* I · band shimmer: H's reveal, but the light is a straight soft band the full height of the row, at a steady glide.
+   The light builds as it travels: faint over the first quarter, full by the middle, held to near the far edge, then gone. */
+.rv-sheen--band > *::after { inset-block: 0; inline-size: 45%; translate: -100% 0; scale: 1;
+  background: linear-gradient(100deg, transparent, var(--color-aqua-30) 50%, transparent); }
+.rv-sheen--band.is-shown > *::after { animation-name: rv-band; animation-duration: calc(1100ms * var(--tx-speed, 1)); }
+.rv-sheen--band:dir(rtl) > *::after { translate: 100% 0; }
+.rv-sheen--band.is-shown:dir(rtl) > *::after { animation-name: rv-band-rtl; }
+@keyframes rv-band { from { opacity: 0; translate: -100% 0; } 25% { opacity: .3; } 55% { opacity: 1; } 88% { opacity: 1; } to { opacity: 0; translate: 225% 0; } }
+@keyframes rv-band-rtl { from { opacity: 0; translate: 100% 0; } 25% { opacity: .3; } 55% { opacity: 1; } 88% { opacity: 1; } to { opacity: 0; translate: -225% 0; } }
+
+/* B · tab tucked behind the card's bottom edge */
+.rv-tuck { position: relative; }
+.rv-tuck > .stay-form { position: relative; z-index: 1; }
+.rv-tab { display: flex; align-items: center; gap: var(--space-md); margin-inline: var(--space); padding: var(--space-sm) var(--space-md);
+  border-end-start-radius: var(--rounded); border-end-end-radius: var(--rounded); cursor: pointer;
+  background-color: var(--background-base-default); box-shadow: inset 0 0 0 1px var(--border-base-default); color: var(--icon-base-subtle);
+  transform: translateY(-100%); transition: transform var(--tx-slow) var(--tx-ease-out), --night-tint-color .45s, --night-tint-reach .45s; }
+.rv-tab.is-shown { transform: none; }
+.rv-tab__text { flex: 1; min-inline-size: 0; color: var(--text-base-default); }
+
+/* C · a line in the check-in cell */
+.rv-whisper .widget-field__subtext:has(.rv-whisper__line) { overflow: visible; block-size: 0; transition: block-size var(--tx-base) var(--tx-ease-out); }
+.rv-whisper.is-shown .widget-field__subtext:has(.rv-whisper__line) { block-size: var(--type-caption-lh); }
+.rv-whisper__line { display: inline-flex; opacity: 0; filter: blur(2px); transform: translateY(4px);
+  transition: opacity var(--tx-base) var(--tx-ease-out), filter var(--tx-base) var(--tx-ease-out), transform var(--tx-base) var(--tx-ease-out); }
+.rv-whisper.is-shown .rv-whisper__line { opacity: 1; filter: none; transform: none; transition-delay: var(--tx-stagger); }
+.rv-whisper__offer, .rv-whisper__on { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--text-link-default); white-space: nowrap; overflow: visible; }
+.rv-whisper__offer { cursor: pointer; font-weight: var(--type-caption-semibold-weight); }
+.rv-whisper__on { gap: var(--space-sm); }
+
+/* D · tooltip growing out of the check-in cell (origin on its caret) */
+.rv-tipcard { overflow: visible; }
+.rv-tip-anchor { position: relative; block-size: 0; z-index: 2; }
+.rv-tip { position: absolute; inset-block-start: var(--space-2xs); inset-inline: var(--space); --night-tip-caret: 28px;
+  transform-origin: 28px 0; opacity: 0; transform: translateY(-4px) scale(.96); pointer-events: none;
+  transition: opacity var(--tx-fast) var(--tx-ease-out), transform var(--tx-base) var(--tx-ease-out); }
+[dir='rtl'] .rv-tip { transform-origin: calc(100% - 28px) 0; }
+.rv-tip.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+
+/* E, F · the widget with a calendar sheet that slides over it */
+.rv-flow { position: relative; display: grid; overflow: hidden; min-block-size: 600px; border-radius: var(--rounded-lg); }
+.rv-flow > * { grid-area: 1 / 1; min-inline-size: 0; }
+.rv-flow__page { transition: opacity var(--tx-slow) ease; }
+.rv-flow.is-open .rv-flow__page { opacity: .4; }
+.rv-flow__card .stay-form__dates .widget-field { cursor: pointer; }
+.rv-sheet { z-index: 3; display: flex; flex-direction: column; margin-block-start: var(--space-lg); background: var(--background-base-default);
+  border-radius: var(--rounded-lg) var(--rounded-lg) 0 0; box-shadow: inset 0 0 0 1px var(--border-base-default);
+  transform: translateY(105%); transition: transform calc(320ms * var(--tx-speed, 1)) cubic-bezier(.32, .72, 0, 1); }
+.rv-flow.is-open .rv-sheet { transform: none; }
+.rv-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-md) var(--space); }
+.rv-sheet__x { display: inline-flex; border: 0; padding: var(--space-xs); background: none; cursor: pointer; color: var(--icon-base-default); }
+.rv-sheet__body { flex: 1; min-block-size: 0; overflow: hidden; }
+.rv-sheet__body .range-cal__month { padding-inline: var(--space); padding-block-end: var(--space-md); }
+.rv-sheet__foot { display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); padding: 0 var(--space) var(--space); border-block-start: 1px solid var(--border-base-default); }
+.rv-sheet__foot > .rv-fold { align-self: stretch; margin-inline: calc(-1 * var(--space)); }
+.rv-sheet__foot > .rv-fold .now-row { border-block-end: 1px solid var(--border-base-default); }
+.rv-sheet__foot .btn { inline-size: 100%; }
+.rv-sheet__line { padding-block-start: var(--space-md); }
+.rv-sheet__line b { font-weight: var(--type-body-semibold-weight); }
+.rv-sheet__line .t-subtext { color: var(--text-base-subtext); }
+/* F · the tip pops from the date it belongs to */
+.rv-sheet .range-cal__tip-bubble { transform-origin: 50% 100%; transition: opacity var(--tx-fast) var(--tx-ease-out), transform var(--tx-base) var(--tx-ease-out);
+  @starting-style { opacity: 0; transform: translateY(4px) scale(.96); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv-fold > *, .rv-whisper__line, .rv-tip, .rv-sheet .range-cal__tip-bubble { transform: none !important; filter: none !important; }
+  .rv-fold, .rv-tab, .rv-sheet { transition-duration: 0ms; }
+  .rv-wave > span, .rv-sheen > *::after { animation: none !important; }
+}
+.rv-whisper__line .tx-roll, .rv-whisper__line .tx-roll > * { overflow: visible; max-inline-size: none; }

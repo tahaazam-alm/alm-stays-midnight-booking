@@ -29,7 +29,6 @@ export function ConfirmedSheet({ open, onClose, onSoon: soon }) {
           <h2 className="t-title t-reset">{t('bookingIsConfirmed')}</h2>
           <p className="t-body t-subtext t-reset">{t.d(booked.hotel.name)}</p>
           <p className="t-body t-subtext t-reset">{fmtRange(booked.checkIn, booked.checkOut)}</p>
-          {booked.tonight && <p className="t-caption t-subtext t-reset after__tonight"><Icon svg={I.night} size={16} />{t('tonightBetween')}</p>}
           <LegacyButton variant="ghost" size="small" label={t('bookingDetails')} onClick={() => nav.push('details')} />
         </div>
 

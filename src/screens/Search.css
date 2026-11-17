@@ -46,3 +46,14 @@
 .dates-sheet__line { padding-block: var(--space-xs); }
 .dates-sheet__line .t-subtext { color: var(--text-base-subtext); }
 .dates-sheet__line b { font-weight: var(--type-body-semibold-weight); }
+
+/* Tonight toggle · Subtle tooltip: a small metal tip that floats above the check-out date, caret pointing down at it. It is out of flow,
+   so the widget keeps its size. The bubble grows from 96% out of its caret, a beat behind the date roll; closing is quicker. */
+.stay-form__night:has(.stay-search__same) { position: relative; }
+.stay-form__tip:has(.stay-search__same) { position: absolute; z-index: 2; inset-block-start: var(--space-sm); inset-inline-end: var(--space); padding: 0; translate: 0 -100%; pointer-events: none; }
+.stay-search__same { --same-ease: cubic-bezier(.23, 1, .32, 1); }
+.stay-search__same .night-tip { --night-tip-caret: 50%; padding-block: var(--space-xs); pointer-events: auto;
+  opacity: 0; transform: translateY(4px) scale(.96); transform-origin: 50% 100%; transition: opacity 160ms var(--same-ease), transform 160ms var(--same-ease); }
+.stay-search__same:not(.is-shown) .night-tip { pointer-events: none; }
+.stay-search__same.is-shown .night-tip { opacity: 1; transform: none; transition-duration: 220ms; transition-delay: 120ms; }
+@media (prefers-reduced-motion: reduce) { .stay-search__same .night-tip { transition: none; } }

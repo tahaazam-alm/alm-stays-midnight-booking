@@ -65,7 +65,8 @@ function Toggle({ label, options, value, onChange }) {
   )
 }
 
-export function PrototypeShell({ config, children }) {
+// `board`: a full-width page shown instead of the phone (design explorations); `boardLink` is its switch in the bar
+export function PrototypeShell({ config, children, board, boardLink }) {
   const [platform, setPlatform] = useState(config.platform)
   const [lang, setLang] = useState(config.lang)
   const [theme, setTheme] = useState(config.hideBasics ? 'light' : config.theme || 'light')
@@ -105,10 +106,16 @@ export function PrototypeShell({ config, children }) {
       <div className={`proto proto--${frame}`}>
         <header className="proto-bar">
           <strong className="proto-bar__name">{config.name}</strong>
-          <button type="button" className="proto-bar__restart" onClick={restart}>Restart</button>
+          {!board && <button type="button" className="proto-bar__restart" onClick={restart}>Restart</button>}
+          {boardLink}
         </header>
+        {board && (
+          <DesignSystemProvider platform={dsPlatform} dir={dir}>
+            <main className="proto-board" dir={dir} lang={lang}>{board}</main>
+          </DesignSystemProvider>
+        )}
 
-        <main className="proto-stage" ref={stageRef}>
+        <main className="proto-stage" ref={stageRef} hidden={!!board}>
           <div
             className="proto-fit"
             style={size ? { width: size[0] * scale, height: size[1] * scale } : undefined}

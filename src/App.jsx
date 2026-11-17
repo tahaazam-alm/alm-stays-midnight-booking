@@ -11,6 +11,7 @@ import Home from './screens/Home.jsx'
 import Trips from './screens/Trips.jsx'
 import BookingDetails from './screens/BookingDetails.jsx'
 import ManageBooking from './screens/ManageBooking.jsx'
+import PropertyDetails from './screens/PropertyDetails.jsx'
 
 // Every screen of the prototype, keyed by name. Numbers match the reference screenshots in /reference.
 const screens = {
@@ -24,6 +25,7 @@ const screens = {
   trips: Trips, //         8 · My Trips tab
   details: BookingDetails, // 9 · Your booking
   manage: ManageBooking, // 10 · Manage booking
+  property: PropertyDetails, // 11 · Property details (from the hotel row on Your booking)
 }
 
 export default function App() {

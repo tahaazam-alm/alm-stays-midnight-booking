@@ -12,7 +12,7 @@
 .trip-card__photo > * { position: relative; }
 .trip-card__photo > .trip-card__tonight {
   position: absolute; inset-block-start: var(--space-sm); inset-inline-end: var(--space-sm); padding: var(--space-2xs) var(--space-sm);
-  border-radius: var(--rounded-xs); background: var(--overlay-default); color: var(--text-base-inverted-static); white-space: nowrap;
+  border-radius: var(--rounded-xs); background: var(--background-primary-default); color: var(--text-base-inverted-static); white-space: nowrap;
 }
 .trip-card__city { line-height: var(--type-title-lh); }
 .trip-card__info { position: relative; display: flex; flex-direction: column; gap: var(--space-2xs); padding: var(--space-md) var(--space); min-width: 0; overflow: hidden; }

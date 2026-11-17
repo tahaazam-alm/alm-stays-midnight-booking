@@ -19,22 +19,9 @@
 .results .navbar__chips { max-height: 64px; transition: max-height .25s ease, padding-block .25s ease, opacity .2s ease; }
 .results--tucked .navbar__chips { max-height: 0; padding-block: 0; opacity: 0; }
 .proto-screen:has(> .results) { overflow-anchor: none; }
-/* Navy band version: the header rounds its foot into the band and the band rounds its own foot over the list, all pinned together.
-   The band tucks up behind the header's rounded corners, so no strip shows behind either curve. */
-.results--band .screen__nav .navbar { z-index: 1; border-end-start-radius: var(--rounded-lg); border-end-end-radius: var(--rounded-lg); border-block-end: 0; }
-.results--band .night-band {
-  margin-block-start: calc(-1 * var(--rounded-lg)); padding-block-start: calc(var(--space-md) + var(--rounded-lg));
-}
-/* Foot of the band flares down into the list: navy fills the two corners above the list's rounded top */
-.results--band .night-band::after {
-  content: ''; position: absolute; inset-inline: 0; top: 100%; height: var(--rounded-lg); pointer-events: none;
-  background: var(--color-almosafer);
-  -webkit-mask: radial-gradient(circle at 100% 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) left top / var(--rounded-lg) var(--rounded-lg) no-repeat,
-    radial-gradient(circle at 0 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) right top / var(--rounded-lg) var(--rounded-lg) no-repeat;
-  mask: radial-gradient(circle at 100% 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) left top / var(--rounded-lg) var(--rounded-lg) no-repeat,
-    radial-gradient(circle at 0 100%, transparent calc(var(--rounded-lg) - .5px), black var(--rounded-lg)) right top / var(--rounded-lg) var(--rounded-lg) no-repeat;
-}
-/* Chip row tucked away: keep a gap between the modify pill and the header's rounded foot */
+/* Navy band version: a solid rectangle under the header, pinned with it. Square edges on both: the header's foot and the band's foot are flat. */
+.results--band .screen__nav .navbar { z-index: 1; border-block-end: 0; }
+/* Chip row tucked away: keep a gap between the modify pill and the header's foot */
 .results--band.results--tucked .screen__nav .navbar { padding-block-end: var(--space-sm); }
 /* No glass here: a solid white header, no blur or fade, so it meets the band in a clean edge */
-.results--band .screen__nav .navbar::before { inset: 0; background: var(--background-base-default); border-radius: inherit; -webkit-backdrop-filter: none; backdrop-filter: none; -webkit-mask-image: none; mask-image: none; }
+.results--band .screen__nav .navbar::before { inset: 0; background: var(--background-base-default); -webkit-backdrop-filter: none; backdrop-filter: none; -webkit-mask-image: none; mask-image: none; }

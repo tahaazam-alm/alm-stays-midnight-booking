@@ -18,3 +18,66 @@
 .stay-form--now-on .stay-form__dates > .widget-field:first-child .widget-field__value {
   font-family: var(--type-body-bold-family); font-weight: var(--type-body-bold-weight);
 }
+
+/* Tonight transition · Shimmer + reveal (arrival board, option I). The plain row opens through grid rows on an ease-in-out (it moves on screen),
+   its content fading up a beat behind so it is never seen squeezed. As it lands, one soft band of aqua light glides across the row: faint at the
+   start, full by the middle, gone at the far edge. A one-off pass, so keyframes; transform and opacity only. */
+.stay-form__reveal { --reveal-ease: cubic-bezier(.3, 0, .1, 1); --reveal-out: cubic-bezier(.23, 1, .32, 1); display: grid; grid-template-rows: 0fr; }
+.stay-form__reveal > div { position: relative; min-block-size: 0; overflow: hidden; opacity: 0; transform: translateY(-4px); }
+.stay-form__reveal.is-shown { grid-template-rows: 1fr; }
+.stay-form__reveal.is-shown > div { opacity: 1; transform: none; }
+.stay-form__reveal.is-fresh { transition: grid-template-rows 560ms var(--reveal-ease); }
+.stay-form__reveal.is-fresh > div { transition: opacity 420ms var(--reveal-out) 140ms, transform 420ms var(--reveal-out) 140ms; }
+.stay-form__reveal > div::after { content: ''; position: absolute; inset-block: 0; inset-inline-start: 0; inline-size: 45%; pointer-events: none;
+  mix-blend-mode: multiply; opacity: 0; translate: -100% 0; background: linear-gradient(100deg, transparent, var(--color-aqua-30) 50%, transparent); }
+.stay-form__reveal.is-fresh > div::after { animation: stay-form-band 600ms cubic-bezier(.65, 0, .35, 1) 260ms both; }
+.stay-form__reveal:dir(rtl) > div::after { translate: 100% 0; }
+.stay-form__reveal.is-band > div::after { animation: stay-form-band 600ms cubic-bezier(.65, 0, .35, 1) 700ms both; }
+.stay-form__reveal:is(.is-fresh, .is-band):dir(rtl) > div::after { animation-name: stay-form-band-rtl; }
+/* Same curve as the date shimmer: eases in and out, fastest mid-row, where the band stretches and softens like motion blur. */
+@keyframes stay-form-band { from { opacity: 0; translate: -100% 0; } 15%, 80% { opacity: 1; } 50% { scale: 1.6 1; filter: blur(2px); } to { opacity: 0; translate: 225% 0; } }
+@keyframes stay-form-band-rtl { from { opacity: 0; translate: 100% 0; } 15%, 80% { opacity: 1; } 50% { scale: 1.6 1; filter: blur(2px); } to { opacity: 0; translate: -225% 0; } }
+/* Once on: a moon after the check-in date instead of a tint. It pops in from 90% with a short blur. */
+/* The moon hangs off the end of the date, out of flow, so the arrow and check-out stay where they are. */
+.stay-form__in { position: relative; display: inline-flex; }
+/* The value cell clips its text; let the moon show past the end of the date. */
+.stay-form__dates .widget-field__value:has(.stay-form__in) { overflow: visible; }
+.stay-form__moon { position: absolute; inset-block: 0; inset-inline-start: calc(100% + var(--space-sm)); display: inline-flex; align-items: center; color: var(--color-aqua-100); }
+/* Toggled on in this visit: a text shimmer on the date (after motion-primitives' TextShimmer). The letters are painted by two clipped backgrounds:
+   the normal text colour underneath, and an aqua highlight 250% wide that slides across once, linear. --spread is half the highlight's width;
+   it stays under a quarter of the date so the highlight starts and ends fully off the text. The moon pops in as the highlight's leading edge
+   leaves the last digit, so the light seems to drop it there. Background-position rather than transform: the gradient has to be clipped to the glyphs. */
+.stay-form__date { display: block; }
+/* The highlight eases in and out (fastest mid-word) and stretches at speed, like motion blur. */
+@property --stay-spread { syntax: '<length>'; inherits: false; initial-value: 22px; }
+.stay-form__in.is-lit .stay-form__date { --spread: var(--stay-spread); color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(90deg, transparent calc(50% - var(--spread)), var(--color-aqua-100) calc(50% - var(--spread) / 3), var(--color-aqua-100) calc(50% + var(--spread) / 3), transparent calc(50% + var(--spread))), linear-gradient(var(--text-base-default), var(--text-base-default));
+  background-size: 250% 100%, auto; background-repeat: no-repeat, repeat; background-position: 0% center, 0 0;
+  animation: stay-form-date-shimmer 500ms cubic-bezier(.65, 0, .35, 1) backwards; }
+.stay-form__in.is-lit:dir(rtl) .stay-form__date { background-position: 100% center, 0 0; animation-name: stay-form-date-shimmer-rtl; }
+/* Glow around the letters: a blurred copy of the date text, lit only where the highlight is, travelling with it. */
+.stay-form__in { isolation: isolate; }
+.stay-form__in.is-lit::before { content: attr(data-text); position: absolute; z-index: -1; inset: 0; white-space: nowrap; pointer-events: none; opacity: 0; filter: blur(3px); --stay-spread: 26px; --spread: var(--stay-spread);
+  color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(90deg, transparent calc(50% - var(--spread)), var(--color-aqua-100) calc(50% - var(--spread) / 3), var(--color-aqua-100) calc(50% + var(--spread) / 3), transparent calc(50% + var(--spread)));
+  background-size: 250% 100%; background-repeat: no-repeat; background-position: 0% center;
+  animation: stay-form-date-glow 500ms cubic-bezier(.65, 0, .35, 1) backwards; }
+.stay-form__in.is-lit:dir(rtl)::before { background-position: 100% center; animation-name: stay-form-date-glow-rtl; }
+@keyframes stay-form-date-glow { 0% { background-position: 100% center; opacity: 0; } 15%, 80% { opacity: 1; } 50% { --stay-spread: 44px; filter: blur(4px); } 100% { opacity: 0; } }
+@keyframes stay-form-date-glow-rtl { 0% { background-position: 0% center; opacity: 0; } 15%, 80% { opacity: 1; } 50% { --stay-spread: 44px; filter: blur(4px); } 100% { opacity: 0; } }
+.stay-form__in.is-lit .stay-form__moon { animation: stay-form-moon 300ms cubic-bezier(.23, 1, .32, 1) 200ms both; }
+.stay-form__in.is-lit:dir(rtl) .stay-form__moon { animation-name: stay-form-moon-rtl; }
+@keyframes stay-form-date-shimmer { from { background-position: 100% center, 0 0; } 50% { --stay-spread: 38px; } }
+@keyframes stay-form-date-shimmer-rtl { from { background-position: 0% center, 0 0; } 50% { --stay-spread: 38px; } }
+@keyframes stay-form-moon { from { opacity: 0; filter: blur(2px); transform: translateX(calc(var(--space-sm) * -1)); } }
+@keyframes stay-form-moon-rtl { from { opacity: 0; filter: blur(2px); transform: translateX(var(--space-sm)); } }
+/* Toggled off: the moon lifts a touch, then drops into a pocket under the date. The holder clips only its bottom edge, so the moon is hidden
+   by the edge rather than faded; it stretches and softens at speed on the way down. Same curve as the shimmer. */
+.stay-form__in.is-leaving .stay-form__moon { clip-path: inset(-8px -8px 15.5% -8px); /* the drawn moon ends 15.5% above the icon box */ }
+.stay-form__in.is-leaving .stay-form__moon > * { animation: stay-form-moon-tuck 400ms cubic-bezier(.65, 0, .35, 1) both; }
+@keyframes stay-form-moon-tuck { 22% { transform: translateY(-2px); scale: 1 1; filter: blur(0); } 65% { scale: .94 1.18; filter: blur(1px); } to { transform: translateY(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .stay-form__in.is-leaving .stay-form__moon > * { animation: none; opacity: 0; }
+  .stay-form__reveal.is-fresh, .stay-form__reveal.is-fresh > div { transition: none; }
+  .stay-form__reveal:is(.is-fresh, .is-band) > div::after, .stay-form__in.is-lit .stay-form__date, .stay-form__in.is-lit::before, .stay-form__in.is-lit .stay-form__moon { animation: none; }
+}

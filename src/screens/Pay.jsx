@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Navbar, Cell, BottomActionBar } from 'design-system'
 import { useNav } from '../shell/navigation.jsx'
 import { Icon } from '../shell/Icon.jsx'
-import { useProto } from '../shell/PrototypeShell.jsx'
 import { useStay } from '../state.jsx'
 import { useCopy } from '../copy.js'
 import { money } from '../logic.js'
@@ -16,7 +15,6 @@ import './Funnel.css'
 export default function Pay({ total = 0 }) {
   const nav = useNav()
   const t = useCopy()
-  const { controls } = useProto()
   const { search, booking, nowOn, confirmBooking } = useStay()
   const [method, setMethod] = useState('apple')
 
@@ -24,7 +22,7 @@ export default function Pay({ total = 0 }) {
     <div className="screen funnel">
       <div className="screen__nav"><Navbar toolbar={{ title: t('confirmPay'), onBack: () => nav.back() }} /></div>
       <div className="screen__body funnel__body">
-        <BookingSummary hotel={booking.hotel} search={search} now={nowOn && controls.paySummary} />
+        <BookingSummary hotel={booking.hotel} search={search} now={nowOn && 'quiet'} />
         <section className="funnel__section">
           <h2 className="t-title t-reset">{t('payWith')}</h2>
           <PayMethods value={method} onChange={setMethod} />

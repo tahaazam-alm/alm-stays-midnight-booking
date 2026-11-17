@@ -141,3 +141,7 @@ body {
 .proto-sheet__group { display: flex; flex-direction: column; gap: var(--space-sm); }
 .proto-sheet__body .btn { width: 100%; }
 .bottom-sheet.proto-sheet.bottom-sheet--medium .bottom-sheet__panel { background: var(--background-base-default); }
+
+/* Board mode: a scrolling full-width page instead of the phone (src/explore) */
+.proto-stage[hidden] { display: none; }
+.proto-board { flex: 1; min-height: 0; overflow-y: auto; }

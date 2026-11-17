@@ -6,7 +6,6 @@
 .after__badge { display: flex; margin-block-end: var(--space-sm); }
 .after__badge img { width: 48px; height: 48px; border-radius: var(--rounded-full); object-fit: cover; }
 .after__tick { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin-inline-start: calc(var(--space-sm) * -1); border-radius: var(--rounded-full); background: var(--background-success-default); color: var(--icon-base-inverted-static); box-shadow: 0 0 0 2px var(--background-base-default); }
-.after__tonight { display: flex; align-items: center; gap: var(--space-xs); }
 .after .funnel__card > .cell, .after .funnel__section > div > .cell { padding-block: var(--space-md); }
 .after__tabbed { padding-block-start: var(--space-lg); }
 .after:has(.after__tabbed):not(:has(.screen__nav)) .after__tabbed { padding-block-start: var(--space-4xl); }
@@ -39,3 +38,18 @@
 .after__cancel { gap: var(--space-md); padding: var(--space); }
 .after__cancel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-sm); }
 .after__note { display: flex; flex-direction: column; gap: var(--space-xs); padding: var(--space-md); border-radius: var(--rounded-sm); background: var(--background-neutral-subtle); }
+/* Property details */
+.prop__stars { display: flex; gap: 2px; color: var(--color-butter-100); }
+.prop__links { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); }
+.prop__link { display: flex; align-items: center; gap: var(--space-sm); }
+.prop__map { overflow: hidden; border-radius: var(--rounded-lg); margin-block-start: var(--space-xs); }
+.prop__map .map-art { height: 132px; }
+.prop__rows { gap: 0; margin: 0; padding: 0 var(--space); list-style: none; }
+.prop__rows li { display: flex; align-items: center; gap: var(--space-md); }
+.prop__rows li > .ds-icon { color: var(--icon-base-default); flex-shrink: 0; }
+.prop__val { flex: 1; min-width: 0; padding-block: var(--space); }
+.prop__rows li + li > .prop__val { box-shadow: inset 0 1px 0 var(--border-base-default); }
+.prop__text { gap: var(--space-md); padding: var(--space); }
+.prop__dashed { padding-block-end: var(--space-md); border-block-end: 1px dashed var(--border-base-default); }
+.prop__bullets { margin: 0; padding-inline-start: var(--space-lg); }
+.prop__more { align-self: flex-start; }

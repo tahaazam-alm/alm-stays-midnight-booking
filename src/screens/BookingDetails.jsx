@@ -34,7 +34,7 @@ export default function BookingDetails() {
       <div className="screen__body funnel__body">
         <div className="funnel__card after__booking">
           <span><Tag label={t('confirmed')} variant="success" style="filled" /></span>
-          <button type="button" className="after__hotel" onClick={soon}>
+          <button type="button" className="after__hotel" onClick={() => nav.push('property')}>
             <img src={booked.hotel.image} alt="" />
             <span className="t-title">{t.d(booked.hotel.name)}</span>
             <Icon svg={chevron} size={20} />
@@ -42,7 +42,7 @@ export default function BookingDetails() {
           <Separator />
           <ul className="after__facts t-body">
             <li><Icon svg={I.calendar} />{fmtFullRange(booked.checkIn, booked.checkOut)}</li>
-            {booked.tonight && <li><Icon svg={I.night} />{t('tonightBetween')}</li>}
+            {booked.tonight && <li><Icon svg={I.night} />{t('checkInBetween')}</li>}
             <li><Icon svg={I.bed} />{t('roomsAdults', booked.search.rooms.length, guestCount(booked.search.rooms))}</li>
           </ul>
           <Separator />

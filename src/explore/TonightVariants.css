@@ -1,0 +1,88 @@
+/* Check-in tonight explorations. Motion follows Emil Kowalski's rules: transitions (interruptible), transform / opacity / a touch of blur,
+   strong custom curves, under 300ms, exits quicker than entrances. --tx-speed (set by the board) slows everything for review. */
+.tx-card, .tx-board {
+  --tx-ease-out: cubic-bezier(.23, 1, .32, 1);
+  --tx-ease-in-out: cubic-bezier(.77, 0, .175, 1);
+  --tx-fast: calc(160ms * var(--tx-speed, 1));
+  --tx-base: calc(220ms * var(--tx-speed, 1));
+  --tx-slow: calc(280ms * var(--tx-speed, 1));
+  --tx-stagger: calc(50ms * var(--tx-speed, 1));
+}
+.tx-card .widget-field { cursor: default; }
+.tx-link { border: 0; padding: 0; background: none; cursor: pointer; text-align: start; }
+
+/* Roll: both values share one grid cell, so the cell never changes size */
+.tx-roll { display: inline-grid; vertical-align: top; max-inline-size: 100%; }
+.tx-roll > * { grid-area: 1 / 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis;
+  transition: transform var(--tx-base) var(--tx-ease-out), opacity var(--tx-base) var(--tx-ease-out), filter var(--tx-base) var(--tx-ease-out); }
+.tx-roll__b, .tx-roll.is-on .tx-roll__a { opacity: 0; filter: blur(2px); }
+.tx-roll__b { transform: translateY(40%); }
+.tx-roll.is-on .tx-roll__a { transform: translateY(-40%); }
+.tx-roll.is-on .tx-roll__b { opacity: 1; filter: none; transform: none; }
+.tx-roll--late > * { transition-delay: var(--tx-stagger); }
+/* Icon swap: no travel, just a small scale so it reads as one glyph changing */
+.tx-roll--icon { display: grid; inline-size: 100%; block-size: 100%; }
+.tx-roll--icon > * { overflow: visible; }
+.tx-roll--icon .tx-roll__b, .tx-roll--icon.is-on .tx-roll__a { transform: scale(.9); }
+.tx-roll--icon.is-on .tx-roll__b { transform: none; color: var(--icon-secondary-default); }
+
+/* Toggle row (B, E): a plain widget cell */
+.tx-row { display: flex; align-items: center; gap: var(--space); min-block-size: 68px; padding: var(--space-xs) var(--space); box-sizing: border-box; cursor: pointer; }
+.tx-row__icon { display: inline-flex; flex-shrink: 0; color: var(--icon-base-subtle); transition: color var(--tx-base) ease; }
+.tx-row__text { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; align-items: flex-start; }
+
+/* E · the moon fills and turns aqua; one line unfolds */
+.tx-row--quiet .tx-row__icon path { fill: transparent; transition: fill var(--tx-base) ease; }
+.tx-row--quiet.is-on .tx-row__icon { color: var(--icon-secondary-default); }
+.tx-row--quiet.is-on .tx-row__icon path { fill: currentColor; }
+.tx-quiet__line { color: var(--text-base-subtext); }
+
+/* Fold: height through grid rows, content fades with a little blur. Closing is quicker than opening */
+.tx-fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows var(--tx-slow) var(--tx-ease-out); }
+.tx-fold__in { min-block-size: 0; overflow: hidden; transition: opacity var(--tx-base) var(--tx-ease-out), filter var(--tx-base) var(--tx-ease-out); }
+.tx-fold--open-on, .is-on > .tx-fold:not(.tx-fold--open-on) { grid-template-rows: 0fr; }
+.tx-fold--open-on > .tx-fold__in, .is-on > .tx-fold:not(.tx-fold--open-on) > .tx-fold__in { opacity: 0; filter: blur(2px); }
+.is-on .tx-fold--open-on { grid-template-rows: 1fr; }
+.is-on .tx-fold--open-on > .tx-fold__in { opacity: 1; filter: none; transition-delay: var(--tx-stagger); }
+.is-on > .tx-fold:not(.tx-fold--open-on) { transition-duration: var(--tx-base); }
+
+/* C · arrival switch */
+.tx-switch-wrap { display: flex; padding: var(--space-xs) var(--space) var(--space-sm); }
+.tx-switch-how { padding: 0 var(--space) var(--space-md); padding-inline-start: 56px; }
+.tx-chip-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: var(--space-sm) var(--space) var(--space-md); padding-inline-start: 56px; }
+.tx-switch { position: relative; display: grid; grid-template-columns: 1fr 1fr; flex: 1; padding: var(--space-2xs); border-radius: var(--rounded-full); background: var(--background-neutral-subtle); }
+.tx-switch__pill { position: absolute; inset-block: var(--space-2xs); inset-inline-start: var(--space-2xs); inline-size: calc(50% - var(--space-2xs));
+  border-radius: var(--rounded-full); background: var(--background-base-default); box-shadow: var(--elevation-raised);
+  transition: transform var(--tx-slow) var(--tx-ease-in-out); }
+.tx-switch.is-on .tx-switch__pill { transform: translateX(100%); }
+[dir='rtl'] .tx-switch.is-on .tx-switch__pill { transform: translateX(-100%); }
+.tx-switch__opt { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); block-size: 32px; padding-inline: var(--space-sm);
+  border: 0; border-radius: var(--rounded-full); background: none; cursor: pointer; white-space: nowrap; color: var(--text-base-subtext);
+  transition: color var(--tx-base) ease, transform var(--tx-fast) var(--tx-ease-out); }
+.tx-switch__opt[aria-checked='true'] { color: var(--text-base-default); font-weight: var(--type-body-semibold-weight); }
+.tx-switch__opt:active { transform: scale(.97); }
+
+/* D · offer strip, then the docked line in the check-in cell */
+.tx-strip { display: flex; align-items: center; gap: var(--space-sm); margin: 0 var(--space) var(--space-md); padding: var(--space-sm) var(--space-md);
+  border-radius: var(--rounded); background: var(--background-primary-subtle); color: var(--icon-secondary-default); }
+.tx-strip__text { flex: 1; min-inline-size: 0; color: var(--text-base-default); }
+.tx-strip__action { flex-shrink: 0; border: 0; padding: var(--space-xs) 0; background: none; cursor: pointer; color: var(--text-link-default); transition: transform var(--tx-fast) var(--tx-ease-out); }
+.tx-strip__action:active { transform: scale(.97); }
+.tx-dock__x { display: inline-flex; padding: var(--space-2xs); margin: calc(-1 * var(--space-2xs)); border-radius: var(--rounded-full); cursor: pointer; color: var(--icon-base-subtle); }
+.tx-dock { display: inline-flex; align-items: center; gap: var(--space-sm); color: var(--text-link-default); transform-origin: 0 100%;
+  opacity: 0; transform: translateY(6px) scale(.96); transition: opacity var(--tx-fast) var(--tx-ease-out), transform var(--tx-fast) var(--tx-ease-out); }
+[dir='rtl'] .tx-dock { transform-origin: 100% 100%; }
+.tx-card.is-on .tx-dock { opacity: 1; transform: none; transition-duration: var(--tx-base); transition-delay: calc(var(--tx-stagger) * 2); }
+/* The cell keeps its two-line balance while the docked line is hidden */
+.tx-card:not(.is-on) .widget-field__subtext:has(.tx-dock) { block-size: 0; }
+.tx-card .widget-field__subtext:has(.tx-dock) { overflow: visible; transition: block-size var(--tx-base) var(--tx-ease-out); block-size: var(--type-caption-lh); }
+
+/* F · chip press */
+.tx-chip { transition: transform var(--tx-fast) var(--tx-ease-out), background-color var(--tx-base) ease, border-color var(--tx-base) ease, color var(--tx-base) ease; }
+.tx-chip:active { transform: scale(.97); }
+
+/* Reduced motion: keep the fades, drop travel and blur */
+@media (prefers-reduced-motion: reduce) {
+  .tx-roll > *, .tx-dock, .tx-switch__opt, .tx-chip, .tx-strip__action { transform: none !important; filter: none !important; }
+  .tx-switch__pill, .tx-fold { transition-duration: 0ms; }
+}

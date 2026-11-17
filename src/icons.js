@@ -60,3 +60,9 @@ export { default as svcTransfers } from '@ds-icons/visual-icons/addonAirportTran
 export { default as svcTrain } from '@ds-icons/visual-icons/serviceTrainTickets.svg'
 export { default as svcSixFlags } from '@ds-icons/visual-icons/iconAttractions.svg'
 export { default as svcMore } from '@ds-icons/visual-icons/serviceOverflow.svg'
+// Explorations
+export { default as x } from '@ds-icons/line-icons/x.svg?raw'
+export { default as phone } from '@ds-icons/line-icons/phone.svg?raw'
+export { default as user } from '@ds-icons/line-icons/user.svg?raw'
+export { default as calendarStart } from '@ds-icons/line-icons/calendarStart.svg?raw'
+export { default as calendarEnd } from '@ds-icons/line-icons/calendarEnd.svg?raw'
