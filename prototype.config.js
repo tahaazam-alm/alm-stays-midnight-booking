@@ -5,8 +5,8 @@
 // almosafer-prototype skill flips the flag here and makes the screens work.
 
 export default {
-  name: 'Midnight Booking',
-  hideBasics: true, // Platform, Language and Theme switches hidden from the bar; iOS + light mode only. Language lives in the in-app settings sheet
+  name: 'Past midnight booking',
+  hideBasics: true, // Platform, Language and Theme switches hidden from the bar; iOS only. Language and Theme (starts Light) live in the Prototype settings card at the top corner of the page
 
   platform: 'ios', // starting platform: ios | android | desktop | mobile-web
   lang: 'en', //              starting language: en | ar
@@ -15,9 +15,10 @@ export default {
   langs: { en: true, ar: true },
 
   // Scenario toggles. The first option is the default. Read with useProto().controls.<id>
+  // `hidden: true` keeps a control out of Prototype settings: the prototype stays on its first option (settled 2026-11-18: Empty + Shimmer only)
   controls: [
     // Search widget: what turning the tonight toggle on does. Ask check-out opens the calendar with tonight selected and the same-day question
-    { id: 'tonightToggle', label: 'Tonight toggle', labelAr: 'مفتاح الليلة', options: [
+    { id: 'tonightToggle', hidden: true, label: 'Tonight toggle', labelAr: 'مفتاح الليلة', options: [
       // Empty check-out: turning it on clears check-out on the widget; the cell reads Select check-out and opens the calendar
       { value: 'empty', label: 'Empty', labelAr: 'مغادرة فارغة' },
       { value: 'inline', label: 'Stay', labelAr: 'البقاء في البحث' },
@@ -27,7 +28,7 @@ export default {
     ] },
     // Search widget: how the tonight row arrives and reads. Tint: the row is there from the start with the aqua tint, which spreads over the dates once on.
     // Shimmer + reveal: the plain row opens a second after load with a band of light across it; once on, nothing is tinted and a moon sits by the check-in date.
-    { id: 'tonightMotion', label: 'Tonight transition', labelAr: 'انتقال الليلة', options: [
+    { id: 'tonightMotion', hidden: true, label: 'Tonight transition', labelAr: 'انتقال الليلة', options: [
       { value: 'shimmer', label: 'Shimmer only', labelAr: 'وميض فقط' },
       { value: 'tint', label: 'Tint', labelAr: 'تظليل' },
       { value: 'reveal', label: 'Shimmer + reveal', labelAr: 'وميض وظهور' },

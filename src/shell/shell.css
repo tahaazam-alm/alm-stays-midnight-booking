@@ -142,6 +142,24 @@ body {
 .proto-sheet__body .btn { width: 100%; }
 .bottom-sheet.proto-sheet.bottom-sheet--medium .bottom-sheet__panel { background: var(--background-base-default); }
 
+/* Prototype settings card: the same controls, pinned to the top corner of the page beside the phone */
+.proto { position: relative; }
+.proto-card {
+  position: absolute; top: var(--space-sm); right: var(--space-sm); /* physical on purpose: page chrome stays in the top right corner in Arabic too */ z-index: 10; inline-size: 200px;
+  display: flex; flex-direction: column; gap: var(--space-xs); padding-block-start: var(--space-md);
+  border-radius: var(--rounded-lg); border: 1px solid var(--proto-line); background: var(--background-base-default);
+  color: var(--text-base-default); box-shadow: 0 8px 24px rgb(0 0 0 / .08);
+}
+.proto-card > h2 { padding-inline: var(--space-md); }
+.proto-card .proto-sheet__body { gap: var(--space-md); padding: var(--space-xs) var(--space-md) var(--space-md); }
+
 /* Board mode: a scrolling full-width page instead of the phone (src/explore) */
 .proto-stage[hidden] { display: none; }
 .proto-board { flex: 1; min-height: 0; overflow-y: auto; }
+/* Settings: the way into a board page (animation specs), then a rule and a small Restart */
+.proto-sheet__link {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm);
+  border: 0; background: none; padding: 0; color: inherit; cursor: pointer; text-align: start;
+}
+.proto-sheet__rule { inline-size: 100%; margin: 0; border: 0; border-block-start: 1px solid var(--border-base-default, var(--proto-line)); }
+.proto-sheet__body .btn--size-small { width: auto; align-self: flex-start; }

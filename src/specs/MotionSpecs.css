@@ -1,0 +1,40 @@
+/* Developer specs page (src/specs): a two-column table, live animation and layout notes on the start side, values on the end side */
+.mspec { max-inline-size: 1180px; margin-inline: auto; padding: var(--space-lg) var(--space) var(--space-3xl); color: var(--text-base-default); }
+.mspec__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space) var(--space-xl); margin-block-end: var(--space-lg); }
+.mspec__controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space); }
+.mspec__controls label { display: flex; flex-direction: column; gap: var(--space-xs); min-inline-size: 190px; }
+.mspec__btn { border: 0; padding: 0; background: none; cursor: pointer; min-block-size: 36px; }
+
+.mspec__table { inline-size: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; border-radius: var(--rounded-lg); background: var(--background-base-default); box-shadow: inset 0 0 0 1px var(--border-base-default); }
+.mspec__table th { text-align: start; padding: var(--space-md) var(--space-lg); border-block-end: 1px solid var(--border-base-default); }
+.mspec__table th:first-child { inline-size: 460px; }
+.mspec__table td { vertical-align: top; padding: var(--space-lg); }
+.mspec__table tr + tr > td { border-block-start: 1px solid var(--border-base-default); }
+.mspec__table td + td, .mspec__table th + th { border-inline-start: 1px solid var(--border-base-default); }
+
+.mspec__demo { display: flex; flex-direction: column; gap: var(--space-md); }
+.mspec__title { display: flex; align-items: center; justify-content: space-between; gap: var(--space); }
+.mspec__title h2 { display: flex; align-items: center; gap: var(--space-sm); }
+.mspec__id { display: inline-grid; place-items: center; inline-size: 28px; block-size: 28px; flex-shrink: 0; border-radius: var(--rounded-full); background: var(--background-primary-subtle); color: var(--text-link-default); font-size: var(--type-body-size); }
+/* 370px: the widget's width on the phone, so the motion covers the same distance as in the build */
+.mspec__stage { inline-size: 100%; max-inline-size: 370px; margin-inline: auto; padding-block: var(--space-sm); pointer-events: none; }
+
+.mspec__specs { display: flex; flex-direction: column; gap: var(--space-md); }
+.mspec__list { display: flex; flex-direction: column; margin: 0; }
+.mspec__list > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: var(--space); padding-block: var(--space-sm); }
+.mspec__list > div + div { border-block-start: 1px solid var(--border-base-default); }
+.mspec__list dt { color: var(--text-base-subtext); }
+.mspec__list dd { margin: 0; overflow-wrap: anywhere; }
+.mspec__list--layout > div { grid-template-columns: 96px minmax(0, 1fr); padding-block: var(--space-xs); }
+.mspec__list--layout > div + div { border-block-start: 0; }
+.mspec code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; padding: 0 var(--space-2xs); border-radius: var(--rounded-xs); background: var(--background-neutral-subtle); }
+
+/* Row 3 shows the moon by itself: the date keeps still */
+.mspec-solo.is-lit .stay-form__date { animation: none; background: none; color: inherit; }
+.mspec-solo.is-lit::before { content: none; }
+
+@media (max-width: 860px) {
+  .mspec__table, .mspec__table tbody, .mspec__table tr, .mspec__table td { display: block; }
+  .mspec__table thead { display: none; }
+  .mspec__table td + td { border-inline-start: 0; }
+}

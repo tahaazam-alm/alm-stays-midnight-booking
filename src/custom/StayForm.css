@@ -30,6 +30,9 @@
 .stay-form__reveal.is-fresh > div { transition: opacity 420ms var(--reveal-out) 140ms, transform 420ms var(--reveal-out) 140ms; }
 .stay-form__reveal > div::after { content: ''; position: absolute; inset-block: 0; inset-inline-start: 0; inline-size: 45%; pointer-events: none;
   mix-blend-mode: multiply; opacity: 0; translate: -100% 0; background: linear-gradient(100deg, transparent, var(--color-aqua-30) 50%, transparent); }
+/* Dark theme: multiply would sink the band into the dark row, so it is laid over normally in a brighter aqua at low opacity */
+[data-theme='dark'] .stay-form__reveal > div::after { mix-blend-mode: normal;
+  background: linear-gradient(100deg, transparent, color-mix(in srgb, var(--color-aqua-100) 28%, transparent) 50%, transparent); }
 .stay-form__reveal.is-fresh > div::after { animation: stay-form-band 600ms cubic-bezier(.65, 0, .35, 1) 260ms both; }
 .stay-form__reveal:dir(rtl) > div::after { translate: 100% 0; }
 .stay-form__reveal.is-band > div::after { animation: stay-form-band 600ms cubic-bezier(.65, 0, .35, 1) 700ms both; }

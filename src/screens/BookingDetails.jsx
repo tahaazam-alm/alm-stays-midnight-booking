@@ -42,7 +42,7 @@ export default function BookingDetails() {
           <Separator />
           <ul className="after__facts t-body">
             <li><Icon svg={I.calendar} />{fmtFullRange(booked.checkIn, booked.checkOut)}</li>
-            {booked.tonight && <li><Icon svg={I.night} />{t('checkInBetween')}</li>}
+            {booked.tonight && <li><Icon svg={I.night} /><span>{t('checkInBetween')} <span className="t-body-semi">{t('checkInBetweenTime')}</span></span></li>}
             <li><Icon svg={I.bed} />{t('roomsAdults', booked.search.rooms.length, guestCount(booked.search.rooms))}</li>
           </ul>
           <Separator />

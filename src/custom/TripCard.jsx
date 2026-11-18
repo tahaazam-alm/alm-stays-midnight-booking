@@ -1,6 +1,6 @@
 // CUSTOM: not in the design system — trip card for Home and My Trips: destination photo with the city and dates over it,
 // and the hotel name and booking status underneath on a blurred continuation of the photo.
-// `tonight` adds the "Check-in tonight" tag over the photo's top end corner.
+// `tonight` adds the "Check-in tonight" tag over the photo's top start corner, in line with the city.
 import { Tag } from 'design-system'
 import './TripCard.css'
 

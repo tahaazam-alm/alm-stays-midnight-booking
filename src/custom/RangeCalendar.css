@@ -78,6 +78,7 @@
 /* Small pill tip: sized to its content. RangeCalendar places it over its day, held at least 8px inside the calendar; the caret stays centred on the day */
 .range-cal__tip--time .range-cal__tip-bubble { width: max-content; }
 .range-cal__tip--ask, .range-cal__tip--time { --tip-bg: var(--color-metal-static); --tip-stroke: var(--color-metal-static); }
+[data-theme='dark'] .range-cal__tip--ask, [data-theme='dark'] .range-cal__tip--time { --tip-bg: var(--color-white-static); --tip-stroke: var(--color-white-static); }
 /* Tip morph (tone change): the bubble's fill animates its box; the new words and the old ones (a fill-less copy) sit centred in it and crossfade */
 .range-cal__tip-bubble.is-morphing > * { height: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; justify-content: center; }
 .range-cal__tip-ghost {

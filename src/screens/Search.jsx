@@ -77,15 +77,16 @@ export default function Search() {
       : nowOn && <NightTip title={t('tipOnTitle')} body={t('tipOnBody')} linkLabel={t('removeNow')} onLink={() => setCheckInNow(false)} />
   const [sheet, setSheet] = useState(null) // 'dest' | 'dates' | 'guests'
   const [toast, setToast] = useState('')
+  const { settingsCard } = useProto()
   const [how, setHow] = useState(false) // How it works? sheet, over the widget or the calendar
   const close = () => { setSheet(null); setStartNow(false) }
-  const [settings, setSettings] = useState(false) // prototype settings, opened from the gear next to the title
+  const [settings, setSettings] = useState(false) // prototype settings, opened from the gear next to the title (narrow windows only; wide ones show the settings card beside the phone)
 
   return (
     <div className="screen stay-search">
       <div className="screen__nav">
         <Navbar toolbar={{ title: t('propertySearch'), subtitle: t('propertySearchSub'), onBack: () => nav.reset('home'),
-          rightActions: [{ icon: <Icon svg={I.gear} />, onClick: () => setSettings(true), 'aria-label': t('settings') }] }} />
+          rightActions: settingsCard ? [] : [{ icon: <Icon svg={I.gear} />, onClick: () => setSettings(true), 'aria-label': t('settings') }] }} />
       </div>
       <div className="screen__body stay-search__body">
         <StayForm search={search} checkInField={checkInField} checkOutField={checkOutField} datesTip={datesTip} nowRow={nowRow} nowReveal={shimmer && controls.tonightMotion} nowOn={nowOn && !nowRow} onDest={() => setSheet('dest')} onDates={openDates} onGuests={() => setSheet('guests')}>

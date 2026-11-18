@@ -18,6 +18,7 @@ export default defineConfig({
   base: './',
   build: {
     outDir: single ? 'handoff/.single' : 'dist',
-    assetsInlineLimit: single ? 100_000_000 : 4096,
+    // Always inline images: the handoff tool runs the app in a sandbox where separate asset files don't resolve.
+    assetsInlineLimit: 100_000_000,
   },
 })

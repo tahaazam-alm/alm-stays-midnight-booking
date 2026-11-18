@@ -136,4 +136,7 @@
 /* Same padding, border and radius as the question tip; the text row matches the Yes button's height so both tips stand the same */
 .night-tip--ask.night-tip--time { gap: var(--space-xs); padding-inline: var(--space-md); }
 .night-tip--ask.night-tip--time .night-tip__text { display: flex; align-items: center; min-block-size: 28px; }
-.night-tip--ask.night-tip--time > .ds-icon { display: inline-flex; padding: 0; background: none; }
+.night-tip--ask.night-tip--time > .ds-icon { display: inline-flex; padding: 0; background: none; color: inherit; }
+/* Dark theme: metal would vanish into the sheet, so the bubble turns white, with dark text and the aqua link colour on the action */
+[data-theme='dark'] .night-tip--ask { --night-tip-bg: var(--color-white-static); --night-tip-stroke: var(--color-white-static); color: var(--color-metal-static); }
+[data-theme='dark'] .night-tip--ask .night-tip__action { color: var(--color-aqua-200); }
